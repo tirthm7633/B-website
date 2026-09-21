@@ -1,0 +1,193 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400;1,500&family=Manrope:wght@300..700&family=Outfit:wght@400..600&family=Sacramento&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  /* Obsidian Steel — matches the logo's grey wordmark + blue "O". True
+     black, with the logo's blue pulled almost to grey. No gold, bronze,
+     copper or bright/saturated blue anywhere in this palette. */
+  --color-bg: #050607;
+  --color-surface: #0c0f13;
+  --color-surface-2: #12161c;
+  --color-line: #2a313b;
+  --color-text: #e8ecf1;
+  --color-muted: #8a929c;
+  --color-accent: #5f7d9c;
+  --color-accent-bright: #7fa3c7;
+
+  --font-display: 'Cormorant Garamond', 'Times New Roman', serif;
+  --font-wordmark: 'Outfit', system-ui, sans-serif;
+  --font-body: 'Manrope', system-ui, sans-serif;
+  /* Matches the thin, flowing handwritten script used for the tagline in
+     the real logo file (compared visually against public/images/logo-on-light.png). */
+  --font-tagline: 'Sacramento', cursive;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--color-bg);
+  scroll-behavior: auto;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-weight: 300;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100svh;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  margin: 0;
+  color: var(--color-text);
+  letter-spacing: -0.01em;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-bg);
+}
+
+/* Cormorant Garamond defaults to old-style figures, where "1" and "0" read
+   as "I" and "O" at display sizes — force lining figures anywhere a serif
+   numeral needs to read unambiguously as a number. */
+.numerals {
+  font-variant-numeric: lining-nums;
+  font-feature-settings: 'lnum' 1;
+}
+
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--color-accent-bright);
+}
+
+.hairline {
+  background: var(--color-line);
+}
+
+/* Simple, quiet link/button hover: colour shift plus a thin underline draw
+   (used via the .link-underline utility instead of a custom cursor). */
+.link-underline {
+  position: relative;
+}
+.link-underline::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 100%;
+  bottom: -2px;
+  height: 1px;
+  background: var(--color-accent-bright);
+  transition: right 0.4s ease;
+}
+.link-underline:hover::after {
+  right: 0;
+}
+
+.split-line {
+  overflow: hidden;
+  display: block;
+}
+
+.marquee-track {
+  animation: marquee-scroll linear infinite;
+}
+
+.marquee-pause-on-hover:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+/* Off-screen pause (set by an IntersectionObserver) — same effect as hover,
+   so a long page keeps scrolling rows quiet while they're not in view. */
+.marquee-offscreen .marquee-track {
+  animation-play-state: paused;
+}
+
+/* The brand tile nearest a panel row's horizontal centre — toggled
+   imperatively by BrandPanel's IntersectionObserver, not via React state,
+   so it works correctly even though Marquee duplicates each tile for its
+   seamless loop (two DOM copies share nothing but a data attribute). A
+   glow rather than a filter, since logo tiles never get CSS filters. */
+.brand-tile-centered {
+  border-color: var(--color-accent-bright) !important;
+  box-shadow: 0 0 0 1px var(--color-accent-bright), 0 8px 22px rgba(127, 163, 199, 0.3);
+}
+
+/* An orbit-line name/firm label whose circle is currently passing behind
+   the brand panel — hidden by default, shown on hover of that circle
+   (data-behind is set per-frame by OrbitField's GSAP ticker). */
+.orbit-label[data-behind='true'] {
+  opacity: 0;
+}
+.group:hover .orbit-label[data-behind='true'] {
+  opacity: 1;
+}
+
+/* Soft fade at both edges of a contained (non-full-bleed) scrolling row. */
+.brand-panel-mask {
+  -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-100%); }
+}
+
+@keyframes kenburns {
+  from { transform: scale(1); }
+  to { transform: scale(1.08); }
+}
+
+.hero-kenburns {
+  animation: kenburns 22s ease-out forwards;
+}
+
+@keyframes scroll-hint {
+  0%, 100% { transform: scaleY(0.3); opacity: 0.3; }
+  50% { transform: scaleY(1); opacity: 1; }
+}
+
+.scroll-hint-line {
+  transform-origin: top;
+  animation: scroll-hint 2.4s ease-in-out infinite;
+}
+
+/* Respect reduced-motion: freeze decorative infinite/slow animations.
+   GSAP-driven effects are individually gated in their components. */
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track,
+  .hero-kenburns,
+  .scroll-hint-line {
+    animation: none !important;
+  }
+
+  .link-underline::after {
+    transition: none;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+}

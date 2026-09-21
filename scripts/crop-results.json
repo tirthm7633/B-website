@@ -1,0 +1,58 @@
+[
+  {
+    "file": "axor.png",
+    "originalSize": "148x148",
+    "trimmedContentSize": "146x146",
+    "finalSize": "170x170",
+    "finalWidth": 170
+  },
+  {
+    "file": "dimore.png",
+    "originalSize": "204x192",
+    "trimmedContentSize": "110x24",
+    "finalSize": "128x42",
+    "finalWidth": 128
+  },
+  {
+    "file": "gebrit.png",
+    "originalSize": "270x148",
+    "trimmedContentSize": "268x38",
+    "finalSize": "310x80",
+    "finalWidth": 310
+  },
+  {
+    "file": "grohe.png",
+    "originalSize": "193x148",
+    "trimmedContentSize": "193x148",
+    "finalSize": "223x178",
+    "finalWidth": 223
+  },
+  {
+    "file": "nexion.png",
+    "originalSize": "175x162",
+    "trimmedContentSize": "175x54",
+    "finalSize": "203x82",
+    "finalWidth": 203
+  },
+  {
+    "file": "oyster.png",
+    "originalSize": "172x148",
+    "trimmedContentSize": "114x54",
+    "finalSize": "132x72",
+    "finalWidth": 132
+  },
+  {
+    "file": "verantes-living.png",
+    "originalSize": "204x192",
+    "trimmedContentSize": "169x74",
+    "finalSize": "197x102",
+    "finalWidth": 197
+  },
+  {
+    "file": "vitra.png",
+    "originalSize": "160x148",
+    "trimmedContentSize": "143x40",
+    "finalSize": "165x62",
+    "finalWidth": 165
+  }
+]
