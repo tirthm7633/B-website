@@ -114,13 +114,23 @@ a {
   animation: marquee-scroll linear infinite;
 }
 
-.marquee-pause-on-hover:hover .marquee-track {
-  animation-play-state: paused;
+/* Pause-on-hover only on devices that can sustain a real :hover (mouse,
+   trackpad). Gating it behind this media query — rather than applying
+   :hover unconditionally — is what stops a tap on a touchscreen from
+   leaving the row stuck paused forever: on a touch-only device this rule
+   simply never matches, so there's no "hover" state to get stuck in. */
+@media (hover: hover) and (pointer: fine) {
+  .marquee-pause-on-hover:hover .marquee-track {
+    animation-play-state: paused;
+  }
 }
 
-/* Off-screen pause (set by an IntersectionObserver) — same effect as hover,
-   so a long page keeps scrolling rows quiet while they're not in view. */
-.marquee-offscreen .marquee-track {
+/* Off-screen / tab-backgrounded pause — toggled by BrandPanel's
+   useMarqueeLifecycle (IntersectionObserver + visibilitychange), which
+   also guarantees the class is removed the moment either condition
+   clears, and a watchdog restarts the animation outright if it ever
+   doesn't move for a full interval while this class isn't present. */
+.marquee-js-paused {
   animation-play-state: paused;
 }
 
@@ -142,6 +152,19 @@ a {
 }
 .group:hover .orbit-label[data-behind='true'] {
   opacity: 1;
+}
+
+/* On phones the firm name is always tucked away by default (there's little
+   room once the whole orbit composition is scaled down) — shown on tap
+   (:active) or hover of that circle. */
+@media (max-width: 767px) {
+  .orbit-firm {
+    opacity: 0;
+  }
+  .group:hover .orbit-firm,
+  .group:active .orbit-firm {
+    opacity: 1;
+  }
 }
 
 /* Soft fade at both edges of a contained (non-full-bleed) scrolling row. */
