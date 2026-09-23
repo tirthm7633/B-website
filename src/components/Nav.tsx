@@ -8,6 +8,7 @@ import Logo from './Logo'
 export default function Nav() {
   const [open, setOpen] = useState(false)
   const [brandsOpen, setBrandsOpen] = useState(false)
+  const [enquireOpen, setEnquireOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const overlayRef = useRef<HTMLDivElement>(null)
   const linksRef = useRef<HTMLDivElement>(null)
@@ -58,6 +59,11 @@ export default function Nav() {
     setBrandsOpen(true)
   }
 
+  const openEnquireFromMenu = () => {
+    closeMenu()
+    setEnquireOpen(true)
+  }
+
   useEffect(() => {
     if (!open) return
     const onKey = (e: KeyboardEvent) => {
@@ -67,6 +73,8 @@ export default function Nav() {
     return () => window.removeEventListener('keydown', onKey)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open])
+
+  const menuLinkClass = 'font-display text-5xl font-light text-text transition-colors duration-300 hover:text-accent-bright md:text-7xl'
 
   return (
     <>
@@ -85,71 +93,48 @@ export default function Nav() {
           <Logo className="h-11 md:h-[52px] lg:h-[60px]" />
         </a>
 
-        <div className="flex items-center gap-6 lg:gap-8">
-          <nav className="hidden items-center gap-8 lg:flex" aria-label="Primary">
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="text-[0.7rem] tracking-[0.2em] text-muted uppercase transition-colors duration-300 hover:text-accent-bright"
-              >
-                {link.label}
-              </a>
-            ))}
-          </nav>
-
-          <EnquirePopover />
-
-          <button
-            type="button"
-            onClick={() => setBrandsOpen(true)}
-            className="hidden text-[0.7rem] tracking-[0.2em] text-muted uppercase transition-colors duration-300 hover:text-accent-bright lg:inline"
-          >
-            Brands
-          </button>
-
-          <button
-            type="button"
-            onClick={toggle}
-            className="relative z-50 flex h-10 w-10 flex-col items-center justify-center gap-1.5"
-            aria-label={open ? 'Close menu' : 'Open menu'}
-            aria-expanded={open}
-            aria-controls="mobile-menu"
-          >
-            <span className={`h-px w-6 bg-text transition-transform duration-300 ${open ? 'translate-y-[3.5px] rotate-45' : ''}`} />
-            <span className={`h-px w-6 bg-text transition-transform duration-300 ${open ? '-translate-y-[3.5px] -rotate-45' : ''}`} />
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={toggle}
+          className="relative z-50 flex h-10 w-10 flex-col items-center justify-center gap-1.5"
+          aria-label={open ? 'Close menu' : 'Open menu'}
+          aria-expanded={open}
+          aria-controls="mobile-menu"
+        >
+          <span className={`h-px w-6 bg-text transition-transform duration-300 ${open ? 'translate-y-[3.5px] rotate-45' : ''}`} />
+          <span className={`h-px w-6 bg-text transition-transform duration-300 ${open ? '-translate-y-[3.5px] -rotate-45' : ''}`} />
+        </button>
       </header>
 
       <div
         id="mobile-menu"
         ref={overlayRef}
-        className="fixed inset-0 z-40 hidden flex-col items-center justify-center gap-7 bg-bg"
+        className="fixed inset-0 z-40 hidden flex-col items-center justify-center gap-7 overflow-y-auto bg-bg py-24"
         style={{ clipPath: 'inset(0 0 100% 0)' }}
       >
         <div ref={linksRef} className="flex flex-col items-center gap-7">
           {navLinks.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              onClick={closeMenu}
-              className="font-display text-5xl font-light text-text transition-colors duration-300 hover:text-accent-bright md:text-7xl"
-            >
+            <a key={link.href} href={link.href} onClick={closeMenu} className={menuLinkClass}>
               {link.label}
             </a>
           ))}
-          <button
-            type="button"
-            onClick={openBrandsFromMenu}
-            className="font-display text-5xl font-light text-text transition-colors duration-300 hover:text-accent-bright md:text-7xl"
-          >
+          <a href="/projects" className={menuLinkClass}>
+            Projects
+          </a>
+          <a href="/catalog" className={menuLinkClass}>
+            Catalog
+          </a>
+          <button type="button" onClick={openBrandsFromMenu} className={menuLinkClass}>
             Brands
+          </button>
+          <button type="button" onClick={openEnquireFromMenu} className={menuLinkClass}>
+            Enquire
           </button>
         </div>
       </div>
 
       <BrandsPanel open={brandsOpen} onClose={() => setBrandsOpen(false)} />
+      <EnquirePopover open={enquireOpen} onClose={() => setEnquireOpen(false)} />
     </>
   )
 }
