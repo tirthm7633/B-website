@@ -1,14 +1,25 @@
 import gsap from 'gsap'
 import { useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { nav as navLinks } from '../data/content'
+import { lenisRef } from '../lib/useSmoothScroll'
 import BrandsPanel from './BrandsPanel'
+import ConsultationModal from './ConsultationModal'
 import EnquirePopover from './EnquirePopover'
 import Logo from './Logo'
+
+/** Scrolls to top, through Lenis when it's running so it doesn't get
+ * silently overridden a moment later by Lenis's own next tick. */
+function scrollToTop() {
+  if (lenisRef.current) lenisRef.current.scrollTo(0, { immediate: true })
+  else window.scrollTo(0, 0)
+}
 
 export default function Nav() {
   const [open, setOpen] = useState(false)
   const [brandsOpen, setBrandsOpen] = useState(false)
   const [enquireOpen, setEnquireOpen] = useState(false)
+  const [consultationOpen, setConsultationOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const overlayRef = useRef<HTMLDivElement>(null)
   const linksRef = useRef<HTMLDivElement>(null)
@@ -64,6 +75,11 @@ export default function Nav() {
     setEnquireOpen(true)
   }
 
+  const openConsultationFromEnquire = () => {
+    setEnquireOpen(false)
+    setConsultationOpen(true)
+  }
+
   useEffect(() => {
     if (!open) return
     const onKey = (e: KeyboardEvent) => {
@@ -89,9 +105,9 @@ export default function Nav() {
           scrolled ? 'bg-bg/85 backdrop-blur-md' : 'bg-transparent'
         }`}
       >
-        <a href="#top" aria-label="Buildcon House — home">
+        <Link to="/" onClick={scrollToTop} aria-label="Buildcon House — home">
           <Logo className="h-11 md:h-[52px] lg:h-[60px]" />
-        </a>
+        </Link>
 
         <button
           type="button"
@@ -114,16 +130,19 @@ export default function Nav() {
       >
         <div ref={linksRef} className="flex flex-col items-center gap-7">
           {navLinks.map((link) => (
-            <a key={link.href} href={link.href} onClick={closeMenu} className={menuLinkClass}>
+            // Absolute path (not a bare "#hash") so this still navigates
+            // home first when clicked from a different page like /projects
+            // — a bare hash would just tack onto the current URL instead.
+            <a key={link.href} href={`/${link.href}`} onClick={closeMenu} className={menuLinkClass}>
               {link.label}
             </a>
           ))}
-          <a href="/projects" className={menuLinkClass}>
+          <Link to="/projects" onClick={closeMenu} className={menuLinkClass}>
             Projects
-          </a>
-          <a href="/catalog" className={menuLinkClass}>
+          </Link>
+          <Link to="/catalog" onClick={closeMenu} className={menuLinkClass}>
             Catalog
-          </a>
+          </Link>
           <button type="button" onClick={openBrandsFromMenu} className={menuLinkClass}>
             Brands
           </button>
@@ -134,7 +153,8 @@ export default function Nav() {
       </div>
 
       <BrandsPanel open={brandsOpen} onClose={() => setBrandsOpen(false)} />
-      <EnquirePopover open={enquireOpen} onClose={() => setEnquireOpen(false)} />
+      <EnquirePopover open={enquireOpen} onClose={() => setEnquireOpen(false)} onRequestConsultation={openConsultationFromEnquire} />
+      <ConsultationModal open={consultationOpen} onClose={() => setConsultationOpen(false)} context={{ source: 'enquire' }} />
     </>
   )
 }

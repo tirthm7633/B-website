@@ -2,11 +2,12 @@ import gsap from 'gsap'
 import { useEffect, useRef } from 'react'
 import { contact } from '../data/content'
 import { prefersReducedMotion } from '../lib/usePrefersReducedMotion'
-import { DirectionsIcon, PhoneIcon, WhatsAppIcon } from './ActionIcons'
+import { CalendarIcon, DirectionsIcon, PhoneIcon, WhatsAppIcon } from './ActionIcons'
 
 interface EnquirePopoverProps {
   open: boolean
   onClose: () => void
+  onRequestConsultation: () => void
 }
 
 /**
@@ -17,7 +18,7 @@ interface EnquirePopoverProps {
  * button left in the navbar row to hang a dropdown off since the menu
  * became the only way to reach it.
  */
-export default function EnquirePopover({ open, onClose }: EnquirePopoverProps) {
+export default function EnquirePopover({ open, onClose, onRequestConsultation }: EnquirePopoverProps) {
   const panelRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
   const closeBtnRef = useRef<HTMLButtonElement>(null)
@@ -149,6 +150,11 @@ export default function EnquirePopover({ open, onClose }: EnquirePopoverProps) {
             <DirectionsIcon className="h-4 w-4" />
             Directions
           </a>
+          <span className="block h-px bg-line" aria-hidden="true" />
+          <button type="button" onClick={onRequestConsultation} className={rowClass}>
+            <CalendarIcon className="h-4 w-4" />
+            Request a Consultation
+          </button>
         </div>
       </div>
     </div>

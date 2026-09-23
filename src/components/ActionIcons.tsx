@@ -33,3 +33,13 @@ export function DirectionsIcon({ className = 'h-4 w-4' }: { className?: string }
     </svg>
   )
 }
+
+export function CalendarIcon({ className = 'h-4 w-4' }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className={className} aria-hidden="true">
+      <rect x="4" y="5.5" width="16" height="15" rx="1.5" />
+      <path strokeLinecap="round" d="M8 3.5v4M16 3.5v4M4 10h16" />
+      <path strokeLinecap="round" d="M9 14.2l1.8 1.8L15.2 12" />
+    </svg>
+  )
+}

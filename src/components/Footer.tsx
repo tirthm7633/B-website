@@ -15,8 +15,12 @@ export default function Footer() {
           <ul className="mt-4 space-y-2">
             {footer.quickLinks.map((link) => (
               <li key={link.href}>
+                {/* Absolute path (not a bare "#hash"): Footer now renders
+                    on every page (see App.tsx), and a bare hash would just
+                    tack onto the current URL instead of navigating home
+                    first when clicked from e.g. /projects. */}
                 <a
-                  href={link.href}
+                  href={`/${link.href}`}
                   className="text-[0.7rem] tracking-[0.15em] text-muted uppercase transition-colors hover:text-text"
                 >
                   {link.label}

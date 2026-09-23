@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="cg-sft978" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0c0f13"/>
+      <stop offset="100%" stop-color="#050607"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#cg-sft978)"/>
+  <rect x="1" y="1" width="798" height="598" fill="none" stroke="#2a313b" stroke-width="2"/>
+  <g transform="translate(382, 220) scale(1.5)" opacity="0.55">
+    <path d="M6 3h9l3 3v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zM14 3v4h4" fill="none" stroke="#7fa3c7" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <text x="400" y="324" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" letter-spacing="3" fill="#8a929c">VITRA</text>
+  <foreignObject x="80" y="340" width="640" height="90">
+    <div xmlns="http://www.w3.org/1999/xhtml" style="font-family: Georgia, 'Times New Roman', serif; font-size: 24px; color: #e8ecf1; text-align: center; line-height: 1.25;">Bathroom Collections 2025 (India)</div>
+  </foreignObject>
+</svg>
