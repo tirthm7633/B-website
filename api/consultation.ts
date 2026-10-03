@@ -9,12 +9,14 @@
 // should never block someone from getting their catalog download or
 // WhatsApp confirmation.
 //
-// Uses the Web-standard Request/Response signature Vercel Node functions
-// support, so this needs no extra dependency (no @vercel/node types) —
-// this file lives outside tsconfig.app.json's "src" include, so it isn't
-// part of the Vite app's own type-check/build either; Vercel compiles it
-// independently at deploy time.
-import { CONSULTATION_EMAIL } from '../src/data/consultation-config'
+// Uses a named POST export (the Web-standard Request/Response shape Vercel
+// supports; a default export would be called as (req, res) instead, and any
+// other method gets an automatic 405) so this needs no extra dependency.
+// This file lives outside tsconfig.app.json's "src" include, so it isn't
+// part of the Vite app's own type-check/build; Vercel compiles it
+// independently at deploy time. package.json is "type": "module", so the
+// relative import below needs its .js extension to resolve at runtime.
+import { CONSULTATION_EMAIL } from '../src/data/consultation-config.js'
 
 interface ConsultationPayload {
   name: string
@@ -27,11 +29,7 @@ interface ConsultationPayload {
   timestamp: string
 }
 
-export default async function handler(request: Request): Promise<Response> {
-  if (request.method !== 'POST') {
-    return new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405 })
-  }
-
+export async function POST(request: Request): Promise<Response> {
   const apiKey = process.env.RESEND_API_KEY
   if (!apiKey) {
     console.warn('[api/consultation] RESEND_API_KEY is not set in this environment — skipping email send.')
