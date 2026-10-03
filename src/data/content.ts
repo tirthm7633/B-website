@@ -471,7 +471,7 @@ export const whyUs = {
     {
       icon: 'shield',
       title: 'Authorized Dealer',
-      desc: 'We carry genuine products from Grohe, Vitra, Geberit and other global brands — not imitations.',
+      desc: 'We carry premium products from Grohe, Vitra, Geberit and other global brands, bringing world-class design to Rajkot.',
     },
     {
       icon: 'home',
