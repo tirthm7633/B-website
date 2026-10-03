@@ -17,15 +17,16 @@ public/catalogs/
   grohe/
     faucets-shower-systems-2026.pdf
     kitchen-taps-sinks.pdf
-  hansgrohe/
+  hansgrohe-x-axor/
     ...
   vitra/
     ...
 ```
 
-The 11 brand slugs in use elsewhere on the site: `grohe`, `hansgrohe`,
-`axor`, `geberit`, `vitra`, `oyster`, `qutone`, `nexion`, `dimore`,
-`mcm-ittim`, `verantes-living`.
+The 10 brand slugs in use elsewhere on the site: `grohe`,
+`hansgrohe-x-axor` (Hansgrohe and Axor are one merged brand — put Axor
+catalogs here too), `geberit`, `vitra`, `oyster`, `qutone`, `nexion`,
+`dimore`, `mcm-ittim`, `verantes-living`.
 
 ## File naming
 

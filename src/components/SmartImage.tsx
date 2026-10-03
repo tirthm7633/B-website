@@ -27,7 +27,9 @@ export default function SmartImage({
 }: SmartImageProps) {
   const [errored, setErrored] = useState(false)
 
-  if (errored) {
+  // An empty src is a deliberate "no photo yet" slot — same dark placeholder
+  // as a failed load, without ever requesting a bogus URL.
+  if (!src || errored) {
     return (
       <div role="img" aria-label={alt} className={`relative overflow-hidden bg-surface ${className}`}>
         <div

@@ -129,14 +129,20 @@ export default function Nav() {
         style={{ clipPath: 'inset(0 0 100% 0)' }}
       >
         <div ref={linksRef} className="flex flex-col items-center gap-7">
-          {navLinks.map((link) => (
-            // Absolute path (not a bare "#hash") so this still navigates
-            // home first when clicked from a different page like /projects
-            // — a bare hash would just tack onto the current URL instead.
-            <a key={link.href} href={`/${link.href}`} onClick={closeMenu} className={menuLinkClass}>
-              {link.label}
-            </a>
-          ))}
+          {navLinks.map((link) =>
+            link.to ? (
+              <Link key={link.to} to={link.to} onClick={closeMenu} className={menuLinkClass}>
+                {link.label}
+              </Link>
+            ) : (
+              // Absolute path (not a bare "#hash") so this still navigates
+              // home first when clicked from a different page like /projects
+              // — a bare hash would just tack onto the current URL instead.
+              <a key={link.href} href={`/${link.href}`} onClick={closeMenu} className={menuLinkClass}>
+                {link.label}
+              </a>
+            ),
+          )}
           <Link to="/projects" onClick={closeMenu} className={menuLinkClass}>
             Projects
           </Link>

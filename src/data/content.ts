@@ -8,28 +8,24 @@
  * at the path shown and it appears automatically; if a file is missing,
  * components fall back to a dark textured gradient (see SmartImage.tsx).
  *
- *   /public/images/hero-showroom.jpg        Hero, full-bleed background.
- *                                            Currently: the Grohe "Colours —
- *                                            Shades of Luxury" shower display
- *                                            (navy + gold, editorial).
- *   /public/images/about-showroom.jpg       About section, portrait frame.
- *                                            Currently: gold-fitting bath with
- *                                            floral tile floor (portrait).
- *   /public/images/category-sanitaryware.jpg  Categories — Sanitaryware & Bath
- *                                            Fittings card. Currently: Axor
- *                                            basin mixer display.
- *   /public/images/category-tiles.jpg       Categories — Tiles & Surfaces
- *                                            card. Currently: Nexion tile wall.
- *   /public/images/category-kitchen.jpg     Categories — Modular Kitchen card.
- *                                            Currently: walnut-tone kitchen
- *                                            ("5000+ Shades of Stainless
- *                                            Sophistication").
- *   /public/images/category-wellness.jpg    Categories — Wellness card.
- *                                            Currently: Oyster spa tub display.
- *   /public/images/category-furniture.jpg   Categories — Imported Furniture
- *                                            card. TODO: no furniture photo
- *                                            supplied yet — renders a dark
- *                                            textured placeholder until added.
+ *   /public/images/homepage/hero-living-room.webp
+ *                                           Hero, full-bleed background.
+ *                                            Currently: bright living room with
+ *                                            a curved sofa (from the 2026
+ *                                            product brochure).
+ *   (About image — no file yet)             About section, portrait 3:4 frame.
+ *                                            Currently: dark placeholder; set
+ *                                            `about.image.src` when a non-
+ *                                            showroom photo is available.
+ *   /public/images/homepage/category-sanitaryware.webp
+ *   /public/images/homepage/category-tiles.webp
+ *   /public/images/homepage/category-kitchen.webp
+ *   /public/images/homepage/category-wellness.webp
+ *   /public/images/homepage/category-furniture.webp
+ *                                           Categories — one photo per card
+ *                                            (all from the 2026 product
+ *                                            brochure; see the comment above
+ *                                            `hero` below).
  *   /public/images/gallery-1.jpg .. -4.jpg  Gallery editorial grid (files are
  *                                            numbered by copy order; display
  *                                            order is set in `gallery.images`
@@ -40,9 +36,10 @@
  *                                            Dimore tile wall, navy modular
  *                                            kitchen. Add more by extending
  *                                            the `gallery.images` array.
- *   /public/images/visit-exterior.jpg       Visit Us section, beside the
- *                                            address. Currently: the real
- *                                            Buildcon House storefront.
+ *   /public/images/homepage/visit-storefront-night.webp
+ *                                           Visit Us section, beside the
+ *                                            address. Currently: the brochure's
+ *                                            night view of the storefront.
  *   /public/images/logo.png                 Navbar / preloader / footer
  *                                            logo. Missing on purpose — see
  *                                            `site.logo` below.
@@ -115,10 +112,10 @@ export const contact = {
   // TODO: add real latitude/longitude for more precise JSON-LD geo data.
   geo: { lat: 22.2841, lng: 70.7476 },
   exteriorImage: {
-    src: '/images/visit-exterior.jpg',
-    // Photo is a native 4:3 (1600x1200) — the Contact section frames it at
-    // the same ratio, so it renders uncropped; centering is just a safe default.
-    alt: 'Buildcon House storefront on 150 Feet Ring Road, Rajkot',
+    src: '/images/homepage/visit-storefront-night.webp',
+    // Native 1427x1102 (~4:3) — the Contact section frames it at 4:3, so it
+    // is barely cropped; centering is just a safe default.
+    alt: 'Night view of the Buildcon House storefront with its brand signage',
     objectPosition: 'center',
   } as ImageSlot,
 }
@@ -126,13 +123,31 @@ export const contact = {
 // "Brands" is intentionally not a plain anchor link here — it opens the
 // BrandsPanel overlay instead (see components/Nav.tsx and BrandsPanel.tsx),
 // so it's wired up separately from this scroll-to-section list.
-export const nav = [
+// An entry with `href` scrolls to a section of the homepage; one with `to` is a
+// separate page. Gallery is the full /gallery page — the homepage section is
+// just a preview of it.
+export const nav: { label: string; href?: string; to?: string }[] = [
   { label: 'Categories', href: '#categories' },
   { label: 'Why Us', href: '#why-us' },
-  { label: 'Gallery', href: '#gallery' },
+  { label: 'Gallery', to: '/gallery' },
   { label: 'Visit Us', href: '#contact' },
 ]
 
+// HOMEPAGE PHOTOS FROM THE 2026 PRODUCT BROCHURE (/public/images/homepage/).
+// No real showroom photo is used anywhere on the homepage except the Gallery
+// section, which is intentionally untouched (showroom photos go there later).
+//   Hero ............... p24 living room ("10 / IMPORTED FURNITURE" slide)
+//   Imported Furniture . p3 living room (the brochure's About slide photo)
+//   Modular Kitchen .... p6 kitchen ("01 / KITCHENS")
+//   Sanitaryware ....... p8 bathroom ("02 / BATHROOM PRODUCTS")
+//   Tiles & Surfaces ... p22 stone-look floor ("09 / TILES AND SURFACES")
+//   Wellness ........... p10 whirlpool spa bath
+//   Visit Us ........... p26 night view of the storefront (looks like a render)
+//   About .............. EMPTY (dark placeholder) — every non-brand photo is used.
+// The kitchen, bathroom, tiles and wellness photos come from slides that also
+// carry a brand logo (Verantes Living, Grohe, Nexion, Oyster), so the same
+// pictures are in those brands' galleries too. Each photo also has a
+// `-preview.webp` (small, for light placements).
 export const hero = {
   eyebrow: 'Premium Living Showroom · Rajkot',
   headline: 'Let you live better',
@@ -141,9 +156,9 @@ export const hero = {
   primaryCta: { label: 'Visit Showroom', href: '#contact' },
   secondaryCta: { label: 'WhatsApp Us', href: contact.whatsappHref },
   image: {
-    src: '/images/hero-showroom.jpg',
-    alt: 'Grohe Colours shower display at Buildcon House, shades of luxury in navy and gold',
-    objectPosition: 'center 60%',
+    src: '/images/homepage/hero-living-room.webp',
+    alt: 'Bright living room with a curved sofa, armchairs and a round coffee table beside a large window',
+    objectPosition: 'center 55%',
   } as ImageSlot,
 }
 
@@ -158,21 +173,31 @@ export const about = {
   // because this object is declared before the `brands` array below —
   // update it manually whenever a brand is added or removed.
   stats: [
-    { value: 11, suffix: '+', label: 'Global Brands' },
+    { value: 10, suffix: '+', label: 'Global Brands' },
     { value: 5, suffix: '', label: 'Categories' },
     { value: 1, suffix: '', label: 'Showroom in Rajkot' },
     { value: 15, suffix: '+', label: 'Years of Trust' }, // TODO: verify years in business
   ],
   image: {
-    src: '/images/about-showroom.jpg',
-    alt: 'Gold bath fittings with a hand-painted floral tile floor at Buildcon House',
+    // No non-showroom photo left for this slot (the brochure's three
+    // non-brand photos went to the Hero, Imported Furniture card and Visit
+    // Us). An empty src renders SmartImage's dark placeholder.
+    src: '',
+    alt: 'Buildcon House showroom',
     objectPosition: 'center 30%',
   } as ImageSlot,
 }
 
+export type CategoryName =
+  | 'Sanitaryware & Bath Fittings'
+  | 'Tiles & Surfaces'
+  | 'Modular Kitchen'
+  | 'Wellness'
+  | 'Imported Furniture'
+
 export type Category = {
   slug: string
-  name: string
+  name: CategoryName
   description: string
   image: ImageSlot
 }
@@ -183,9 +208,10 @@ export const categories: Category[] = [
     name: 'Sanitaryware & Bath Fittings',
     description: 'Faucets, showers, basins, toilets and bathroom accessories from the world’s finest names.',
     image: {
-      src: '/images/category-sanitaryware.jpg',
-      alt: 'Axor basin mixer display at Buildcon House',
-      objectPosition: 'center 35%',
+      // Brochure slide "02 / BATHROOM PRODUCTS" (1296x972, landscape cropped to the 3:4 card).
+      src: '/images/homepage/category-sanitaryware.webp',
+      alt: 'Grey-tiled bathroom with a wall-mounted shower set, hand shower and basin mixer',
+      objectPosition: '38% center',
     },
   },
   {
@@ -193,9 +219,10 @@ export const categories: Category[] = [
     name: 'Tiles & Surfaces',
     description: 'Floor, wall and premium designer tiles for every space and style.',
     image: {
-      src: '/images/category-tiles.jpg',
-      alt: 'Nexion designer tile wall display at Buildcon House',
-      objectPosition: 'center 40%',
+      // Brochure slide "09 / TILES AND SURFACES" (830x1126, already near 3:4).
+      src: '/images/homepage/category-tiles.webp',
+      alt: 'Stone-look floor tiles seen from above with two chairs',
+      objectPosition: 'center',
     },
   },
   {
@@ -203,9 +230,10 @@ export const categories: Category[] = [
     name: 'Modular Kitchen',
     description: 'Custom cabinetry, premium finishes and fittings built around how you live.',
     image: {
-      src: '/images/category-kitchen.jpg',
-      alt: 'Walnut-finish modular kitchen display at Buildcon House',
-      objectPosition: 'center 45%',
+      // Brochure slide "01 / KITCHENS" (1280x1600 after processing).
+      src: '/images/homepage/category-kitchen.webp',
+      alt: 'Modular kitchen with timber-toned shutters, a long island and dining area',
+      objectPosition: 'center 55%',
     },
   },
   {
@@ -213,9 +241,11 @@ export const categories: Category[] = [
     name: 'Wellness',
     description: 'Steam, spa and premium bathing experiences for everyday renewal.',
     image: {
-      src: '/images/category-wellness.jpg',
-      alt: 'Oyster spa bathing display at Buildcon House',
-      objectPosition: 'center 30%',
+      // Brochure slide "03 / BATHROOM PRODUCTS", but the photo is a whirlpool
+      // spa bath, so it sits on the Wellness card (1200x1200, square cropped to 3:4).
+      src: '/images/homepage/category-wellness.webp',
+      alt: 'Whirlpool bath with lit hydro-massage jets on a timber deck',
+      objectPosition: 'center 60%',
     },
   },
   {
@@ -223,9 +253,9 @@ export const categories: Category[] = [
     name: 'Imported Furniture',
     description: 'Luxury living and lifestyle pieces, imported and curated for discerning homes.',
     image: {
-      // TODO: no furniture photo supplied yet — replace once available.
-      src: '/images/category-furniture.jpg',
-      alt: 'Imported furniture at Buildcon House',
+      // Wide (1260x560) source cropped to the 3:4 card, centred on the sofa.
+      src: '/images/homepage/category-furniture.webp',
+      alt: 'Living space with a curved sofa, lounge chair and round coffee table by a large window',
       objectPosition: 'center',
     },
   },
@@ -244,14 +274,21 @@ export type Brand = {
   // "steel" (#1B222B) is available for a busy multi-colour logo that needs
   // a neutral, less stark surface. Defaults to "light" when omitted.
   plate?: 'light' | 'dark' | 'steel'
-  categories: string[]
+  // The one category this brand is listed under in the grouped Brands panel
+  // and Catalog page (see lib/brandGroups.ts). Must be a CategoryName.
+  category: CategoryName
   verified: boolean
   note?: string
 }
 
-// Categories researched to the best of available knowledge. Entries marked
-// verified: false are best-effort guesses — please confirm with the actual
-// brand agreements Buildcon House holds.
+// Each brand's `category` is the client-provided grouping used by the Brands
+// panel and the Catalog page: Sanitaryware & Bath Fittings (Grohe, Hansgrohe
+// x Axor, Geberit, Vitra), Tiles & Surfaces (Qutone, Nexion, Dimore, MCM
+// Ittim), Wellness (Oyster), Modular Kitchen (Verantes Living). Imported
+// Furniture currently has no brands and shows a "coming soon" line. Brands
+// within a category follow this array's order. Entries marked verified:
+// false still need confirming against the actual brand agreements
+// Buildcon House holds.
 //
 // LOGO AUDIT, round 3 (scripts/crop-brand-logos.cjs + audit-brand-logos.cjs):
 // every raster file is gently auto-trimmed to its real content bounding box
@@ -262,9 +299,8 @@ export type Brand = {
 // scaled up by plain CSS in the tile (object-fit: contain at a fixed
 // 88%/72% box — see components/BrandLogo.tsx) rather than left tiny. The
 // bold text fallback is reserved strictly for brands with no file at all:
-// hansgrohe.png and qutone.png (both were unusable crops missing letters)
-// and mcm-ittim.png (mixed the real mark with unrelated pattern-swatch
-// artwork) — see the README for details.
+// currently only mcm-ittim.png (the supplied file mixed the real mark with
+// unrelated pattern-swatch artwork) — see the README for details.
 //
 // Each `plate` below is the higher-contrast choice between the two plate
 // colours for that specific file's measured average luminance (recomputed
@@ -277,24 +313,23 @@ export const brands: Brand[] = [
     // Avg luminance 0.38 (navy box majority) — contrast is 7.8:1 on the
     // dark plate vs 2.1:1 on light.
     plate: 'dark',
-    categories: ['Sanitaryware & Bath Fittings'],
+    category: 'Sanitaryware & Bath Fittings',
     verified: true,
     note: 'German premium faucets, showers and bath fittings brand.',
   },
   {
-    name: 'Hansgrohe',
-    logo: '/images/brands/hansgrohe.png',
-    categories: ['Sanitaryware & Bath Fittings'],
+    // Hansgrohe and Axor are one brand group (Axor is Hansgrohe's designer
+    // fittings label), shown as a single brand. The name uses a plain
+    // lowercase "x" on purpose: brandSlug() turns it into the ASCII slug
+    // "hansgrohe-x-axor" used for the catalog route and folders.
+    name: 'Hansgrohe x Axor',
+    logo: '/images/brands/hansgrohe-x-axor.png',
+    // Avg luminance 0.80 (white background) — contrast is 15.5:1 on the
+    // dark plate vs 1.1:1 on light.
+    plate: 'dark',
+    category: 'Sanitaryware & Bath Fittings',
     verified: true,
-    note: 'German premium showers and faucets brand.',
-  },
-  {
-    name: 'Axor',
-    logo: '/images/brands/axor.png',
-    // Avg luminance 0.04 (black box) — contrast is 10.4:1 on the light plate.
-    categories: ['Sanitaryware & Bath Fittings'],
-    verified: true,
-    note: "Hansgrohe's designer fittings label.",
+    note: 'German premium showers and faucets (Hansgrohe) together with its designer fittings label, Axor.',
   },
   {
     // Confirmed by the client's own logo file: the brand is "Geberit"
@@ -307,7 +342,7 @@ export const brands: Brand[] = [
     // Avg luminance 0.77 (white background) — contrast is 15.1:1 on the
     // dark plate vs 1.1:1 on light.
     plate: 'dark',
-    categories: ['Sanitaryware & Bath Fittings'],
+    category: 'Sanitaryware & Bath Fittings',
     verified: true,
     note: 'Swiss sanitary systems brand (concealed cisterns & flush plates).',
   },
@@ -317,7 +352,7 @@ export const brands: Brand[] = [
     // Avg luminance 0.92 (thin grey wordmark on near-white) — contrast is
     // 17.8:1 on the dark plate vs 1.1:1 on light.
     plate: 'dark',
-    categories: ['Sanitaryware & Bath Fittings'],
+    category: 'Sanitaryware & Bath Fittings',
     verified: false,
     // TODO: confirm this refers to Vitra Bathrooms (Eczacıbaşı, Turkey) and
     // not the unrelated Swiss furniture brand "Vitra" — names collide.
@@ -326,17 +361,20 @@ export const brands: Brand[] = [
   {
     name: 'Qutone',
     logo: '/images/brands/qutone.png',
-    categories: ['Tiles & Surfaces'],
+    // Avg luminance 0.41 (solid teal block, white wordmark) — contrast is
+    // 8.4:1 on the dark plate vs 2.0:1 on light.
+    plate: 'dark',
+    category: 'Tiles & Surfaces',
     verified: true,
-    // TODO: the supplied qutone.png crop clips the "Q" and "NE" — swap in
-    // an uncropped export when available.
-    note: 'Indian designer tiles brand. TODO: source logo file is cropped — replace with a full export.',
+    note: 'Indian designer tiles brand.',
   },
   {
     name: 'Nexion',
     logo: '/images/brands/nexion.png',
-    // Avg luminance 0.11 (black box) — contrast is 5.8:1 on the light plate.
-    categories: ['Tiles & Surfaces'],
+    // Avg luminance 0.12 (black block, white wordmark) — contrast is 5.3:1
+    // on the light plate vs 3.1:1 on dark.
+    plate: 'light',
+    category: 'Tiles & Surfaces',
     verified: false,
     note: 'TODO: verify brand details and category fit.',
   },
@@ -344,7 +382,7 @@ export const brands: Brand[] = [
     name: 'Oyster',
     logo: '/images/brands/oyster.png',
     // Avg luminance 0.10 (black box) — contrast is 6.1:1 on the light plate.
-    categories: ['Wellness', 'Sanitaryware & Bath Fittings'],
+    category: 'Wellness',
     verified: false,
     note: 'TODO: verify — likely Oyster shower enclosures / steam & wellness range.',
   },
@@ -352,7 +390,7 @@ export const brands: Brand[] = [
     name: 'Dimore',
     logo: '/images/brands/dimore.png',
     // Avg luminance 0.11 (maroon box) — contrast is 5.6:1 on the light plate.
-    categories: ['Imported Furniture'],
+    category: 'Tiles & Surfaces',
     verified: false,
     note: 'TODO: verify brand details and category fit.',
   },
@@ -363,7 +401,7 @@ export const brands: Brand[] = [
     // large block of unrelated decorative pattern swatches, and its tall
     // (399x501) aspect made it render tiny inside the wide tile.
     // Text fallback shows until a clean, logo-only export is supplied.
-    categories: ['Imported Furniture'],
+    category: 'Tiles & Surfaces',
     verified: false,
     note: 'TODO: verify exact brand name, spelling and category fit. Needs a clean logo-only file (see README).',
   },
@@ -373,62 +411,16 @@ export const brands: Brand[] = [
     // Avg luminance 0.90 (white background, gold mark) — contrast is
     // 17.4:1 on the dark plate vs 1.1:1 on light.
     plate: 'dark',
-    // TODO: client to confirm which categories Verantes Living belongs to.
-    // Showing a placeholder label until then, per client instruction.
-    categories: ['Living'],
+    category: 'Modular Kitchen',
     verified: false,
-    note: 'TODO: confirm category fit — placeholder label "Living" shown until client confirms.',
+    note: 'Listed under Modular Kitchen per the client\'s category mapping.',
   },
 ]
 
 export const trustedByFinest = {
   label: 'Our Partners',
-  headline: 'Brands we bring together, architects we build with',
+  headline: 'Brands we bring together',
 }
-
-export type Architect = {
-  name: string
-  firm: string
-  // Path under /public/images/architects. If missing or unreadable, a
-  // placeholder circle (initials monogram on a steel-blue gradient) renders
-  // instead automatically — see components/ArchitectPhoto.tsx.
-  photo: string
-  quote?: string
-}
-
-/**
- * PLACEHOLDER DATA — every name and firm below is a fake placeholder, not a
- * real person. Replace them with real architects/designers Buildcon House
- * partners with before this goes live.
- *
- * To add a person: add one object to this array — { name, firm, photo }.
- * No other code changes are needed; the two-row layout in TrustedByFinest
- * automatically re-splits and re-flows for any number of entries (tested
- * with 30+).
- *
- * To add a real photo: drop a square image (at least 600px, face centred)
- * at the exact path named in `photo` below — see
- * public/images/architects/README.md for the full naming list. Only add a
- * real person's photo with their explicit permission.
- */
-export const architects: Architect[] = [
-  { name: 'Aarav Mehta', firm: 'Mehta Design Studio, Rajkot', photo: '/images/architects/architect-01.jpg' },
-  { name: 'Riya Shah', firm: 'Shah & Associates, Rajkot', photo: '/images/architects/architect-02.jpg' },
-  { name: 'Kabir Desai', firm: 'Desai Architects, Ahmedabad', photo: '/images/architects/architect-03.jpg' },
-  { name: 'Ishita Patel', firm: 'Studio Patel, Surat', photo: '/images/architects/architect-04.jpg' },
-  { name: 'Vihaan Joshi', firm: 'Joshi Design Co., Rajkot', photo: '/images/architects/architect-05.jpg' },
-  { name: 'Anaya Trivedi', firm: 'Trivedi Atelier, Vadodara', photo: '/images/architects/architect-06.jpg' },
-  { name: 'Rohan Vyas', firm: 'Vyas Interiors, Rajkot', photo: '/images/architects/architect-07.jpg' },
-  { name: 'Diya Bhatt', firm: 'Bhatt Studio, Gandhinagar', photo: '/images/architects/architect-08.jpg' },
-  { name: 'Arjun Pandya', firm: 'Pandya Associates, Rajkot', photo: '/images/architects/architect-09.jpg' },
-  { name: 'Meera Kotecha', firm: 'Kotecha Design, Jamnagar', photo: '/images/architects/architect-10.jpg' },
-  { name: 'Yash Raval', firm: 'Raval Architects, Rajkot', photo: '/images/architects/architect-11.jpg' },
-  { name: 'Nisha Parekh', firm: 'Parekh Studio, Rajkot', photo: '/images/architects/architect-12.jpg' },
-  { name: 'Dev Antani', firm: 'Antani & Co., Junagadh', photo: '/images/architects/architect-13.jpg' },
-  { name: 'Sara Chauhan', firm: 'Chauhan Design House, Bhavnagar', photo: '/images/architects/architect-14.jpg' },
-  { name: 'Om Gohil', firm: 'Gohil Architects, Rajkot', photo: '/images/architects/architect-15.jpg' },
-  { name: 'Tara Solanki', firm: 'Solanki Studio, Ahmedabad', photo: '/images/architects/architect-16.jpg' },
-]
 
 export type ProcessStep = {
   num: string
@@ -446,20 +438,55 @@ export const whyUs = {
   ] as ProcessStep[],
 }
 
+export type GalleryPhoto = ImageSlot & {
+  /** Smaller (<=960px) copy for grid tiles; `src` is the full photo the viewer opens. */
+  preview: string
+  /** Real pixel size of `src` — tiles reserve their space from this, so nothing shifts as images load. */
+  width: number
+  height: number
+  /** Shown in the homepage preview row (see components/sections/Gallery.tsx). */
+  featured?: boolean
+}
+
 export const gallery = {
+  // Homepage preview section
   eyebrow: 'Showroom',
   heading: 'Step inside Buildcon House',
   body: 'A look at our Rajkot showroom floor.',
-  // Order matters here: Gallery.tsx cycles a 4-slot pattern of portrait,
-  // portrait, portrait, landscape frames, so portrait-shot photos are
-  // listed first and the one landscape photo (gallery-1, native 16:9) is
-  // listed last to land in the landscape slot without a heavy crop.
+  cta: { label: 'View Full Gallery', to: '/gallery' },
+  // Full /gallery page
+  page: {
+    eyebrow: 'Showroom',
+    heading: 'Our Showroom',
+    body: 'Walk through our Rajkot showroom floor — displays for bathrooms, kitchens, tiles and surfaces.',
+  },
+  // Every photo, in the order the /gallery page and its viewer show them. That order was
+  // searched for so the page's masonry columns end up as even as these photo shapes allow
+  // (2 columns: within ~0.03 column-widths; 3 columns: within one landscape photo, the best
+  // possible with 11 portrait + 5 landscape) — re-balance it if photos are added. The four marked
+  // `featured` (all portrait, picked for composition, lighting and a different subject each:
+  // showroom floor, bathroom, tile wall, basin-mixer display) are the homepage preview, in
+  // this order. Their objectPosition steers the 2:3 centre-crop of the 9:16 originals.
+  // The full page shows every photo uncropped at its own aspect ratio. Note gallery-2 / gallery-16
+  // (same Vitra display) and gallery-4 / gallery-10 (same corridor) are near-duplicates.
   images: [
-    { src: '/images/gallery-2.jpg', alt: 'Vitra ceramics wall — Equal and Metropole collections' },
-    { src: '/images/gallery-3.jpg', alt: 'Matte black shower and wall-hung toilet display' },
-    { src: '/images/gallery-4.jpg', alt: 'Dimore tile wall with curated art at Buildcon House' },
-    { src: '/images/gallery-1.jpg', alt: 'Navy-finish modular kitchen display at Buildcon House' },
-  ] as ImageSlot[],
+    { src: '/images/gallery-4.jpg', preview: '/images/gallery-4-preview.jpg', width: 900, height: 1600, alt: 'Dimore tile wall with curated art at Buildcon House', objectPosition: 'center 50%', featured: true },
+    { src: '/images/gallery-1.jpg', preview: '/images/gallery-1-preview.jpg', width: 1280, height: 720, alt: 'Navy-finish modular kitchen display at Buildcon House' },
+    { src: '/images/gallery/gallery-07.jpg', preview: '/images/gallery/gallery-07-preview.jpg', width: 720, height: 1280, alt: 'Tile sample racks and sliding display panels beneath a Dimore sign' },
+    { src: '/images/gallery/gallery-15.jpg', preview: '/images/gallery/gallery-15-preview.jpg', width: 720, height: 1280, alt: 'Axor shower display with a rain shower and thermostatic controls in a dark enclosure' },
+    { src: '/images/gallery/gallery-08.jpg', preview: '/images/gallery/gallery-08-preview.jpg', width: 1280, height: 720, alt: 'Dark modular kitchen display with a marble island and pendant lights' },
+    { src: '/images/gallery-3.jpg', preview: '/images/gallery-3-preview.jpg', width: 720, height: 1280, alt: 'Matte black shower and wall-hung toilet display', objectPosition: 'center 25%', featured: true },
+    { src: '/images/gallery/gallery-11.jpg', preview: '/images/gallery/gallery-11-preview.jpg', width: 720, height: 1280, alt: 'Rows of large-format tile slabs on display racks under a Dimore sign' },
+    { src: '/images/gallery/gallery-10.jpg', preview: '/images/gallery/gallery-10-preview.jpg', width: 900, height: 1600, alt: 'Showroom floor with tile display boards, wall art and a meeting table' },
+    { src: '/images/gallery/gallery-09.jpg', preview: '/images/gallery/gallery-09-preview.jpg', width: 720, height: 1280, alt: 'Marble and stone slab display behind black pillar handles with a yellow vase of flowers' },
+    { src: '/images/gallery/gallery-06.jpg', preview: '/images/gallery/gallery-06-preview.jpg', width: 720, height: 1280, alt: 'Dimore display wall with round material swatches on hanging rails', objectPosition: 'center 40%', featured: true },
+    { src: '/images/gallery/gallery-13.jpg', preview: '/images/gallery/gallery-13-preview.jpg', width: 720, height: 1280, alt: 'Vitra bathroom display with a smart toilet graphic and basin shelves' },
+    { src: '/images/gallery-2.jpg', preview: '/images/gallery-2-preview.jpg', width: 1280, height: 720, alt: 'Vitra ceramics wall — Equal and Metropole collections' },
+    { src: '/images/gallery/gallery-05.jpg', preview: '/images/gallery/gallery-05-preview.jpg', width: 720, height: 1280, alt: 'Large-format tile display board beside a tall potted plant' },
+    { src: '/images/gallery/gallery-14.jpg', preview: '/images/gallery/gallery-14-preview.jpg', width: 720, height: 1280, alt: 'Axor basin mixer display with hand showers on a black stand', objectPosition: 'center 70%', featured: true },
+    { src: '/images/gallery/gallery-12.jpg', preview: '/images/gallery/gallery-12-preview.jpg', width: 1280, height: 720, alt: 'Bathroom display with a rain shower, hand shower and a bright partition, with plants overhead' },
+    { src: '/images/gallery/gallery-16.jpg', preview: '/images/gallery/gallery-16-preview.jpg', width: 1280, height: 720, alt: 'Vitra Equal and Metropole bathroom display with wall-hung toilets and washbasins' },
+  ] as GalleryPhoto[],
 }
 
 export const footer = {

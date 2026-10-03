@@ -15,6 +15,7 @@ import WhyUs from './components/sections/WhyUs'
 import { lenisRef, useSmoothScroll } from './lib/useSmoothScroll'
 import CatalogBrandPage from './pages/CatalogBrandPage'
 import CatalogPage from './pages/CatalogPage'
+import GalleryPage from './pages/GalleryPage'
 import ProjectDetailPage from './pages/ProjectDetailPage'
 import ProjectsPage from './pages/ProjectsPage'
 
@@ -91,6 +92,7 @@ function App() {
           <Route path="/projects/:id" element={<ProjectDetailPage />} />
           <Route path="/catalog" element={<CatalogPage />} />
           <Route path="/catalog/:brandSlug" element={<CatalogBrandPage />} />
+          <Route path="/gallery" element={<GalleryPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
         <Footer />

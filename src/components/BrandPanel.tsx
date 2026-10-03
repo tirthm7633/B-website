@@ -6,10 +6,10 @@ import Marquee from './Marquee'
 
 // Unprefixed (no responsive breakpoints): BrandPanel always renders at its
 // desktop size. At a real >=1280px viewport that's identical to before.
-// Below 1280px the whole composition (panel + both orbits) renders at this
-// same fixed size inside a canvas that gets uniformly scaled down instead
-// (see ScaledDesktopCanvas in TrustedByFinest) — so this must stay
-// constant, not shrink via its own breakpoint classes.
+// Below 1280px the panel renders at this same fixed size inside a canvas
+// that gets uniformly scaled down instead (see ScaledDesktopCanvas in
+// TrustedByFinest) — so this must stay constant, not shrink via its own
+// breakpoint classes.
 const PANEL_TILE = 'h-[118px] w-[250px]'
 const CENTERED_CLASS = 'brand-tile-centered'
 const JS_PAUSED_CLASS = 'marquee-js-paused'

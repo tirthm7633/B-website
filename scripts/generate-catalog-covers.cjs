@@ -50,7 +50,7 @@ const COVERS = [
   { out: 'qutone/qrock-collection.svg', brand: 'Qutone', title: 'Qrock Collection' },
   { out: 'qutone/texas-collection-triform-edition.svg', brand: 'Qutone', title: 'Texas Collection — Triform Edition' },
   { out: 'qutone/texas-collection-embark-edition.svg', brand: 'Qutone', title: 'Texas Collection — Embark Edition' },
-  { out: 'hansgrohe/news-2019-smart-living-showers-kitchen.svg', brand: 'Hansgrohe', title: 'hansgrohe News 2019' },
+  { out: 'hansgrohe-x-axor/news-2019-smart-living-showers-kitchen.svg', brand: 'Hansgrohe x Axor', title: 'hansgrohe News 2019' },
   { out: 'verantes-living/ferro-nova-kitchens.svg', brand: 'Verantes Living', title: 'Ferro Nova Kitchens' },
   { out: 'dimore/marmo-collection.svg', brand: 'Dimore', title: 'Marmo Collection' },
   { out: 'nexion/general-catalogue.svg', brand: 'Nexion', title: 'General Catalogue' },
@@ -70,8 +70,8 @@ const COVERS = [
   { out: 'qutone/solid-plus-technical-homogeneous-tiles.svg', brand: 'Qutone', title: 'Solid+ Technical Homogeneous Tiles' },
   { out: 'qutone/stoneware-collection-800x2400mm.svg', brand: 'Qutone', title: 'Stoneware Collection 800x2400mm' },
   { out: 'qutone/texas-collection-mansory-oslo-dune.svg', brand: 'Qutone', title: 'Texas Collection — Mansory Oslo/Dune' },
-  { out: 'hansgrohe/innovations-2021-journal.svg', brand: 'Hansgrohe', title: 'Innovations 2021 Journal' },
-  { out: 'hansgrohe/bathroom-sales-manual-2019.svg', brand: 'Hansgrohe', title: 'Bathroom Sales Manual 2019' },
+  { out: 'hansgrohe-x-axor/innovations-2021-journal.svg', brand: 'Hansgrohe x Axor', title: 'Innovations 2021 Journal' },
+  { out: 'hansgrohe-x-axor/bathroom-sales-manual-2019.svg', brand: 'Hansgrohe x Axor', title: 'Bathroom Sales Manual 2019' },
   { out: 'vitra/bathroom-collections-2023.svg', brand: 'Vitra', title: 'Bathroom Collections 2023' },
   { out: 'dimore/earth-to-essence-master-catalogue.svg', brand: 'Dimore', title: 'Earth To Essence Master Catalogue' },
   { out: 'dimore/midas-collection.svg', brand: 'Dimore', title: 'Midas Collection' },
@@ -79,6 +79,7 @@ const COVERS = [
   { out: 'dimore/omogenea-collection.svg', brand: 'Dimore', title: 'Omogenea Collection' },
   { out: 'dimore/roccia-collection.svg', brand: 'Dimore', title: 'Roccia Collection' },
   { out: 'oyster/bath-spa-collection-vol-1-8.svg', brand: 'Oyster', title: 'Bath Spa Collection Vol. 1.8' },
+  { out: 'mcm-ittim/mcm-flexi-cladding-catalogue-2026.svg', brand: 'MCM Ittim', title: 'MCM Flexi Cladding Catalogue 2026' },
 ];
 
 for (const cover of COVERS) {

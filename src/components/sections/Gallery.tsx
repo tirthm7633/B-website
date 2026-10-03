@@ -1,40 +1,18 @@
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { useEffect, useRef } from 'react'
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { gallery } from '../../data/content'
-import { prefersReducedMotion } from '../../lib/usePrefersReducedMotion'
+import Lightbox from '../projects/Lightbox'
 import SmartImage from '../SmartImage'
 
-gsap.registerPlugin(ScrollTrigger)
-
-// Repeats every 4 images to keep the grid feeling hand-laid-out rather than
-// a uniform tile wall, however many photos content.ts ends up listing.
-const PATTERN = [
-  { col: 'md:col-span-7', aspect: 'aspect-[4/5]' },
-  { col: 'md:col-span-5', aspect: 'aspect-[4/5]' },
-  { col: 'md:col-span-5', aspect: 'aspect-[3/4]' },
-  { col: 'md:col-span-7', aspect: 'aspect-[16/10]' },
-]
+// Homepage teaser: only the photos flagged `featured` in content.ts (all the
+// same orientation, so the row stays uniform). The full set lives on /gallery.
+const featured = gallery.images.filter((photo) => photo.featured)
 
 export default function Gallery() {
-  const sectionRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (prefersReducedMotion()) return
-    const ctx = gsap.context(() => {
-      gsap.utils.toArray<HTMLElement>('.gallery-media').forEach((el) => {
-        gsap.to(el, {
-          yPercent: -9,
-          ease: 'none',
-          scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: 1 },
-        })
-      })
-    }, sectionRef)
-    return () => ctx.revert()
-  }, [])
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
 
   return (
-    <section id="gallery" ref={sectionRef} className="border-t border-line px-6 py-32 md:px-12">
+    <section id="gallery" className="border-t border-line px-6 py-32 md:px-12">
       <div className="eyebrow mb-6 flex items-center gap-2">
         <span className="h-1 w-1 rounded-full bg-accent" />
         {gallery.eyebrow}
@@ -42,24 +20,43 @@ export default function Gallery() {
       <h2 className="max-w-2xl font-display text-3xl font-light md:text-5xl">{gallery.heading}</h2>
       <p className="mt-4 max-w-xl text-sm font-light text-muted">{gallery.body}</p>
 
-      <div className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-12">
-        {gallery.images.map((img, i) => {
-          const pattern = PATTERN[i % PATTERN.length]
-          return (
-            <div
-              key={img.src}
-              className={`relative overflow-hidden ${pattern.aspect} ${pattern.col}`}
-            >
-              <SmartImage
-                src={img.src}
-                alt={img.alt}
-                objectPosition={img.objectPosition}
-                className="gallery-media h-[120%] w-full"
-              />
-            </div>
-          )
-        })}
+      <div className="mt-16 grid grid-cols-2 gap-3 md:gap-6 lg:grid-cols-4">
+        {featured.map((photo, i) => (
+          <button
+            key={photo.src}
+            type="button"
+            onClick={() => setLightboxIndex(i)}
+            aria-label={`Enlarge photo: ${photo.alt}`}
+            className="group relative block aspect-[2/3] overflow-hidden"
+          >
+            <SmartImage
+              src={photo.preview}
+              alt={photo.alt}
+              objectPosition={photo.objectPosition}
+              className="h-full w-full transition-transform duration-700 group-hover:scale-[1.04]"
+            />
+          </button>
+        ))}
       </div>
+
+      <div className="mt-14 flex justify-center">
+        <Link
+          to={gallery.cta.to}
+          className="rounded-full border border-accent px-8 py-4 text-xs tracking-[0.2em] text-accent-bright uppercase transition-colors duration-500 hover:bg-accent hover:text-bg"
+        >
+          {gallery.cta.label}
+        </Link>
+      </div>
+
+      {lightboxIndex !== null && (
+        <Lightbox
+          images={featured.map((photo) => photo.src)}
+          index={lightboxIndex}
+          alt="Buildcon House showroom"
+          onClose={() => setLightboxIndex(null)}
+          onNavigate={setLightboxIndex}
+        />
+      )}
     </section>
   )
 }

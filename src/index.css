@@ -144,29 +144,6 @@ a {
   box-shadow: 0 0 0 1px var(--color-accent-bright), 0 8px 22px rgba(127, 163, 199, 0.3);
 }
 
-/* An orbit-line name/firm label whose circle is currently passing behind
-   the brand panel — hidden by default, shown on hover of that circle
-   (data-behind is set per-frame by OrbitField's GSAP ticker). */
-.orbit-label[data-behind='true'] {
-  opacity: 0;
-}
-.group:hover .orbit-label[data-behind='true'] {
-  opacity: 1;
-}
-
-/* On phones the firm name is always tucked away by default (there's little
-   room once the whole orbit composition is scaled down) — shown on tap
-   (:active) or hover of that circle. */
-@media (max-width: 767px) {
-  .orbit-firm {
-    opacity: 0;
-  }
-  .group:hover .orbit-firm,
-  .group:active .orbit-firm {
-    opacity: 1;
-  }
-}
-
 /* Soft fade at both edges of a contained (non-full-bleed) scrolling row. */
 .brand-panel-mask {
   -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);

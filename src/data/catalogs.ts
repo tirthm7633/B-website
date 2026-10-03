@@ -2,7 +2,7 @@ import type { ProjectCategory } from './projects'
 
 export interface Catalog {
   id: string
-  /** Must match one of the 11 brand names in src/data/content.ts exactly
+  /** Must match one of the 10 brand names in src/data/content.ts exactly
    * (see the `brands` array there) — the Catalog page groups entries by
    * this field. */
   brand: string
@@ -47,10 +47,11 @@ export function brandSlug(brand: string) {
  *
  * To add any NEW catalog (beyond what's below) later: open and read
  * the PDF to identify (1) which brand it belongs to — must match one of
- * the 11 brand names/slugs already used in src/data/content.ts for brand
- * logos: Grohe, Hansgrohe, Axor, Geberit, Vitra, Oyster, Qutone, Nexion,
- * Dimore, MCM Ittim, Verantes Living (Axor, Geberit and MCM Ittim
- * currently have zero catalogs at all); (2) a clear title based on its
+ * the 10 brand names/slugs already used in src/data/content.ts for brand
+ * logos: Grohe, Hansgrohe x Axor (one merged brand — Axor is Hansgrohe's
+ * designer label, so Axor catalogs belong here too), Geberit, Vitra, Oyster,
+ * Qutone, Nexion, Dimore, MCM Ittim, Verantes Living (Geberit currently has
+ * zero catalogs); (2) a clear title based on its
  * actual content; (3) which categories it covers based on the products
  * actually shown inside — never guessed from the filename alone. Then
  * place the PDF at /public/catalogs/[brand-slug]/[filename].pdf (see
@@ -123,12 +124,12 @@ export const catalogs: Catalog[] = [
   },
   {
     id: 'hansgrohe-news-2019',
-    brand: 'Hansgrohe',
+    brand: 'Hansgrohe x Axor',
     title: 'hansgrohe News 2019 — Smart Living, Showers & Kitchen',
     categories: ['sanitaryware', 'kitchen', 'wellness'],
     fileSize: '10 MB',
-    filePath: '/catalogs/hansgrohe/news-2019-smart-living-showers-kitchen.pdf',
-    coverImage: '/images/catalogs/hansgrohe/news-2019-smart-living-showers-kitchen.svg',
+    filePath: '/catalogs/hansgrohe-x-axor/news-2019-smart-living-showers-kitchen.pdf',
+    coverImage: '/images/catalogs/hansgrohe-x-axor/news-2019-smart-living-showers-kitchen.svg',
   },
   {
     id: 'verantes-living-ferro-nova-kitchens',
@@ -303,21 +304,21 @@ export const catalogs: Catalog[] = [
   },
   {
     id: 'hansgrohe-innovations-2021',
-    brand: 'Hansgrohe',
+    brand: 'Hansgrohe x Axor',
     title: 'hansgrohe Innovations 2021 Journal',
     categories: ['sanitaryware', 'kitchen', 'wellness'],
     fileSize: '4.9 MB',
-    filePath: '/catalogs/hansgrohe/innovations-2021-journal.pdf',
-    coverImage: '/images/catalogs/hansgrohe/innovations-2021-journal.svg',
+    filePath: '/catalogs/hansgrohe-x-axor/innovations-2021-journal.pdf',
+    coverImage: '/images/catalogs/hansgrohe-x-axor/innovations-2021-journal.svg',
   },
   {
     id: 'hansgrohe-bathroom-sales-manual-2019',
-    brand: 'Hansgrohe',
+    brand: 'Hansgrohe x Axor',
     title: 'hansgrohe Bathroom Sales Manual 2019',
     categories: ['sanitaryware', 'kitchen', 'wellness'],
     fileSize: '22.2 MB',
-    filePath: '/catalogs/hansgrohe/bathroom-sales-manual-2019.pdf',
-    coverImage: '/images/catalogs/hansgrohe/bathroom-sales-manual-2019.svg',
+    filePath: '/catalogs/hansgrohe-x-axor/bathroom-sales-manual-2019.pdf',
+    coverImage: '/images/catalogs/hansgrohe-x-axor/bathroom-sales-manual-2019.svg',
   },
   {
     id: 'vitra-bathroom-collections-2023',
@@ -381,5 +382,14 @@ export const catalogs: Catalog[] = [
     fileSize: '5.1 MB',
     filePath: '/catalogs/oyster/bath-spa-collection-vol-1-8.pdf',
     coverImage: '/images/catalogs/oyster/bath-spa-collection-vol-1-8.svg',
+  },
+  {
+    id: 'mcm-ittim-mcm-flexi-cladding-2026',
+    brand: 'MCM Ittim',
+    title: 'MCM Flexi Cladding Catalogue 2026',
+    categories: ['tiles'],
+    fileSize: '10.0 MB',
+    filePath: '/catalogs/mcm-ittim/mcm-flexi-cladding-catalogue-2026.pdf',
+    coverImage: '/images/catalogs/mcm-ittim/mcm-flexi-cladding-catalogue-2026.svg',
   },
 ]

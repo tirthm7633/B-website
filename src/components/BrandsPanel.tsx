@@ -1,8 +1,11 @@
 import gsap from 'gsap'
-import { useEffect, useRef } from 'react'
-import { brands } from '../data/content'
+import { useEffect, useRef, useState } from 'react'
+import type { Brand } from '../data/content'
 import { BRAND_PLATE_HEIGHT } from '../lib/brandPlateSize'
+import { useEscapeLayer } from '../lib/useEscapeLayer'
 import { prefersReducedMotion } from '../lib/usePrefersReducedMotion'
+import BrandCategoryGroups from './BrandCategoryGroups'
+import BrandDetail from './BrandDetail'
 import BrandLogo from './BrandLogo'
 
 interface BrandsPanelProps {
@@ -15,6 +18,7 @@ export default function BrandsPanel({ open, onClose }: BrandsPanelProps) {
   const contentRef = useRef<HTMLDivElement>(null)
   const closeBtnRef = useRef<HTMLButtonElement>(null)
   const previouslyFocused = useRef<HTMLElement | null>(null)
+  const [selectedBrand, setSelectedBrand] = useState<Brand | null>(null)
 
   // Open/close animation — slow, quiet fade + slight slide.
   useEffect(() => {
@@ -46,6 +50,7 @@ export default function BrandsPanel({ open, onClose }: BrandsPanelProps) {
   const handleClose = () => {
     const panel = panelRef.current
     if (!panel) return
+    setSelectedBrand(null)
     if (prefersReducedMotion()) {
       gsap.set(panel, { display: 'none' })
       onClose()
@@ -62,18 +67,17 @@ export default function BrandsPanel({ open, onClose }: BrandsPanelProps) {
     })
   }
 
-  // Escape to close, and a simple focus trap while open.
+  // Escape closes only the topmost overlay (this panel, or the brand detail / photo viewer above it).
+  useEscapeLayer(open, handleClose)
+
+  // A simple focus trap while open.
   useEffect(() => {
     if (!open) return
 
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        handleClose()
-        return
-      }
       if (e.key !== 'Tab') return
       const panel = panelRef.current
-      if (!panel) return
+      if (!panel || !panel.contains(document.activeElement)) return
       const focusable = panel.querySelectorAll<HTMLElement>(
         'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
       )
@@ -95,63 +99,70 @@ export default function BrandsPanel({ open, onClose }: BrandsPanelProps) {
   }, [open])
 
   return (
-    <div
-      ref={panelRef}
-      role="dialog"
-      aria-modal="true"
-      aria-label="All brands"
-      className="fixed inset-0 z-[60] hidden flex-col overflow-y-auto bg-bg/97 backdrop-blur-md"
-      style={{ opacity: 0 }}
-      onMouseDown={(e) => {
-        // Close on any click that isn't on a brand card or the close button
-        // — nested wrapper/gap divs would otherwise absorb the click before
-        // it ever reaches this element, so checking target===currentTarget
-        // alone misses clicks in the grid's padding and gaps.
-        const target = e.target as HTMLElement
-        if (!target.closest('[data-brand-card], button')) handleClose()
-      }}
-    >
-      <div className="flex items-center justify-between px-6 pt-6 md:px-12 md:pt-10">
-        <span className="eyebrow">All Brands</span>
-        <button
-          ref={closeBtnRef}
-          type="button"
-          onClick={handleClose}
-          aria-label="Close brands panel"
-          className="flex h-10 w-10 items-center justify-center text-text transition-colors duration-300 hover:text-accent-bright"
-        >
-          <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={1.5} aria-hidden="true">
-            <path strokeLinecap="round" d="M6 6l12 12M18 6L6 18" />
-          </svg>
-        </button>
-      </div>
+    <>
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="All brands"
+        // Lenis (global smooth scroll) otherwise calls preventDefault on every
+        // wheel event, which stops this panel scrolling with a mouse wheel
+        // now that the grouped list is taller than the viewport.
+        data-lenis-prevent
+        className="fixed inset-0 z-[60] hidden flex-col overflow-y-auto bg-bg/97 backdrop-blur-md"
+        style={{ opacity: 0 }}
+        onMouseDown={(e) => {
+          // Close on any click that isn't on a brand card, a category label or
+          // the close button — nested wrapper/gap divs would otherwise absorb
+          // the click before it ever reaches this element, so checking
+          // target===currentTarget alone misses clicks in the grid's padding
+          // and gaps.
+          const target = e.target as HTMLElement
+          if (!target.closest('[data-brand-card], button, [role="heading"]')) handleClose()
+        }}
+      >
+        <div className="flex items-center justify-between px-6 pt-6 md:px-12 md:pt-10">
+          <span className="eyebrow">All Brands</span>
+          <button
+            ref={closeBtnRef}
+            type="button"
+            onClick={handleClose}
+            aria-label="Close brands panel"
+            className="flex h-10 w-10 items-center justify-center text-text transition-colors duration-300 hover:text-accent-bright"
+          >
+            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={1.5} aria-hidden="true">
+              <path strokeLinecap="round" d="M6 6l12 12M18 6L6 18" />
+            </svg>
+          </button>
+        </div>
 
-      <div ref={contentRef} className="mx-auto flex w-full max-w-5xl flex-1 flex-col justify-center px-6 py-10 md:px-12">
-        <div className="flex flex-wrap justify-center gap-6">
-          {brands.map((brand) => (
-            <div
-              key={brand.name}
-              data-brand-card
-              className="flex w-[calc(50%-12px)] flex-col items-center gap-3 md:w-[calc(33.333%-16px)] lg:w-[calc(25%-18px)]"
-            >
-              <BrandLogo
-                src={brand.logo}
-                alt={`${brand.name} logo`}
-                fallbackLabel={brand.name}
-                plate={brand.plate}
-                className={`${BRAND_PLATE_HEIGHT} w-full`}
-              />
-              <div className="flex flex-wrap justify-center gap-1.5">
-                {brand.categories.map((cat) => (
-                  <span key={cat} className="text-[0.55rem] tracking-[0.15em] text-muted uppercase">
-                    {cat}
-                  </span>
-                ))}
-              </div>
-            </div>
-          ))}
+        <div ref={contentRef} className="mx-auto w-full max-w-5xl px-6 pb-16 pt-8 md:px-12 md:pb-20 md:pt-10">
+          <BrandCategoryGroups
+            renderBrand={(brand) => (
+              <button
+                key={brand.name}
+                type="button"
+                data-brand-card
+                onClick={() => setSelectedBrand(brand)}
+                aria-label={`View ${brand.name} photos`}
+                className="flex flex-col items-center gap-3 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent-bright"
+              >
+                <BrandLogo
+                  src={brand.logo}
+                  alt={`${brand.name} logo`}
+                  fallbackLabel={brand.name}
+                  plate={brand.plate}
+                  className={`${BRAND_PLATE_HEIGHT} w-full`}
+                />
+                <span className="text-center text-[0.6rem] tracking-[0.15em] text-muted uppercase">{brand.name}</span>
+              </button>
+            )}
+          />
         </div>
       </div>
-    </div>
+      {open && selectedBrand && (
+        <BrandDetail key={selectedBrand.name} brand={selectedBrand} onClose={() => setSelectedBrand(null)} />
+      )}
+    </>
   )
 }

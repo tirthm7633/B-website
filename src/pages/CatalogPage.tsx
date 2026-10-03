@@ -1,7 +1,41 @@
 import { Link } from 'react-router-dom'
+import BrandCategoryGroups from '../components/BrandCategoryGroups'
 import BrandLogo from '../components/BrandLogo'
-import { brands } from '../data/content'
 import { brandSlug, catalogs } from '../data/catalogs'
+import type { Brand } from '../data/content'
+
+function BrandTile({ brand }: { brand: Brand }) {
+  const count = catalogs.filter((c) => c.brand === brand.name).length
+  const available = count > 0
+
+  const card = (
+    <div
+      className={`flex h-full flex-col items-center gap-3 rounded-sm border border-line p-4 transition-colors lg:p-5 duration-300 ${
+        available ? 'hover:border-accent hover:text-accent-bright' : 'opacity-40'
+      }`}
+    >
+      <BrandLogo
+        src={brand.logo}
+        alt={`${brand.name} logo`}
+        fallbackLabel={brand.name}
+        plate={brand.plate}
+        className="h-20 w-full"
+      />
+      <span className="text-center text-[0.7rem] leading-snug tracking-[0.15em] text-text uppercase">{brand.name}</span>
+      <span className="mt-auto text-center text-[0.6rem] tracking-[0.15em] text-muted uppercase">
+        {available ? `${count} catalog${count > 1 ? 's' : ''}` : 'Coming soon'}
+      </span>
+    </div>
+  )
+
+  return available ? (
+    <Link to={`/catalog/${brandSlug(brand.name)}`}>{card}</Link>
+  ) : (
+    <div aria-disabled="true" title="No catalogs uploaded yet">
+      {card}
+    </div>
+  )
+}
 
 export default function CatalogPage() {
   return (
@@ -16,41 +50,8 @@ export default function CatalogPage() {
         </p>
       </div>
 
-      <div className="mx-auto grid max-w-5xl grid-cols-2 gap-4 px-6 pb-24 md:grid-cols-3 md:gap-6 md:px-12 lg:grid-cols-4">
-        {brands.map((brand) => {
-          const count = catalogs.filter((c) => c.brand === brand.name).length
-          const available = count > 0
-
-          const card = (
-            <div
-              className={`flex h-full flex-col items-center gap-3 rounded-sm border border-line p-5 transition-colors duration-300 ${
-                available ? 'hover:border-accent hover:text-accent-bright' : 'opacity-40'
-              }`}
-            >
-              <BrandLogo
-                src={brand.logo}
-                alt={`${brand.name} logo`}
-                fallbackLabel={brand.name}
-                plate={brand.plate}
-                className="h-20 w-full"
-              />
-              <span className="text-center text-[0.7rem] tracking-[0.15em] text-text uppercase">{brand.name}</span>
-              <span className="text-center text-[0.6rem] tracking-[0.15em] text-muted uppercase">
-                {available ? `${count} catalog${count > 1 ? 's' : ''}` : 'Coming soon'}
-              </span>
-            </div>
-          )
-
-          return available ? (
-            <Link key={brand.name} to={`/catalog/${brandSlug(brand.name)}`}>
-              {card}
-            </Link>
-          ) : (
-            <div key={brand.name} aria-disabled="true" title="No catalogs uploaded yet">
-              {card}
-            </div>
-          )
-        })}
+      <div className="mx-auto max-w-5xl px-6 pb-24 md:px-12">
+        <BrandCategoryGroups renderBrand={(brand) => <BrandTile key={brand.name} brand={brand} />} />
       </div>
     </div>
   )

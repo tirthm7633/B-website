@@ -33,18 +33,16 @@ node scripts/audit-brand-logos.cjs   # prints luminance/contrast/plate data
 | Filename | Real file? | Showing as |
 | --- | --- | --- |
 | `grohe.png` | ✅ Yes | Logo (dark plate) |
-| `hansgrohe.png` | ❌ No — the supplied file was cropped (only "nsgro" visible, missing both ends) | Text fallback |
-| `axor.png` | ✅ Yes | Logo (light plate) |
+| `hansgrohe-x-axor.png` | ✅ Yes — combined Hansgrohe x Axor logo (Axor is Hansgrohe's designer label, merged into one brand) | Logo (dark plate) |
 | `gebrit.png` | ✅ Yes | Logo (dark plate) — displays as "Geberit", confirmed correct spelling from the logo itself |
 | `vitra.png` | ✅ Yes | Logo (dark plate) |
 | `oyster.png` | ✅ Yes | Logo (light plate) |
-| `qutone.png` | ❌ No — the supplied file was cropped (only "UTO...INNOVATION" visible, missing the "Q" and "NE") | Text fallback |
-| `nexion.png` | ✅ Yes | Logo (light plate) |
+| `qutone.png` | ✅ Yes — full logo, teal block with white wordmark | Logo (dark plate) |
+| `nexion.png` | ✅ Yes — white wordmark on black (supplied as a JPG, converted to PNG losslessly) | Logo (light plate) |
 | `dimore.png` | ✅ Yes | Logo (light plate) |
 | `mcm-ittim.png` | ❌ No — the original mixed the real "ittimi by MCM" mark with unrelated decorative pattern-swatch artwork | Text fallback |
 | `verantes-living.png` | ✅ Yes | Logo (dark plate) |
 
-**8 of 11 brands show a real logo.** Only Hansgrohe, Qutone and MCM Ittim
-show the text fallback, because no usable file exists for them at all —
-drop a clean, uncropped export at that exact filename to bring them in as
-real logos too.
+**9 of 10 brands show a real logo.** Only MCM Ittim shows the text
+fallback, because no usable file exists for it at all — drop a clean,
+uncropped export at that exact filename to bring it in as a real logo too.

@@ -1,12 +1,5 @@
 [
   {
-    "file": "axor.png",
-    "originalSize": "148x148",
-    "trimmedContentSize": "146x146",
-    "finalSize": "170x170",
-    "finalWidth": 170
-  },
-  {
     "file": "dimore.png",
     "originalSize": "204x192",
     "trimmedContentSize": "110x24",
@@ -28,11 +21,18 @@
     "finalWidth": 223
   },
   {
+    "file": "hansgrohe-x-axor.png",
+    "originalSize": "252x148",
+    "trimmedContentSize": "192x72",
+    "finalSize": "222x102",
+    "finalWidth": 222
+  },
+  {
     "file": "nexion.png",
-    "originalSize": "175x162",
-    "trimmedContentSize": "175x54",
-    "finalSize": "203x82",
-    "finalWidth": 203
+    "originalSize": "1200x628",
+    "trimmedContentSize": "720x208",
+    "finalSize": "836x324",
+    "finalWidth": 836
   },
   {
     "file": "oyster.png",
@@ -40,6 +40,13 @@
     "trimmedContentSize": "114x54",
     "finalSize": "132x72",
     "finalWidth": 132
+  },
+  {
+    "file": "qutone.png",
+    "originalSize": "447x447",
+    "trimmedContentSize": "401x86",
+    "finalSize": "465x150",
+    "finalWidth": 465
   },
   {
     "file": "verantes-living.png",
