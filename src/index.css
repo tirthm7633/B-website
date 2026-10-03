@@ -60,9 +60,58 @@ a {
   text-decoration: none;
 }
 
+/* Translucent steel-blue highlight; the text stays its normal light colour so
+   it reads cleanly on the dark page. */
 ::selection {
-  background: var(--color-accent);
-  color: var(--color-bg);
+  background: rgba(95, 125, 156, 0.38);
+  color: var(--color-text);
+}
+::-moz-selection {
+  background: rgba(95, 125, 156, 0.38);
+  color: var(--color-text);
+}
+
+/* Scrollbars: thin, dark track, muted steel-blue thumb (inset by a track-coloured
+   border so it reads as a slim pill). Chromium and Safari use the ::-webkit-scrollbar
+   pseudo-elements; Firefox doesn't support them, so it gets the standard properties —
+   fenced off with @supports because Chromium ignores the ::-webkit-scrollbar rules
+   as soon as scrollbar-color is set. Applies to the page and to inner scroll areas. */
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-track,
+*::-webkit-scrollbar-corner {
+  background: var(--color-bg);
+}
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(95, 125, 156, 0.38);
+  background-clip: padding-box;
+  border: 2px solid var(--color-bg);
+  border-radius: 999px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(95, 125, 156, 0.6);
+}
+@supports not selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(95, 125, 156, 0.45) var(--color-bg);
+  }
+}
+
+/* Scroll-triggered entrance (see components/Reveal.tsx): a quick, quiet fade-up —
+   no overshoot, no stagger. Reduced motion shows everything immediately. */
+.reveal {
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 0.55s ease-out,
+    transform 0.55s ease-out;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
 }
 
 /* Cormorant Garamond defaults to old-style figures, where "1" and "0" read
@@ -183,6 +232,12 @@ a {
   }
 
   .link-underline::after {
+    transition: none;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
     transition: none;
   }
 

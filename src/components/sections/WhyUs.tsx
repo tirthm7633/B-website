@@ -4,6 +4,7 @@ import { whyUs, type TrustPoint, type TrustPointIcon } from '../../data/content'
 import { useCountUp } from '../../lib/useCountUp'
 import { ArrowRightIcon, BuildingIcon, CalendarIcon, HomeIcon, ShieldCheckIcon } from '../ActionIcons'
 import ConsultationModal from '../ConsultationModal'
+import Reveal from '../Reveal'
 
 const ICONS: Record<TrustPointIcon, typeof ShieldCheckIcon> = {
   shield: ShieldCheckIcon,
@@ -51,7 +52,7 @@ export default function WhyUs() {
 
   return (
     <section id="why-us" ref={sectionRef} className="border-t border-line px-6 py-32 md:px-12">
-      <div className="mb-14 flex flex-col gap-6 md:mb-16">
+      <Reveal className="mb-14 flex flex-col gap-6 md:mb-16">
         <div className="eyebrow flex items-center gap-2">
           <span className="h-1 w-1 rounded-full bg-accent" />
           {whyUs.eyebrow}
@@ -59,9 +60,9 @@ export default function WhyUs() {
         <div role="heading" aria-level={2} className="max-w-3xl font-display text-3xl leading-[1.2] font-light md:text-5xl">
           {whyUs.heading}
         </div>
-      </div>
+      </Reveal>
 
-      <div className="grid gap-px overflow-hidden border border-line bg-line">
+      <Reveal className="grid gap-px overflow-hidden border border-line bg-line">
         <div className="grid grid-cols-2 gap-px md:grid-cols-4">
           {whyUs.stats.map((stat) => (
             <div key={stat.label} className="flex flex-col gap-3 bg-bg p-6 md:p-8 lg:p-10">
@@ -107,8 +108,10 @@ export default function WhyUs() {
             )
           })}
         </div>
-      </div>
+      </Reveal>
 
+      {/* Outside the Reveal wrappers: a fixed overlay inside a transformed ancestor
+          would be positioned relative to it instead of the viewport. */}
       {consultationOpen && (
         <ConsultationModal open onClose={() => setConsultationOpen(false)} context={{ source: 'enquire' }} />
       )}

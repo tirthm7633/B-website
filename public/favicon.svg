@@ -1,5 +1,3 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <circle cx="32" cy="32" r="31" fill="#0b0b0c" />
-  <circle cx="32" cy="32" r="26" fill="#5d9bcd" />
-  <circle cx="32" cy="32" r="6" fill="#0b0b0c" />
+  <path fill="#5d9bcd" fill-rule="evenodd" d="M32 3a29 29 0 1 0 0 58 29 29 0 0 0 0-58Zm0 22.5a6.5 6.5 0 1 1 0 13 6.5 6.5 0 0 1 0-13Z" />
 </svg>

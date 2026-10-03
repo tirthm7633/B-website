@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { Link, Route, Routes, useLocation } from 'react-router-dom'
+import { useEffect, useState, type ReactNode } from 'react'
+import { Link, Route, Routes, useLocation, type Location } from 'react-router-dom'
 import ContactDock from './components/ContactDock'
 import Footer from './components/Footer'
 import Nav from './components/Nav'
@@ -10,8 +10,11 @@ import Categories from './components/sections/Categories'
 import Contact from './components/sections/Contact'
 import Gallery from './components/sections/Gallery'
 import Hero from './components/sections/Hero'
+import OurStory from './components/sections/OurStory'
+import Testimonials from './components/sections/Testimonials'
 import TrustedByFinest from './components/sections/TrustedByFinest'
 import WhyUs from './components/sections/WhyUs'
+import { prefersReducedMotion } from './lib/usePrefersReducedMotion'
 import { lenisRef, useSmoothScroll } from './lib/useSmoothScroll'
 import CatalogBrandPage from './pages/CatalogBrandPage'
 import CatalogPage from './pages/CatalogPage'
@@ -24,9 +27,11 @@ function HomePage() {
     <main>
       <Hero />
       <About />
+      <OurStory />
       <Categories />
       <TrustedByFinest />
       <WhyUs />
+      <Testimonials />
       <Gallery />
       <Contact />
     </main>
@@ -58,8 +63,10 @@ function NotFoundPage() {
  * a moment later) — the very first load's hash is instead handled inside
  * useSmoothScroll itself, since Lenis doesn't exist yet when this effect
  * fires for the first time. */
-function ScrollToTop() {
-  const { pathname, hash } = useLocation()
+function ScrollToTop({ location }: { location: Location }) {
+  // The location being shown (see PageTransition), not the one just navigated to — so
+  // the scroll reset happens when the new page swaps in, not while the old one fades out.
+  const { pathname, hash } = location
   useEffect(() => {
     if (hash) {
       const el = document.querySelector(hash)
@@ -75,6 +82,43 @@ function ScrollToTop() {
   return null
 }
 
+const PAGE_FADE_OUT_MS = 200
+const PAGE_FADE_IN_MS = 250
+
+/**
+ * Fades between pages: the current page fades out (200ms), the new one is swapped in at
+ * the midpoint and fades in (250ms). Only a change of *page* fades — a hash or query
+ * change on the same page (the nav's "/#why-us" links) updates immediately, and with
+ * reduced motion every navigation is instant. `children` receives the location that is
+ * currently on screen, which lags the real one by the fade-out.
+ */
+function PageTransition({ children }: { children: (location: Location) => ReactNode }) {
+  const location = useLocation()
+  // The page currently on screen. It only lags `location` while fading out to a different page.
+  const [shown, setShown] = useState(location)
+  const fadingOut = !prefersReducedMotion() && location.pathname !== shown.pathname
+
+  // Same page (hash/query change) or reduced motion: follow the real location straight away.
+  if (!fadingOut && shown !== location) setShown(location)
+
+  useEffect(() => {
+    if (!fadingOut) return
+    const timer = window.setTimeout(() => setShown(location), PAGE_FADE_OUT_MS)
+    return () => window.clearTimeout(timer)
+  }, [fadingOut, location])
+
+  return (
+    <div
+      style={{
+        opacity: fadingOut ? 0 : 1,
+        transition: `opacity ${fadingOut ? PAGE_FADE_OUT_MS : PAGE_FADE_IN_MS}ms ease-out`,
+      }}
+    >
+      {children(fadingOut ? shown : location)}
+    </div>
+  )
+}
+
 function App() {
   const [loading, setLoading] = useState(true)
   useSmoothScroll()
@@ -83,19 +127,25 @@ function App() {
     <>
       <SEO />
       {loading && <Preloader onComplete={() => setLoading(false)} />}
-      <ScrollToTop />
       <Nav />
       <div className="pb-24 md:pb-0">
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/projects" element={<ProjectsPage />} />
-          <Route path="/projects/:id" element={<ProjectDetailPage />} />
-          <Route path="/catalog" element={<CatalogPage />} />
-          <Route path="/catalog/:brandSlug" element={<CatalogBrandPage />} />
-          <Route path="/gallery" element={<GalleryPage />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-        <Footer />
+        <PageTransition>
+          {(location) => (
+            <>
+              <ScrollToTop location={location} />
+              <Routes location={location}>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/projects" element={<ProjectsPage />} />
+                <Route path="/projects/:id" element={<ProjectDetailPage />} />
+                <Route path="/catalog" element={<CatalogPage />} />
+                <Route path="/catalog/:brandSlug" element={<CatalogBrandPage />} />
+                <Route path="/gallery" element={<GalleryPage />} />
+                <Route path="*" element={<NotFoundPage />} />
+              </Routes>
+              <Footer />
+            </>
+          )}
+        </PageTransition>
       </div>
       <ContactDock />
     </>

@@ -42,9 +42,10 @@
  *                                            night view of the storefront.
  *   /public/images/logo.png                 Navbar / preloader / footer
  *                                            logo — see `site.logo` below.
- *   /public/favicon.svg, favicon-32.png, apple-touch-icon.png
+ *   /public/favicon.svg, favicon-16.png, favicon-32.png, apple-touch-icon.png
  *                                            Tab / home-screen icons: the logo's
- *                                            blue "O" on a dark disc.
+ *                                            blue "O" (a ring with a real hole;
+ *                                            the touch icon sits on a dark square).
  * ===========================================================================
  */
 
@@ -191,6 +192,28 @@ export const about = {
     src: '',
     alt: 'Buildcon House showroom',
     objectPosition: 'center 30%',
+  } as ImageSlot,
+}
+
+// PLACEHOLDER STORY — replace with real founding details, year, and family history
+// before going fully public. The wording below is invented to set the tone (warm,
+// confident, premium) and deliberately avoids any specific year, name or claim.
+export const ourStory = {
+  eyebrow: 'Our Story',
+  // Large pull-quote style line.
+  heading: 'Built by a family that believes Rajkot deserves the world’s finest.',
+  // Opening line, set in the serif.
+  lead:
+    'Buildcon House began as a family business with one conviction: the homes of Rajkot deserve the same quality you’d find in the world’s great design cities.',
+  // Supporting text, set in the body face.
+  body:
+    'So we set out to bring the finest global brands to our hometown, and to stand behind every one of them ourselves. Each product on our floor is chosen with care, and every project is handled with the pride of people who put their name on the work. That care, and the family behind it, is still what you’ll find when you walk in.',
+  image: {
+    // Reuses the Visit Us storefront photo (no new photo — per the homepage photo
+    // rules). Swap this path whenever there is a story-specific image.
+    src: '/images/homepage/visit-storefront-night.webp',
+    alt: 'Night view of the Buildcon House storefront with its brand signage',
+    objectPosition: 'center',
   } as ImageSlot,
 }
 
@@ -471,7 +494,7 @@ export const whyUs = {
     {
       icon: 'shield',
       title: 'Authorized Dealer',
-      desc: 'We carry premium products from Grohe, Vitra, Geberit and other global brands, bringing world-class design to Rajkot.',
+      desc: 'Official partner for Grohe, Vitra, Geberit and other globally renowned brands — premium fittings and craftsmanship, brought to Rajkot under one roof.',
     },
     {
       icon: 'home',
