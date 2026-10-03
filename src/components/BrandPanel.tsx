@@ -138,10 +138,13 @@ function useMarqueeLifecycle(rowRef: React.RefObject<HTMLDivElement | null>) {
         if (import.meta.env.DEV) {
           console.warn('[Marquee] watchdog: row appeared stuck while it should be playing — restarting it')
         }
+        // Toggle only animation-name. Clearing the `animation` shorthand would also wipe
+        // the inline animation-duration / animation-direction Marquee sets from its
+        // `speed` / `reverse` props, leaving a 0s, wrong-way animation that never moves.
         tracks.forEach((t) => {
-          t.style.animation = 'none'
+          t.style.animationName = 'none'
           void t.offsetHeight // force reflow so the removal actually takes effect before re-enabling
-          t.style.animation = ''
+          t.style.animationName = ''
         })
         lastX = []
         return
