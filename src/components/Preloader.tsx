@@ -7,7 +7,6 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
   const overlayRef = useRef<HTMLDivElement>(null)
   const logoRef = useRef<HTMLDivElement>(null)
   const lineRef = useRef<HTMLDivElement>(null)
-  const taglineRef = useRef<HTMLParagraphElement>(null)
 
   useEffect(() => {
     if (prefersReducedMotion()) {
@@ -34,8 +33,7 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
 
     tl.fromTo(logoRef.current, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' })
     tl.fromTo(lineRef.current, { scaleX: 0 }, { scaleX: 1, duration: 0.7, ease: 'power2.inOut' }, '-=0.35')
-    tl.fromTo(taglineRef.current, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }, '-=0.2')
-    tl.to({}, { duration: 0.3 })
+    tl.to({}, { duration: 0.5 })
 
     return () => {
       tl.kill()
@@ -46,13 +44,11 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
 
   return (
     <div ref={overlayRef} className="fixed inset-0 z-[1000] flex flex-col items-center justify-center gap-5 bg-bg">
+      {/* The logo carries its own "Let you live better" tagline, so there's no separate tagline line. */}
       <div ref={logoRef}>
-        <Logo className="h-12" />
+        <Logo className="h-[72px] md:h-24" />
       </div>
       <div ref={lineRef} className="h-px w-16 origin-center bg-accent" />
-      <p ref={taglineRef} className="font-tagline text-4xl text-accent">
-        Let you live better
-      </p>
     </div>
   )
 }

@@ -41,8 +41,10 @@
  *                                            address. Currently: the brochure's
  *                                            night view of the storefront.
  *   /public/images/logo.png                 Navbar / preloader / footer
- *                                            logo. Missing on purpose — see
- *                                            `site.logo` below.
+ *                                            logo — see `site.logo` below.
+ *   /public/favicon.svg, favicon-32.png, apple-touch-icon.png
+ *                                            Tab / home-screen icons: the logo's
+ *                                            blue "O" on a dark disc.
  * ===========================================================================
  */
 
@@ -61,15 +63,15 @@ export const site = {
     "Rajkot's destination for premium sanitaryware, tiles, kitchens, wellness and imported furniture.",
   url: 'https://www.buildconhouse.com', // TODO: replace with the live domain once deployed
   logo: {
-    // Drop the final logo file at public/images/logo.png (any raster or
-    // .svg extension works, just update this path to match). Until then
-    // this 404s on purpose and <Logo /> automatically falls back to a
-    // crisp text wordmark — see components/Logo.tsx. Two reference files
-    // the client sent are saved at public/images/logo-on-light.png
-    // (full-colour, on white) and public/images/logo-reference-faint.webp
-    // (a very low-opacity export unsuitable for direct UI use). Export a
-    // full-opacity, transparent PNG/SVG from the source file to go live.
+    // Transparent PNG made from the client's dark-background logo (the grey
+    // wordmark and blue "O" are built for the dark theme, so it is meant for
+    // dark surfaces only). The two files the client sent — on black and on
+    // white — are kept untouched in public/images/logo-originals/. If the
+    // logo is ever swapped, update width/height to the new file's pixel
+    // size: they let the browser reserve the space before it loads.
     src: '/images/logo.png',
+    width: 828,
+    height: 200,
     alt: 'Buildcon House logo',
   },
 }

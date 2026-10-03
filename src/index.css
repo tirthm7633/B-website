@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400;1,500&family=Manrope:wght@300..700&family=Outfit:wght@400..600&family=Sacramento&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400;1,500&family=Manrope:wght@300..700&family=Sacramento&display=swap');
 @import 'tailwindcss';
 
 @theme {
@@ -15,10 +15,9 @@
   --color-accent-bright: #7fa3c7;
 
   --font-display: 'Cormorant Garamond', 'Times New Roman', serif;
-  --font-wordmark: 'Outfit', system-ui, sans-serif;
   --font-body: 'Manrope', system-ui, sans-serif;
   /* Matches the thin, flowing handwritten script used for the tagline in
-     the real logo file (compared visually against public/images/logo-on-light.png). */
+     the logo (see public/images/logo-originals/). */
   --font-tagline: 'Sacramento', cursive;
 }
 

@@ -7,8 +7,8 @@ export default function Footer() {
     <footer className="border-t border-line bg-bg px-6 py-14 md:px-12">
       <div className="grid grid-cols-1 gap-10 md:grid-cols-[1.2fr_1fr_1fr]">
         <div>
-          <Logo className="h-11" />
-          <p className="mt-4 font-tagline text-3xl text-accent">{site.tagline}</p>
+          {/* The logo carries its own "Let you live better" tagline. */}
+          <Logo className="h-14" />
         </div>
 
         <div>
