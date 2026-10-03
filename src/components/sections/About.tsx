@@ -2,6 +2,7 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useEffect, useRef } from 'react'
 import { about } from '../../data/content'
+import { useCountUp } from '../../lib/useCountUp'
 import { prefersReducedMotion } from '../../lib/usePrefersReducedMotion'
 import SmartImage from '../SmartImage'
 
@@ -16,12 +17,7 @@ export default function About() {
     const reduced = prefersReducedMotion()
 
     const ctx = gsap.context(() => {
-      if (reduced) {
-        document.querySelectorAll<HTMLElement>('.stat-value').forEach((el) => {
-          el.textContent = el.dataset.value ?? '0'
-        })
-        return
-      }
+      if (reduced) return
 
       const words = textRef.current?.querySelectorAll('.word')
       gsap.fromTo(
@@ -44,23 +40,11 @@ export default function About() {
         ease: 'none',
         scrollTrigger: { trigger: sectionRef.current, start: 'top bottom', end: 'bottom top', scrub: 1 },
       })
-
-      gsap.utils.toArray<HTMLElement>('.stat-value').forEach((el) => {
-        const target = Number(el.dataset.value)
-        const counter = { val: 0 }
-        gsap.to(counter, {
-          val: target,
-          duration: 1.8,
-          ease: 'power2.out',
-          scrollTrigger: { trigger: el, start: 'top 85%' },
-          onUpdate: () => {
-            el.textContent = Math.floor(counter.val).toString()
-          },
-        })
-      })
     }, sectionRef)
     return () => ctx.revert()
   }, [])
+
+  useCountUp(sectionRef)
 
   return (
     <section id="about" ref={sectionRef} className="border-t border-line bg-surface px-6 py-32 md:px-12">

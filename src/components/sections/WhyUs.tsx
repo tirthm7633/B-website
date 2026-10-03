@@ -1,72 +1,117 @@
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { useEffect, useRef } from 'react'
-import { whyUs } from '../../data/content'
-import { prefersReducedMotion } from '../../lib/usePrefersReducedMotion'
+import { useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { whyUs, type TrustPoint, type TrustPointIcon } from '../../data/content'
+import { useCountUp } from '../../lib/useCountUp'
+import { ArrowRightIcon, BuildingIcon, CalendarIcon, HomeIcon, ShieldCheckIcon } from '../ActionIcons'
+import ConsultationModal from '../ConsultationModal'
 
-gsap.registerPlugin(ScrollTrigger)
+const ICONS: Record<TrustPointIcon, typeof ShieldCheckIcon> = {
+  shield: ShieldCheckIcon,
+  home: HomeIcon,
+  calendar: CalendarIcon,
+  building: BuildingIcon,
+}
+
+// Cells are separated by hairlines (a 1px gap over a line-coloured background, same
+// trick as the Categories grid), so every divider is exactly one pixel at any size.
+const cellClass = 'group flex h-full flex-col gap-4 bg-bg p-6 text-left md:p-8 lg:p-10'
+const interactiveClass =
+  'cursor-pointer transition-colors duration-500 hover:bg-surface focus-visible:bg-surface focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent-bright'
+
+function TrustPointBody({ point }: { point: TrustPoint }) {
+  const Icon = ICONS[point.icon]
+  return (
+    <>
+      <Icon className="h-8 w-8 text-accent transition-colors duration-500 group-hover:text-accent-bright" />
+      {/* role=heading rather than <h3>: index.css has an unlayered h1-h4 rule (colour, weight,
+          margin) that would beat the hover colour utility. */}
+      <div
+        role="heading"
+        aria-level={3}
+        className="font-display text-2xl leading-tight font-light text-text transition-colors duration-500 group-hover:text-accent-bright"
+      >
+        {point.title}
+      </div>
+      <p className="text-sm leading-relaxed text-muted">{point.desc}</p>
+      {point.action && (
+        <span className="mt-auto flex items-center gap-2 pt-4 text-[0.65rem] tracking-[0.15em] text-accent-bright uppercase">
+          {point.action.label}
+          <ArrowRightIcon className="h-3.5 w-3.5 transition-transform duration-500 group-hover:translate-x-1" />
+        </span>
+      )}
+    </>
+  )
+}
 
 export default function WhyUs() {
-  const sectionRef = useRef<HTMLDivElement>(null)
-  const trackRef = useRef<HTMLDivElement>(null)
+  const sectionRef = useRef<HTMLElement>(null)
+  const [consultationOpen, setConsultationOpen] = useState(false)
 
-  useEffect(() => {
-    if (prefersReducedMotion()) return
-
-    const mm = gsap.matchMedia()
-
-    mm.add('(min-width: 768px)', () => {
-      const ctx = gsap.context(() => {
-        const track = trackRef.current!
-        const getDistance = () => track.scrollWidth - window.innerWidth
-
-        gsap.to(track, {
-          x: () => -getDistance(),
-          ease: 'none',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top top',
-            end: () => `+=${getDistance()}`,
-            scrub: 1,
-            pin: true,
-            invalidateOnRefresh: true,
-          },
-        })
-      }, sectionRef)
-
-      return () => ctx.revert()
-    })
-
-    return () => mm.revert()
-  }, [])
+  useCountUp(sectionRef)
 
   return (
-    <section id="why-us" ref={sectionRef} className="relative overflow-hidden border-t border-line py-32">
-      <div className="eyebrow mb-16 flex items-center gap-2 px-6 md:px-12">
-        <span className="h-1 w-1 rounded-full bg-accent" />
-        {whyUs.eyebrow}
+    <section id="why-us" ref={sectionRef} className="border-t border-line px-6 py-32 md:px-12">
+      <div className="mb-14 flex flex-col gap-6 md:mb-16">
+        <div className="eyebrow flex items-center gap-2">
+          <span className="h-1 w-1 rounded-full bg-accent" />
+          {whyUs.eyebrow}
+        </div>
+        <div role="heading" aria-level={2} className="max-w-3xl font-display text-3xl leading-[1.2] font-light md:text-5xl">
+          {whyUs.heading}
+        </div>
       </div>
 
-      <div ref={trackRef} className="flex w-max gap-6 overflow-x-auto px-6 md:gap-10 md:overflow-visible md:px-12">
-        {whyUs.steps.map((step) => (
-          <div
-            key={step.num}
-            className="flex h-[50vh] w-[82vw] shrink-0 flex-col justify-between border border-line p-8 md:w-[32vw] md:p-10"
-          >
-            <span
-              className="numerals font-display text-[7rem] leading-none font-light text-transparent md:text-[9rem]"
-              style={{ WebkitTextStroke: '1.5px var(--color-accent)' }}
-            >
-              {step.num}
-            </span>
-            <div>
-              <div className="mb-5 h-px w-12 bg-accent" />
-              <h3 className="font-display text-3xl font-light text-text md:text-4xl">{step.title}</h3>
-              <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted">{step.desc}</p>
+      <div className="grid gap-px overflow-hidden border border-line bg-line">
+        <div className="grid grid-cols-2 gap-px md:grid-cols-4">
+          {whyUs.stats.map((stat) => (
+            <div key={stat.label} className="flex flex-col gap-3 bg-bg p-6 md:p-8 lg:p-10">
+              <div className="numerals font-display text-5xl leading-none font-light text-text md:text-6xl lg:text-7xl">
+                <span className="stat-value" data-value={stat.value}>
+                  0
+                </span>
+                {stat.suffix}
+              </div>
+              <p className="eyebrow" style={{ letterSpacing: '0.2em' }}>
+                {stat.label}
+              </p>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+
+        <div className="grid grid-cols-1 gap-px md:grid-cols-2 lg:grid-cols-4">
+          {whyUs.trustPoints.map((point) => {
+            const action = point.action
+            if (action?.kind === 'link') {
+              return (
+                <Link key={point.title} to={action.to} className={`${cellClass} ${interactiveClass}`}>
+                  <TrustPointBody point={point} />
+                </Link>
+              )
+            }
+            if (action?.kind === 'consultation') {
+              return (
+                <button
+                  key={point.title}
+                  type="button"
+                  onClick={() => setConsultationOpen(true)}
+                  className={`${cellClass} ${interactiveClass}`}
+                >
+                  <TrustPointBody point={point} />
+                </button>
+              )
+            }
+            return (
+              <div key={point.title} className={cellClass}>
+                <TrustPointBody point={point} />
+              </div>
+            )
+          })}
+        </div>
       </div>
+
+      {consultationOpen && (
+        <ConsultationModal open onClose={() => setConsultationOpen(false)} context={{ source: 'enquire' }} />
+      )}
     </section>
   )
 }

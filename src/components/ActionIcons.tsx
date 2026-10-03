@@ -43,3 +43,41 @@ export function CalendarIcon({ className = 'h-4 w-4' }: { className?: string }) 
     </svg>
   )
 }
+
+export function ShieldCheckIcon({ className = 'h-4 w-4' }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className={className} aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 3l7 2.5v5.5c0 4.6-3 8.3-7 10-4-1.7-7-5.4-7-10V5.5L12 3Z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M8.8 12l2.4 2.4 4.2-4.6" />
+    </svg>
+  )
+}
+
+export function HomeIcon({ className = 'h-4 w-4' }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className={className} aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3.5 11.5L12 4l8.5 7.5" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M6 10v10h12V10" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M10 20v-5.5h4V20" />
+    </svg>
+  )
+}
+
+export function BuildingIcon({ className = 'h-4 w-4' }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className={className} aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4 20.5h16" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M6 20.5V4.5h8v16" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M14 9.5h4v11" />
+      <path strokeLinecap="round" d="M9 8h2M9 11.5h2M9 15h2M16 13h.01M16 16.5h.01" />
+    </svg>
+  )
+}
+
+export function ArrowRightIcon({ className = 'h-4 w-4' }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className={className} aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M13 6l6 6-6 6" />
+    </svg>
+  )
+}

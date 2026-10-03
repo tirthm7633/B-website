@@ -164,6 +164,10 @@ export const hero = {
   } as ImageSlot,
 }
 
+// Years in business (confirmed). This one number drives both the About stats
+// ("Years of Trust") and the Why Us stats ("Years of Experience").
+const YEARS_IN_BUSINESS = 18
+
 export const about = {
   eyebrow: 'About Buildcon House',
   heading:
@@ -178,7 +182,7 @@ export const about = {
     { value: 10, suffix: '+', label: 'Global Brands' },
     { value: 5, suffix: '', label: 'Categories' },
     { value: 1, suffix: '', label: 'Showroom in Rajkot' },
-    { value: 15, suffix: '+', label: 'Years of Trust' }, // TODO: verify years in business
+    { value: YEARS_IN_BUSINESS, suffix: '+', label: 'Years of Trust' },
   ],
   image: {
     // No non-showroom photo left for this slot (the brochure's three
@@ -424,20 +428,69 @@ export const trustedByFinest = {
   headline: 'Brands we bring together',
 }
 
-export type ProcessStep = {
-  num: string
-  title: string
-  desc: string
+export type WhyUsStat = {
+  value: number
+  suffix: string
+  label: string
+  /** True while the number is a stand-in that hasn't been confirmed with the client. */
+  placeholder?: boolean
 }
 
+export type TrustPointIcon = 'shield' | 'home' | 'calendar' | 'building'
+
+export type TrustPoint = {
+  icon: TrustPointIcon
+  title: string
+  desc: string
+  /**
+   * Makes the whole card clickable. `consultation` opens the "Book a Design
+   * Consultation" popup (source "enquire"); `link` navigates to a page.
+   */
+  action?: { label: string } & ({ kind: 'consultation' } | { kind: 'link'; to: string })
+}
+
+// PLACEHOLDER — TODO: confirm real project count.
+// NOTE: the Projects page currently lists only 3 placeholder projects (see
+// data/projects.ts), so this figure does NOT match what that page shows.
+const PROJECTS_COMPLETED = 25
+
+// The "Why Us" section: stat counters on top, trust points below. All copy lives here.
 export const whyUs = {
   eyebrow: 'Why Buildcon House',
-  steps: [
-    { num: '01', title: 'Discover', desc: 'Explore our full range of sanitaryware, tiles, kitchens, wellness and furniture under one roof.' },
-    { num: '02', title: 'Design', desc: 'Plan your space with our in-showroom team, from single rooms to full-home projects.' },
-    { num: '03', title: 'Select', desc: 'Choose confidently from curated global brands, matched to your style and budget.' },
-    { num: '04', title: 'Live', desc: 'Enjoy a finished space built to let you live better, every single day.' },
-  ] as ProcessStep[],
+  heading: 'Genuine brands, real projects, one showroom in Rajkot.',
+  stats: [
+    // Derived, so it stays accurate: add an 11th brand and this reads "11+".
+    { value: brands.length, suffix: '+', label: 'Brands' },
+    { value: YEARS_IN_BUSINESS, suffix: '+', label: 'Years of Experience' },
+    // PLACEHOLDER — TODO: confirm real project count (see PROJECTS_COMPLETED).
+    { value: PROJECTS_COMPLETED, suffix: '+', label: 'Projects Completed', placeholder: true },
+    // Derived from the Categories section: Sanitaryware, Tiles, Kitchen, Wellness, Furniture.
+    { value: categories.length, suffix: '', label: 'Categories Under One Roof' },
+  ] as WhyUsStat[],
+  trustPoints: [
+    {
+      icon: 'shield',
+      title: 'Authorized Dealer',
+      desc: 'We carry genuine products from Grohe, Vitra, Geberit and other global brands — not imitations.',
+    },
+    {
+      icon: 'home',
+      title: 'Every Category, One Roof',
+      desc: 'Sanitaryware, tiles, modular kitchens, wellness and furniture — no running between shops.',
+    },
+    {
+      icon: 'calendar',
+      title: 'Free Design Consultation',
+      desc: 'Our team helps you choose the right products for your space.',
+      action: { kind: 'consultation', label: 'Book a consultation' },
+    },
+    {
+      icon: 'building',
+      title: 'Real Projects, Proven Results',
+      desc: 'See our completed work across villas, apartments and offices.',
+      action: { kind: 'link', to: '/projects', label: 'View our projects' },
+    },
+  ] as TrustPoint[],
 }
 
 export type GalleryPhoto = ImageSlot & {
