@@ -29,36 +29,23 @@ export function brandSlug(brand: string) {
  * "___mm Catalogue.pdf" files are all Qutone product LINES, not separate
  * brands or manufacturers; "TESAX" is a typo for Qutone's "Texas" line).
  *
- * A number of real catalogs the client supplied are NOT in this array
- * yet because the source PDF is too large to add to the repo as-is (see
- * public/catalogs/README.md's size guidance — several are 20-110MB).
- * Their brand/title/category have already been identified; once each is
- * compressed (or moved to external hosting), add an entry here pointing
- * at the new file and generate a cover with
- * scripts/generate-catalog-covers.cjs. The known list, as of now:
+ * The 21 catalogs that originally didn't fit the ~15MB guideline (source
+ * PDFs ran 15-110MB) were compressed with Ghostscript (image downsampling
+ * + recompression, run via a WASM build since no native install was
+ * available) and are now included below at their compressed size. All of
+ * them hold clearly legible text and images after compression — spot
+ * checked by rendering sample pages — except one flagged exception:
  *
- *   Qutone:    600x600mm GVT Tiles (18.7MB), 600x1200mm Marble/Onyx GVT
- *              Slabs (47.1MB), 800x1600mm Large-Format Slabs (19.4MB),
- *              1200x1800mm Stoneware Slabs (16.4MB), 1200x2400mm
- *              Stoneware Slabs (15.3MB), iMarble 2.0 Marmo Edition
- *              (39.3MB), Progetto Collection 600x600mm (62.4MB),
- *              Progetto Collection general (19.5MB), QGres & Fastrack
- *              Collection (36MB), Solid+ Technical Homogeneous Tiles
- *              (110.4MB — well over GitHub's 100MB per-file limit, MUST
- *              be compressed or externally hosted), Stoneware Collection
- *              800x2400mm (58.6MB), Texas Collection Mansory Oslo/Dune
- *              (17.8MB)
- *   Hansgrohe: Innovations 2021 journal (15.3MB), Bathroom Sales Manual
- *              2019 (25.1MB)
- *   Vitra:     Bathroom Collections 2023 (25.8MB)
- *   Dimore:    Earth To Essence Master Catalogue (17.1MB), Midas
- *              Collection (33.9MB), Neo Collection (22.9MB), Omogenea
- *              Collection (23.8MB), Roccia Collection (18.3MB)
- *   Oyster:    Bath Spa Collection Vol. 1.8 (52.6MB) — Oyster's only
- *              identified catalog; the brand shows "Coming soon" on the
- *              Catalog page until this is added
+ *   hansgrohe-bathroom-sales-manual-2019 is 22.2MB, over the ~15MB
+ *   guideline. Its bulk isn't from photos (which compress fine) but from
+ *   ~3,700 tiny embedded icons (many as small as 9x9px, already near the
+ *   resolution floor) spread across 280 pages — each one carries fixed
+ *   per-image PDF overhead that downsampling can't reduce further without
+ *   real quality loss. Left as-is rather than degraded further; could be
+ *   split into per-category chapters or hosted externally if 22MB proves
+ *   too heavy in practice.
  *
- * To add any NEW catalog (beyond the list above) later: open and read
+ * To add any NEW catalog (beyond what's below) later: open and read
  * the PDF to identify (1) which brand it belongs to — must match one of
  * the 11 brand names/slugs already used in src/data/content.ts for brand
  * logos: Grohe, Hansgrohe, Axor, Geberit, Vitra, Oyster, Qutone, Nexion,
@@ -205,5 +192,194 @@ export const catalogs: Catalog[] = [
     fileSize: '11.7 MB',
     filePath: '/catalogs/vitra/designer-collection-2021.pdf',
     coverImage: '/images/catalogs/vitra/designer-collection-2021.svg',
+  },
+  {
+    id: 'qutone-gvt-tiles-600x600',
+    brand: 'Qutone',
+    title: 'GVT Tiles 600x600mm',
+    categories: ['tiles'],
+    fileSize: '10.3 MB',
+    filePath: '/catalogs/qutone/gvt-tiles-600x600mm.pdf',
+    coverImage: '/images/catalogs/qutone/gvt-tiles-600x600mm.svg',
+  },
+  {
+    id: 'qutone-marble-onyx-gvt-slabs-600x1200',
+    brand: 'Qutone',
+    title: 'Marble/Onyx GVT Slabs 600x1200mm',
+    categories: ['tiles'],
+    fileSize: '14.0 MB',
+    filePath: '/catalogs/qutone/marble-onyx-gvt-slabs-600x1200mm.pdf',
+    coverImage: '/images/catalogs/qutone/marble-onyx-gvt-slabs-600x1200mm.svg',
+  },
+  {
+    id: 'qutone-large-format-slabs-800x1600',
+    brand: 'Qutone',
+    title: 'Large-Format Slabs 800x1600mm',
+    categories: ['tiles'],
+    fileSize: '11.2 MB',
+    filePath: '/catalogs/qutone/large-format-slabs-800x1600mm.pdf',
+    coverImage: '/images/catalogs/qutone/large-format-slabs-800x1600mm.svg',
+  },
+  {
+    id: 'qutone-stoneware-slabs-1200x1800',
+    brand: 'Qutone',
+    title: 'Stoneware Slabs 1200x1800mm',
+    categories: ['tiles'],
+    fileSize: '11.6 MB',
+    filePath: '/catalogs/qutone/stoneware-slabs-1200x1800mm.pdf',
+    coverImage: '/images/catalogs/qutone/stoneware-slabs-1200x1800mm.svg',
+  },
+  {
+    id: 'qutone-stoneware-slabs-1200x2400',
+    brand: 'Qutone',
+    title: 'Stoneware Slabs 1200x2400mm',
+    categories: ['tiles'],
+    fileSize: '11.0 MB',
+    filePath: '/catalogs/qutone/stoneware-slabs-1200x2400mm.pdf',
+    coverImage: '/images/catalogs/qutone/stoneware-slabs-1200x2400mm.svg',
+  },
+  {
+    id: 'qutone-imarble-marmo',
+    brand: 'Qutone',
+    title: 'iMarble 2.0 — Marmo Edition',
+    categories: ['tiles'],
+    fileSize: '5.6 MB',
+    filePath: '/catalogs/qutone/imarble-2-marmo-edition.pdf',
+    coverImage: '/images/catalogs/qutone/imarble-2-marmo-edition.svg',
+  },
+  {
+    id: 'qutone-progetto-600x600',
+    brand: 'Qutone',
+    title: 'Progetto Collection 600x600mm',
+    categories: ['tiles'],
+    fileSize: '11.1 MB',
+    filePath: '/catalogs/qutone/progetto-collection-600x600mm.pdf',
+    coverImage: '/images/catalogs/qutone/progetto-collection-600x600mm.svg',
+  },
+  {
+    id: 'qutone-progetto-collection',
+    brand: 'Qutone',
+    title: 'Progetto Collection',
+    categories: ['tiles'],
+    fileSize: '11.3 MB',
+    filePath: '/catalogs/qutone/progetto-collection.pdf',
+    coverImage: '/images/catalogs/qutone/progetto-collection.svg',
+  },
+  {
+    id: 'qutone-qgres-fastrack',
+    brand: 'Qutone',
+    title: 'QGres & Fastrack Collection',
+    categories: ['tiles'],
+    fileSize: '14.4 MB',
+    filePath: '/catalogs/qutone/qgres-fastrack-collection.pdf',
+    coverImage: '/images/catalogs/qutone/qgres-fastrack-collection.svg',
+  },
+  {
+    id: 'qutone-solid-plus',
+    brand: 'Qutone',
+    title: 'Solid+ Technical Homogeneous Tiles',
+    categories: ['tiles'],
+    fileSize: '4.6 MB',
+    filePath: '/catalogs/qutone/solid-plus-technical-homogeneous-tiles.pdf',
+    coverImage: '/images/catalogs/qutone/solid-plus-technical-homogeneous-tiles.svg',
+  },
+  {
+    id: 'qutone-stoneware-800x2400',
+    brand: 'Qutone',
+    title: 'Stoneware Collection 800x2400mm',
+    categories: ['tiles'],
+    fileSize: '10.7 MB',
+    filePath: '/catalogs/qutone/stoneware-collection-800x2400mm.pdf',
+    coverImage: '/images/catalogs/qutone/stoneware-collection-800x2400mm.svg',
+  },
+  {
+    id: 'qutone-texas-mansory-oslo-dune',
+    brand: 'Qutone',
+    title: 'Texas Collection — Mansory Oslo/Dune',
+    categories: ['tiles'],
+    fileSize: '12.2 MB',
+    filePath: '/catalogs/qutone/texas-collection-mansory-oslo-dune.pdf',
+    coverImage: '/images/catalogs/qutone/texas-collection-mansory-oslo-dune.svg',
+  },
+  {
+    id: 'hansgrohe-innovations-2021',
+    brand: 'Hansgrohe',
+    title: 'hansgrohe Innovations 2021 Journal',
+    categories: ['sanitaryware', 'kitchen', 'wellness'],
+    fileSize: '4.9 MB',
+    filePath: '/catalogs/hansgrohe/innovations-2021-journal.pdf',
+    coverImage: '/images/catalogs/hansgrohe/innovations-2021-journal.svg',
+  },
+  {
+    id: 'hansgrohe-bathroom-sales-manual-2019',
+    brand: 'Hansgrohe',
+    title: 'hansgrohe Bathroom Sales Manual 2019',
+    categories: ['sanitaryware', 'kitchen', 'wellness'],
+    fileSize: '22.2 MB',
+    filePath: '/catalogs/hansgrohe/bathroom-sales-manual-2019.pdf',
+    coverImage: '/images/catalogs/hansgrohe/bathroom-sales-manual-2019.svg',
+  },
+  {
+    id: 'vitra-bathroom-collections-2023',
+    brand: 'Vitra',
+    title: 'VitrA Bathroom Collections 2023',
+    categories: ['sanitaryware', 'furniture'],
+    fileSize: '7.4 MB',
+    filePath: '/catalogs/vitra/bathroom-collections-2023.pdf',
+    coverImage: '/images/catalogs/vitra/bathroom-collections-2023.svg',
+  },
+  {
+    id: 'dimore-earth-to-essence-master-catalogue',
+    brand: 'Dimore',
+    title: 'Earth To Essence Master Catalogue',
+    categories: ['tiles'],
+    fileSize: '7.1 MB',
+    filePath: '/catalogs/dimore/earth-to-essence-master-catalogue.pdf',
+    coverImage: '/images/catalogs/dimore/earth-to-essence-master-catalogue.svg',
+  },
+  {
+    id: 'dimore-midas',
+    brand: 'Dimore',
+    title: 'Midas Collection',
+    categories: ['tiles'],
+    fileSize: '1.4 MB',
+    filePath: '/catalogs/dimore/midas-collection.pdf',
+    coverImage: '/images/catalogs/dimore/midas-collection.svg',
+  },
+  {
+    id: 'dimore-neo',
+    brand: 'Dimore',
+    title: 'Neo Collection',
+    categories: ['tiles'],
+    fileSize: '1.4 MB',
+    filePath: '/catalogs/dimore/neo-collection.pdf',
+    coverImage: '/images/catalogs/dimore/neo-collection.svg',
+  },
+  {
+    id: 'dimore-omogenea',
+    brand: 'Dimore',
+    title: 'Omogenea Collection',
+    categories: ['tiles'],
+    fileSize: '1.6 MB',
+    filePath: '/catalogs/dimore/omogenea-collection.pdf',
+    coverImage: '/images/catalogs/dimore/omogenea-collection.svg',
+  },
+  {
+    id: 'dimore-roccia',
+    brand: 'Dimore',
+    title: 'Roccia Collection',
+    categories: ['tiles'],
+    fileSize: '1.4 MB',
+    filePath: '/catalogs/dimore/roccia-collection.pdf',
+    coverImage: '/images/catalogs/dimore/roccia-collection.svg',
+  },
+  {
+    id: 'oyster-bath-spa-collection-vol-1-8',
+    brand: 'Oyster',
+    title: 'Bath Spa Collection Vol. 1.8',
+    categories: ['wellness', 'sanitaryware'],
+    fileSize: '5.1 MB',
+    filePath: '/catalogs/oyster/bath-spa-collection-vol-1-8.pdf',
+    coverImage: '/images/catalogs/oyster/bath-spa-collection-vol-1-8.svg',
   },
 ]
