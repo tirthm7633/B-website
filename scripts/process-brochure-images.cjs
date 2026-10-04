@@ -108,6 +108,7 @@ const HOMEPAGE_PHOTOS = [
   [149, 'category-tiles'], // p22 "09 / TILES AND SURFACES" — Tiles & Surfaces card
   [83, 'category-wellness'], // p10 — Wellness card: slide is captioned "BATHROOM PRODUCTS" but the photo is a whirlpool/spa bath
   [167, 'visit-storefront-night'], // p26 "11 / VISIT BUILDCON HOUSE" — Visit Us exterior (looks like a render, not a photograph)
+  [453, 'about-rain-shower'], // Grohe section — About image (portrait 3:4 frame). Native 561x701; same pixels as the Grohe gallery copy
 ];
 
 // Deliberately NOT shipped (decoration, marketing artwork or logos):

@@ -2,7 +2,8 @@
 
 Each entry in `src/data/catalogs.ts` has a `filePath` pointing at a file in
 this folder, and a `coverImage` pointing at a thumbnail under
-`public/images/catalogs/`. The Catalog page (`/catalog`) groups entries by
+`public/images/catalog-covers/` (a render of the PDF's own cover page — see
+"Cover thumbnails" below). The Catalog page (`/catalog`) groups entries by
 brand and only shows a brand as clickable once it has at least one entry
 here — brands with none show a dimmed "Coming soon" card instead.
 
@@ -59,8 +60,22 @@ the git repo. Before adding a large file:
    `src/data/catalogs.ts` for the full process.
 2. Place the (ideally already-compressed) file here following the
    structure above.
-3. Add a matching entry to `src/data/catalogs.ts`.
-4. Generate or add a cover thumbnail under `public/images/catalogs/` (a
-   themed placeholder is fine — see
-   `scripts/generate-catalog-covers.cjs` — until a real first-page render
-   is available).
+3. Add a matching entry to `src/data/catalogs.ts`, with
+   `coverImage: '/images/catalog-covers/<brand-slug>/<catalog-id>.jpg'`.
+4. Generate its cover: `node scripts/generate-catalog-covers.cjs <catalog-id>`.
+
+## Cover thumbnails
+
+Every catalog card shows a real thumbnail rendered from that catalog's own
+PDF by `scripts/generate-catalog-covers.cjs` (needs Poppler's `pdftoppm` on
+the PATH: `winget install oschwartz10612.Poppler`, `brew install poppler`,
+or `apt install poppler-utils`). Output is `public/images/catalog-covers/
+<brand-slug>/<catalog-id>.jpg`: 800x600 (the card's 4:3 frame, cropped from
+the top of the page), under 150KB. Run it with no argument to redo every
+catalog, or pass part of an id to redo just those.
+
+It uses page 1, or page 2 if page 1 is blank. Some catalogs open with an
+index, a logo page or a generic brand page, so those have a hand-picked page
+(and, for two-page spreads, which half) listed in `PAGE_OVERRIDES` at the top
+of the script. If a cover looks weak, add or change its entry there and re-run
+the script for that id.

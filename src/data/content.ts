@@ -13,10 +13,11 @@
  *                                            Currently: bright living room with
  *                                            a curved sofa (from the 2026
  *                                            product brochure).
- *   (About image — no file yet)             About section, portrait 3:4 frame.
- *                                            Currently: dark placeholder; set
- *                                            `about.image.src` when a non-
- *                                            showroom photo is available.
+ *   /public/images/homepage/about-rain-shower.webp
+ *                                           About section, portrait 3:4 frame.
+ *                                            Currently: the brochure's Grohe
+ *                                            ceiling rain shower (a copy of the
+ *                                            Grohe gallery photo; native 561x701).
  *   /public/images/homepage/category-sanitaryware.webp
  *   /public/images/homepage/category-tiles.webp
  *   /public/images/homepage/category-kitchen.webp
@@ -146,7 +147,8 @@ export const nav: { label: string; href?: string; to?: string }[] = [
 //   Tiles & Surfaces ... p22 stone-look floor ("09 / TILES AND SURFACES")
 //   Wellness ........... p10 whirlpool spa bath
 //   Visit Us ........... p26 night view of the storefront (looks like a render)
-//   About .............. EMPTY (dark placeholder) — every non-brand photo is used.
+//   About .............. Grohe ceiling rain shower (brochure image #453, from the Grohe section — a
+//                        brand photo, the strongest unused one; also in the Grohe gallery).
 // The kitchen, bathroom, tiles and wellness photos come from slides that also
 // carry a brand logo (Verantes Living, Grohe, Nexion, Oyster), so the same
 // pictures are in those brands' galleries too. Each photo also has a
@@ -186,12 +188,16 @@ export const about = {
     { value: YEARS_IN_BUSINESS, suffix: '+', label: 'Years of Trust' },
   ],
   image: {
-    // No non-showroom photo left for this slot (the brochure's three
-    // non-brand photos went to the Hero, Imported Furniture card and Visit
-    // Us). An empty src renders SmartImage's dark placeholder.
-    src: '',
-    alt: 'Buildcon House showroom',
-    objectPosition: 'center 30%',
+    // The brochure's non-brand photos are all used elsewhere (Hero, Imported Furniture
+    // card, Visit Us), so this is the strongest unused *brand* photo: a Grohe ceiling rain
+    // shower in dark stone — cool and neutral, so it sits inside the Obsidian Steel palette
+    // (SmartImage adds the usual desaturated grade + overlay). It is a brochure picture, not
+    // a showroom photo, and only 561x701 natively, so it is a little soft on large screens;
+    // swap in a real Buildcon House photo when one is available. (An empty src renders
+    // SmartImage's dark placeholder.)
+    src: '/images/homepage/about-rain-shower.webp',
+    alt: 'Ceiling-mounted rain shower falling over a dark stone shower room',
+    objectPosition: 'center',
   } as ImageSlot,
 }
 
@@ -503,8 +509,8 @@ export const whyUs = {
     },
     {
       icon: 'calendar',
-      title: 'Free Design Consultation',
-      desc: 'Our team helps you choose the right products for your space.',
+      title: 'Our Product Suggestion Experience',
+      desc: "Share your space with us, and we'll suggest the products that truly fit.",
       action: { kind: 'consultation', label: 'Book a consultation' },
     },
     {

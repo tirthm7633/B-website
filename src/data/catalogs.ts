@@ -50,13 +50,22 @@ export function brandSlug(brand: string) {
  * the 10 brand names/slugs already used in src/data/content.ts for brand
  * logos: Grohe, Hansgrohe x Axor (one merged brand — Axor is Hansgrohe's
  * designer label, so Axor catalogs belong here too), Geberit, Vitra, Oyster,
- * Qutone, Nexion, Dimore, MCM Ittim, Verantes Living (Geberit currently has
- * zero catalogs); (2) a clear title based on its
+ * Qutone, Nexion, Dimore, MCM Ittim, Verantes Living; (2) a clear title based on its
  * actual content; (3) which categories it covers based on the products
  * actually shown inside — never guessed from the filename alone. Then
  * place the PDF at /public/catalogs/[brand-slug]/[filename].pdf (see
  * brandSlug() above and public/catalogs/README.md) and add one entry
- * here.
+ * here, with
+ *   coverImage: '/images/catalog-covers/[brand-slug]/[id].jpg'
+ * then run `node scripts/generate-catalog-covers.cjs <id>` to render that catalog's cover
+ * from its own PDF (needs Poppler's pdftoppm).
+ *
+ * COVERS: every coverImage is a real render of a page of the catalog's own PDF (4:3, JPEG
+ * under 150KB) made by scripts/generate-catalog-covers.cjs. It uses page 1, or page 2 when
+ * page 1 is blank; 13 catalogs whose first pages are index/logo/text pages have a hand-picked
+ * page recorded in PAGE_OVERRIDES at the top of that script. The card applies the site's
+ * usual photo grade on top (see SmartImage), so thumbnails from very different PDFs sit
+ * together consistently.
  */
 export const catalogs: Catalog[] = [
   {
@@ -66,7 +75,7 @@ export const catalogs: Catalog[] = [
     categories: ['tiles'],
     fileSize: '7.2 MB',
     filePath: '/catalogs/qutone/gvt-wood-look-planks-200x1200mm.pdf',
-    coverImage: '/images/catalogs/qutone/gvt-wood-look-planks-200x1200mm.svg',
+    coverImage: '/images/catalog-covers/qutone/qutone-gvt-wood-look-200x1200.jpg',
   },
   {
     id: 'qutone-imarble-iris',
@@ -75,7 +84,7 @@ export const catalogs: Catalog[] = [
     categories: ['tiles'],
     fileSize: '12.6 MB',
     filePath: '/catalogs/qutone/imarble-2-iris-edition-2025-26.pdf',
-    coverImage: '/images/catalogs/qutone/imarble-2-iris-edition-2025-26.svg',
+    coverImage: '/images/catalog-covers/qutone/qutone-imarble-iris.jpg',
   },
   {
     id: 'qutone-imarble-mansory',
@@ -84,7 +93,7 @@ export const catalogs: Catalog[] = [
     categories: ['tiles'],
     fileSize: '12.9 MB',
     filePath: '/catalogs/qutone/imarble-2-mansory-edition-2025-26.pdf',
-    coverImage: '/images/catalogs/qutone/imarble-2-mansory-edition-2025-26.svg',
+    coverImage: '/images/catalog-covers/qutone/qutone-imarble-mansory.jpg',
   },
   {
     id: 'qutone-progetto-1200x1800',
@@ -93,7 +102,7 @@ export const catalogs: Catalog[] = [
     categories: ['tiles'],
     fileSize: '6.5 MB',
     filePath: '/catalogs/qutone/progetto-collection-1200x1800mm.pdf',
-    coverImage: '/images/catalogs/qutone/progetto-collection-1200x1800mm.svg',
+    coverImage: '/images/catalog-covers/qutone/qutone-progetto-1200x1800.jpg',
   },
   {
     id: 'qutone-qrock',
@@ -102,7 +111,7 @@ export const catalogs: Catalog[] = [
     categories: ['tiles'],
     fileSize: '8 MB',
     filePath: '/catalogs/qutone/qrock-collection.pdf',
-    coverImage: '/images/catalogs/qutone/qrock-collection.svg',
+    coverImage: '/images/catalog-covers/qutone/qutone-qrock.jpg',
   },
   {
     id: 'qutone-texas-triform',
@@ -111,7 +120,7 @@ export const catalogs: Catalog[] = [
     categories: ['tiles'],
     fileSize: '12.7 MB',
     filePath: '/catalogs/qutone/texas-collection-triform-edition.pdf',
-    coverImage: '/images/catalogs/qutone/texas-collection-triform-edition.svg',
+    coverImage: '/images/catalog-covers/qutone/qutone-texas-triform.jpg',
   },
   {
     id: 'qutone-texas-embark',
@@ -120,7 +129,7 @@ export const catalogs: Catalog[] = [
     categories: ['tiles'],
     fileSize: '11.9 MB',
     filePath: '/catalogs/qutone/texas-collection-embark-edition.pdf',
-    coverImage: '/images/catalogs/qutone/texas-collection-embark-edition.svg',
+    coverImage: '/images/catalog-covers/qutone/qutone-texas-embark.jpg',
   },
   {
     id: 'hansgrohe-news-2019',
@@ -129,7 +138,7 @@ export const catalogs: Catalog[] = [
     categories: ['sanitaryware', 'kitchen', 'wellness'],
     fileSize: '10 MB',
     filePath: '/catalogs/hansgrohe-x-axor/news-2019-smart-living-showers-kitchen.pdf',
-    coverImage: '/images/catalogs/hansgrohe-x-axor/news-2019-smart-living-showers-kitchen.svg',
+    coverImage: '/images/catalog-covers/hansgrohe-x-axor/hansgrohe-news-2019.jpg',
   },
   {
     id: 'verantes-living-ferro-nova-kitchens',
@@ -138,7 +147,7 @@ export const catalogs: Catalog[] = [
     categories: ['kitchen', 'furniture'],
     fileSize: '1.9 MB',
     filePath: '/catalogs/verantes-living/ferro-nova-kitchens.pdf',
-    coverImage: '/images/catalogs/verantes-living/ferro-nova-kitchens.svg',
+    coverImage: '/images/catalog-covers/verantes-living/verantes-living-ferro-nova-kitchens.jpg',
   },
   {
     id: 'dimore-marmo',
@@ -147,7 +156,7 @@ export const catalogs: Catalog[] = [
     categories: ['tiles'],
     fileSize: '10.6 MB',
     filePath: '/catalogs/dimore/marmo-collection.pdf',
-    coverImage: '/images/catalogs/dimore/marmo-collection.svg',
+    coverImage: '/images/catalog-covers/dimore/dimore-marmo.jpg',
   },
   {
     id: 'nexion-general-catalogue',
@@ -156,7 +165,7 @@ export const catalogs: Catalog[] = [
     categories: ['tiles'],
     fileSize: '7.9 MB',
     filePath: '/catalogs/nexion/general-catalogue.pdf',
-    coverImage: '/images/catalogs/nexion/general-catalogue.svg',
+    coverImage: '/images/catalog-covers/nexion/nexion-general-catalogue.jpg',
   },
   {
     id: 'nexion-marble-gallery-2026',
@@ -165,7 +174,7 @@ export const catalogs: Catalog[] = [
     categories: ['tiles'],
     fileSize: '7.1 MB',
     filePath: '/catalogs/nexion/marble-gallery-2026.pdf',
-    coverImage: '/images/catalogs/nexion/marble-gallery-2026.svg',
+    coverImage: '/images/catalog-covers/nexion/nexion-marble-gallery-2026.jpg',
   },
   {
     id: 'grohe-spa-lookbook-2026',
@@ -174,7 +183,7 @@ export const catalogs: Catalog[] = [
     categories: ['wellness'],
     fileSize: '4.8 MB',
     filePath: '/catalogs/grohe/spa-lookbook-2026.pdf',
-    coverImage: '/images/catalogs/grohe/spa-lookbook-2026.svg',
+    coverImage: '/images/catalog-covers/grohe/grohe-spa-lookbook-2026.jpg',
   },
   {
     id: 'vitra-bathroom-collections-2025-india',
@@ -183,7 +192,7 @@ export const catalogs: Catalog[] = [
     categories: ['sanitaryware', 'furniture'],
     fileSize: '7.4 MB',
     filePath: '/catalogs/vitra/bathroom-collections-2025-india.pdf',
-    coverImage: '/images/catalogs/vitra/bathroom-collections-2025-india.svg',
+    coverImage: '/images/catalog-covers/vitra/vitra-bathroom-collections-2025-india.jpg',
   },
   {
     id: 'vitra-designer-collection-2021',
@@ -192,7 +201,7 @@ export const catalogs: Catalog[] = [
     categories: ['sanitaryware', 'furniture'],
     fileSize: '11.7 MB',
     filePath: '/catalogs/vitra/designer-collection-2021.pdf',
-    coverImage: '/images/catalogs/vitra/designer-collection-2021.svg',
+    coverImage: '/images/catalog-covers/vitra/vitra-designer-collection-2021.jpg',
   },
   {
     id: 'qutone-gvt-tiles-600x600',
@@ -201,7 +210,7 @@ export const catalogs: Catalog[] = [
     categories: ['tiles'],
     fileSize: '10.3 MB',
     filePath: '/catalogs/qutone/gvt-tiles-600x600mm.pdf',
-    coverImage: '/images/catalogs/qutone/gvt-tiles-600x600mm.svg',
+    coverImage: '/images/catalog-covers/qutone/qutone-gvt-tiles-600x600.jpg',
   },
   {
     id: 'qutone-marble-onyx-gvt-slabs-600x1200',
@@ -210,7 +219,7 @@ export const catalogs: Catalog[] = [
     categories: ['tiles'],
     fileSize: '14.0 MB',
     filePath: '/catalogs/qutone/marble-onyx-gvt-slabs-600x1200mm.pdf',
-    coverImage: '/images/catalogs/qutone/marble-onyx-gvt-slabs-600x1200mm.svg',
+    coverImage: '/images/catalog-covers/qutone/qutone-marble-onyx-gvt-slabs-600x1200.jpg',
   },
   {
     id: 'qutone-large-format-slabs-800x1600',
@@ -219,7 +228,7 @@ export const catalogs: Catalog[] = [
     categories: ['tiles'],
     fileSize: '11.2 MB',
     filePath: '/catalogs/qutone/large-format-slabs-800x1600mm.pdf',
-    coverImage: '/images/catalogs/qutone/large-format-slabs-800x1600mm.svg',
+    coverImage: '/images/catalog-covers/qutone/qutone-large-format-slabs-800x1600.jpg',
   },
   {
     id: 'qutone-stoneware-slabs-1200x1800',
@@ -228,7 +237,7 @@ export const catalogs: Catalog[] = [
     categories: ['tiles'],
     fileSize: '11.6 MB',
     filePath: '/catalogs/qutone/stoneware-slabs-1200x1800mm.pdf',
-    coverImage: '/images/catalogs/qutone/stoneware-slabs-1200x1800mm.svg',
+    coverImage: '/images/catalog-covers/qutone/qutone-stoneware-slabs-1200x1800.jpg',
   },
   {
     id: 'qutone-stoneware-slabs-1200x2400',
@@ -237,7 +246,7 @@ export const catalogs: Catalog[] = [
     categories: ['tiles'],
     fileSize: '11.0 MB',
     filePath: '/catalogs/qutone/stoneware-slabs-1200x2400mm.pdf',
-    coverImage: '/images/catalogs/qutone/stoneware-slabs-1200x2400mm.svg',
+    coverImage: '/images/catalog-covers/qutone/qutone-stoneware-slabs-1200x2400.jpg',
   },
   {
     id: 'qutone-imarble-marmo',
@@ -246,7 +255,7 @@ export const catalogs: Catalog[] = [
     categories: ['tiles'],
     fileSize: '5.6 MB',
     filePath: '/catalogs/qutone/imarble-2-marmo-edition.pdf',
-    coverImage: '/images/catalogs/qutone/imarble-2-marmo-edition.svg',
+    coverImage: '/images/catalog-covers/qutone/qutone-imarble-marmo.jpg',
   },
   {
     id: 'qutone-progetto-600x600',
@@ -255,7 +264,7 @@ export const catalogs: Catalog[] = [
     categories: ['tiles'],
     fileSize: '11.1 MB',
     filePath: '/catalogs/qutone/progetto-collection-600x600mm.pdf',
-    coverImage: '/images/catalogs/qutone/progetto-collection-600x600mm.svg',
+    coverImage: '/images/catalog-covers/qutone/qutone-progetto-600x600.jpg',
   },
   {
     id: 'qutone-progetto-collection',
@@ -264,7 +273,7 @@ export const catalogs: Catalog[] = [
     categories: ['tiles'],
     fileSize: '11.3 MB',
     filePath: '/catalogs/qutone/progetto-collection.pdf',
-    coverImage: '/images/catalogs/qutone/progetto-collection.svg',
+    coverImage: '/images/catalog-covers/qutone/qutone-progetto-collection.jpg',
   },
   {
     id: 'qutone-qgres-fastrack',
@@ -273,7 +282,7 @@ export const catalogs: Catalog[] = [
     categories: ['tiles'],
     fileSize: '14.4 MB',
     filePath: '/catalogs/qutone/qgres-fastrack-collection.pdf',
-    coverImage: '/images/catalogs/qutone/qgres-fastrack-collection.svg',
+    coverImage: '/images/catalog-covers/qutone/qutone-qgres-fastrack.jpg',
   },
   {
     id: 'qutone-solid-plus',
@@ -282,7 +291,7 @@ export const catalogs: Catalog[] = [
     categories: ['tiles'],
     fileSize: '4.6 MB',
     filePath: '/catalogs/qutone/solid-plus-technical-homogeneous-tiles.pdf',
-    coverImage: '/images/catalogs/qutone/solid-plus-technical-homogeneous-tiles.svg',
+    coverImage: '/images/catalog-covers/qutone/qutone-solid-plus.jpg',
   },
   {
     id: 'qutone-stoneware-800x2400',
@@ -291,7 +300,7 @@ export const catalogs: Catalog[] = [
     categories: ['tiles'],
     fileSize: '10.7 MB',
     filePath: '/catalogs/qutone/stoneware-collection-800x2400mm.pdf',
-    coverImage: '/images/catalogs/qutone/stoneware-collection-800x2400mm.svg',
+    coverImage: '/images/catalog-covers/qutone/qutone-stoneware-800x2400.jpg',
   },
   {
     id: 'qutone-texas-mansory-oslo-dune',
@@ -300,7 +309,7 @@ export const catalogs: Catalog[] = [
     categories: ['tiles'],
     fileSize: '12.2 MB',
     filePath: '/catalogs/qutone/texas-collection-mansory-oslo-dune.pdf',
-    coverImage: '/images/catalogs/qutone/texas-collection-mansory-oslo-dune.svg',
+    coverImage: '/images/catalog-covers/qutone/qutone-texas-mansory-oslo-dune.jpg',
   },
   {
     id: 'hansgrohe-innovations-2021',
@@ -309,7 +318,7 @@ export const catalogs: Catalog[] = [
     categories: ['sanitaryware', 'kitchen', 'wellness'],
     fileSize: '4.9 MB',
     filePath: '/catalogs/hansgrohe-x-axor/innovations-2021-journal.pdf',
-    coverImage: '/images/catalogs/hansgrohe-x-axor/innovations-2021-journal.svg',
+    coverImage: '/images/catalog-covers/hansgrohe-x-axor/hansgrohe-innovations-2021.jpg',
   },
   {
     id: 'hansgrohe-bathroom-sales-manual-2019',
@@ -318,7 +327,7 @@ export const catalogs: Catalog[] = [
     categories: ['sanitaryware', 'kitchen', 'wellness'],
     fileSize: '22.2 MB',
     filePath: '/catalogs/hansgrohe-x-axor/bathroom-sales-manual-2019.pdf',
-    coverImage: '/images/catalogs/hansgrohe-x-axor/bathroom-sales-manual-2019.svg',
+    coverImage: '/images/catalog-covers/hansgrohe-x-axor/hansgrohe-bathroom-sales-manual-2019.jpg',
   },
   {
     id: 'vitra-bathroom-collections-2023',
@@ -327,7 +336,7 @@ export const catalogs: Catalog[] = [
     categories: ['sanitaryware', 'furniture'],
     fileSize: '7.4 MB',
     filePath: '/catalogs/vitra/bathroom-collections-2023.pdf',
-    coverImage: '/images/catalogs/vitra/bathroom-collections-2023.svg',
+    coverImage: '/images/catalog-covers/vitra/vitra-bathroom-collections-2023.jpg',
   },
   {
     id: 'dimore-earth-to-essence-master-catalogue',
@@ -336,7 +345,7 @@ export const catalogs: Catalog[] = [
     categories: ['tiles'],
     fileSize: '7.1 MB',
     filePath: '/catalogs/dimore/earth-to-essence-master-catalogue.pdf',
-    coverImage: '/images/catalogs/dimore/earth-to-essence-master-catalogue.svg',
+    coverImage: '/images/catalog-covers/dimore/dimore-earth-to-essence-master-catalogue.jpg',
   },
   {
     id: 'dimore-midas',
@@ -345,7 +354,7 @@ export const catalogs: Catalog[] = [
     categories: ['tiles'],
     fileSize: '1.4 MB',
     filePath: '/catalogs/dimore/midas-collection.pdf',
-    coverImage: '/images/catalogs/dimore/midas-collection.svg',
+    coverImage: '/images/catalog-covers/dimore/dimore-midas.jpg',
   },
   {
     id: 'dimore-neo',
@@ -354,7 +363,7 @@ export const catalogs: Catalog[] = [
     categories: ['tiles'],
     fileSize: '1.4 MB',
     filePath: '/catalogs/dimore/neo-collection.pdf',
-    coverImage: '/images/catalogs/dimore/neo-collection.svg',
+    coverImage: '/images/catalog-covers/dimore/dimore-neo.jpg',
   },
   {
     id: 'dimore-omogenea',
@@ -363,7 +372,7 @@ export const catalogs: Catalog[] = [
     categories: ['tiles'],
     fileSize: '1.6 MB',
     filePath: '/catalogs/dimore/omogenea-collection.pdf',
-    coverImage: '/images/catalogs/dimore/omogenea-collection.svg',
+    coverImage: '/images/catalog-covers/dimore/dimore-omogenea.jpg',
   },
   {
     id: 'dimore-roccia',
@@ -372,7 +381,7 @@ export const catalogs: Catalog[] = [
     categories: ['tiles'],
     fileSize: '1.4 MB',
     filePath: '/catalogs/dimore/roccia-collection.pdf',
-    coverImage: '/images/catalogs/dimore/roccia-collection.svg',
+    coverImage: '/images/catalog-covers/dimore/dimore-roccia.jpg',
   },
   {
     id: 'oyster-bath-spa-collection-vol-1-8',
@@ -381,7 +390,7 @@ export const catalogs: Catalog[] = [
     categories: ['wellness', 'sanitaryware'],
     fileSize: '5.1 MB',
     filePath: '/catalogs/oyster/bath-spa-collection-vol-1-8.pdf',
-    coverImage: '/images/catalogs/oyster/bath-spa-collection-vol-1-8.svg',
+    coverImage: '/images/catalog-covers/oyster/oyster-bath-spa-collection-vol-1-8.jpg',
   },
   {
     id: 'mcm-ittim-mcm-flexi-cladding-2026',
@@ -390,6 +399,35 @@ export const catalogs: Catalog[] = [
     categories: ['tiles'],
     fileSize: '10.0 MB',
     filePath: '/catalogs/mcm-ittim/mcm-flexi-cladding-catalogue-2026.pdf',
-    coverImage: '/images/catalogs/mcm-ittim/mcm-flexi-cladding-catalogue-2026.svg',
+    coverImage: '/images/catalog-covers/mcm-ittim/mcm-ittim-mcm-flexi-cladding-2026.jpg',
+  },
+  // Geberit (Feb 2026 India MRP brochures). The MRP catalogue was compressed with Ghostscript
+  // (12.1 -> 8.1 MB, 150dpi); the other two were already small and are the files as supplied.
+  {
+    id: 'geberit-alpha-actuator-plates-cisterns-2026',
+    brand: 'Geberit',
+    title: 'Alpha Actuator Plates & Concealed Cisterns 2026',
+    categories: ['sanitaryware'],
+    fileSize: '6.3 MB',
+    filePath: '/catalogs/geberit/alpha-actuator-plates-concealed-cisterns-2026.pdf',
+    coverImage: '/images/catalog-covers/geberit/geberit-alpha-actuator-plates-cisterns-2026.jpg',
+  },
+  {
+    id: 'geberit-ceramics-concept-2026',
+    brand: 'Geberit',
+    title: 'Ceramics Concept — WC & Washbasin Ceramics 2026',
+    categories: ['sanitaryware'],
+    fileSize: '3.1 MB',
+    filePath: '/catalogs/geberit/ceramics-concept-brochure-2026.pdf',
+    coverImage: '/images/catalog-covers/geberit/geberit-ceramics-concept-2026.jpg',
+  },
+  {
+    id: 'geberit-product-range-mrp-2026',
+    brand: 'Geberit',
+    title: 'Product Range & MRP Catalogue 2026',
+    categories: ['sanitaryware'],
+    fileSize: '8.1 MB',
+    filePath: '/catalogs/geberit/product-range-mrp-catalogue-2026.pdf',
+    coverImage: '/images/catalog-covers/geberit/geberit-product-range-mrp-2026.jpg',
   },
 ]

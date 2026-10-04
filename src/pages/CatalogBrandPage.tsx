@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import BrandLogo from '../components/BrandLogo'
 import ConsultationModal, { type ConsultationContext } from '../components/ConsultationModal'
+import SmartImage from '../components/SmartImage'
 import { brandSlug, catalogs } from '../data/catalogs'
 import { brands } from '../data/content'
 import { CATEGORY_LABELS } from '../data/projects'
@@ -57,11 +58,13 @@ export default function CatalogBrandPage() {
             className="group flex flex-col overflow-hidden rounded-sm border border-line text-left transition-colors duration-300 hover:border-accent"
           >
             <div className="relative aspect-[4/3] overflow-hidden">
-              <img
+              {/* SmartImage: lazy-loaded, with the site's cool photo grade + dark overlay so covers from
+                  very different PDFs sit together consistently; falls back to the dark placeholder
+                  if a thumbnail file is ever missing. */}
+              <SmartImage
                 src={catalog.coverImage}
                 alt={catalog.title}
-                loading="lazy"
-                className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                className="h-full w-full transition-transform duration-500 ease-out group-hover:scale-105"
               />
             </div>
             <div className="flex flex-1 flex-col gap-3 p-5">

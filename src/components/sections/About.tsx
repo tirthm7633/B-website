@@ -49,7 +49,9 @@ export default function About() {
   return (
     <section id="about" ref={sectionRef} className="border-t border-line bg-surface px-6 py-32 md:px-12">
       <div className="grid grid-cols-1 gap-16 md:grid-cols-2 md:gap-24">
-        <div className="relative">
+        {/* self-start: the offset frame hugs the photo instead of stretching down to the
+            height of the (taller, on tablet) text column beside it. */}
+        <div className="relative self-start">
           <div className="pointer-events-none absolute -top-4 -left-4 h-full w-full border border-accent/50 md:-top-6 md:-left-6" />
           <div className="relative aspect-[3/4] overflow-hidden">
             <div ref={imageRef} className="absolute inset-x-0 -top-[9%] h-[118%]">
