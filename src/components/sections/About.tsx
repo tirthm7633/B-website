@@ -2,8 +2,8 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useEffect, useRef } from 'react'
 import { about } from '../../data/content'
-import { useCountUp } from '../../lib/useCountUp'
 import { prefersReducedMotion } from '../../lib/usePrefersReducedMotion'
+import CountUp from '../CountUp'
 import SmartImage from '../SmartImage'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -44,8 +44,6 @@ export default function About() {
     return () => ctx.revert()
   }, [])
 
-  useCountUp(sectionRef)
-
   return (
     <section id="about" ref={sectionRef} className="border-t border-line bg-surface px-6 py-32 md:px-12">
       <div className="grid grid-cols-1 gap-16 md:grid-cols-2 md:gap-24">
@@ -85,9 +83,7 @@ export default function About() {
             {about.stats.map((stat) => (
               <div key={stat.label} className="border-l border-line pl-4">
                 <div className="numerals font-display text-4xl font-light text-text md:text-5xl">
-                  <span className="stat-value" data-value={stat.value}>
-                    0
-                  </span>
+                  <CountUp value={stat.value} />
                   {stat.suffix}
                 </div>
                 <p className="eyebrow mt-2 text-[0.6rem]">{stat.label}</p>
