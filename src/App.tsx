@@ -72,8 +72,15 @@ function ScrollToTop({ location }: { location: Location }) {
     if (hash) {
       const el = document.querySelector(hash)
       if (el) {
-        if (lenisRef.current) lenisRef.current.scrollTo(el as HTMLElement, { immediate: true })
-        else el.scrollIntoView()
+        // Aim at an absolute position built from the *native* scroll offset, not at the element.
+        // The nav/footer hash links are plain <a href="/#id"> tags, so by the time this runs the
+        // browser has already jumped to the target and Lenis hasn't seen that scroll yet; asking
+        // Lenis to scroll to the element works from its stale internal position and sends the
+        // page straight back to where it was (the Categories link did nothing, the others only
+        // worked by rounding luck).
+        const top = el.getBoundingClientRect().top + window.scrollY
+        if (lenisRef.current) lenisRef.current.scrollTo(top, { immediate: true })
+        else window.scrollTo(0, top)
         return
       }
     }
