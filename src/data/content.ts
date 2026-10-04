@@ -65,7 +65,11 @@ export const site = {
   tagline: 'Let you live better',
   shortDescription:
     "Rajkot's destination for premium sanitaryware, tiles, kitchens, wellness and imported furniture.",
-  url: 'https://www.buildconhouse.com', // TODO: replace with the live domain once deployed
+  // The live address, with no trailing slash. Used for the share preview, canonical links, the
+  // sitemap's URLs and the structured data. www is the main address: in Vercel (Settings -> Domains)
+  // buildconhouse.com redirects to www.buildconhouse.com, so keep this, index.html's og tags and
+  // public/sitemap.xml + robots.txt in step with that choice.
+  url: 'https://www.buildconhouse.com',
   logo: {
     // Transparent PNG made from the client's dark-background logo (the grey
     // wordmark and blue "O" are built for the dark theme, so it is meant for
@@ -84,7 +88,9 @@ export const seo = {
   title: 'Buildcon House | Premium Sanitaryware, Tiles, Kitchen & Furniture in Rajkot',
   description:
     "Buildcon House is Rajkot's premium showroom for sanitaryware, tiles & surfaces, modular kitchens, wellness and imported furniture — bringing world-class global brands under one roof.",
-  ogImage: '/images/og-cover.jpg', // TODO: add a 1200x630 social preview image at this path
+  // 1200x630 social-share preview (public/images/og-cover.jpg); also referenced as an absolute
+  // URL in index.html, because link-preview crawlers (WhatsApp, Facebook) don't run JavaScript.
+  ogImage: '/images/og-cover.jpg',
 }
 
 export const contact = {
@@ -112,10 +118,15 @@ export const contact = {
   // shown to visitors; where consultation requests are delivered is a separate setting
   // (CONSULTATION_EMAIL in consultation-config.ts).
   email: 'buildconhouse10@gmail.com',
-  // Opening times given by the owner: 9:30 AM – 7:30 PM. TODO: confirm which days these apply
-  // to — Monday – Saturday with Sunday closed is an assumption carried over from the earlier draft.
+  // Opening hours confirmed by the owner (2026-10-04): 9:30 AM – 7:30 PM, Monday – Saturday,
+  // closed on Sunday. `schema` is the same opening time in the form search engines read (24-hour
+  // times); SEO.tsx puts it in the structured data — keep it in step with `time`.
   hours: [
-    { days: 'Monday – Saturday', time: '9:30 AM – 7:30 PM' },
+    {
+      days: 'Monday – Saturday',
+      time: '9:30 AM – 7:30 PM',
+      schema: { dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'], opens: '09:30', closes: '19:30' },
+    },
     { days: 'Sunday', time: 'Closed' },
   ],
   // TODO: add real latitude/longitude for more precise JSON-LD geo data.
@@ -178,10 +189,9 @@ export const hero = {
 const YEARS_IN_BUSINESS = 18
 
 // Year Buildcon Gallery opened (the first Our Journey milestone).
-// NOTE: 2026 - 2009 = 17, but the owner's copy says "18+ years", so YEARS_IN_BUSINESS is a
-// stated figure and is deliberately NOT computed from this. Worth confirming with the owner
-// which is right (e.g. if the business predates the Gallery launch, or whether to say "17+"
-// until 2027) and then changing the one that's off.
+// NOTE: 2026 - 2009 = 17, while the owner confirmed "18+ years" (2026-10-04) — so
+// YEARS_IN_BUSINESS is a stated figure and is deliberately NOT computed from this. Both are kept
+// as the owner gave them; if the founding year turns out to be 2008, change only this constant.
 const FOUNDING_YEAR = 2009
 
 export const about = {
@@ -575,9 +585,9 @@ export type TrustPoint = {
   action?: { label: string } & ({ kind: 'consultation' } | { kind: 'link'; to: string })
 }
 
-// PLACEHOLDER — TODO: confirm real project count.
-// NOTE: the Projects page currently lists only 3 placeholder projects (see
-// data/projects.ts), so this figure does NOT match what that page shows.
+// Projects completed — "25+" confirmed by the owner (2026-10-04). The Projects page itself is
+// switched off while its sample projects are placeholders (data/visibility.ts), so this figure is
+// not backed by anything visitors can browse yet.
 const PROJECTS_COMPLETED = 25
 
 // The "Why Us" section: stat counters on top, trust points below. All copy lives here.
@@ -589,8 +599,7 @@ export const whyUs = {
     { value: brands.length, suffix: '+', label: 'Brands' },
     // Links to the full story: the Our Journey timeline page.
     { value: YEARS_IN_BUSINESS, suffix: '+', label: 'Years of Experience', to: '/our-journey', linkLabel: 'Our story' },
-    // PLACEHOLDER — TODO: confirm real project count (see PROJECTS_COMPLETED).
-    { value: PROJECTS_COMPLETED, suffix: '+', label: 'Projects Completed', placeholder: true },
+    { value: PROJECTS_COMPLETED, suffix: '+', label: 'Projects Completed' },
     // Derived from the Categories section: Sanitaryware, Tiles, Kitchen, Wellness, Furniture.
     { value: categories.length, suffix: '', label: 'Categories Under One Roof' },
   ] as WhyUsStat[],
