@@ -74,7 +74,7 @@ export default function Hero() {
         <div className="flex flex-wrap items-center gap-8">
           <a
             href={hero.primaryCta.href}
-            className="rounded-full border border-accent px-8 py-4 text-xs tracking-[0.2em] text-accent-bright uppercase transition-colors duration-500 hover:bg-accent hover:text-bg"
+            className="rounded-full border border-accent px-8 py-4 text-xs tracking-[0.2em] text-accent-bright uppercase transition-colors duration-500 hover:bg-accent hover:text-bg!"
           >
             {hero.primaryCta.label}
           </a>

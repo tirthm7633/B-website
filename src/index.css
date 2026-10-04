@@ -55,6 +55,9 @@ p {
   margin: 0;
 }
 
+/* Unlayered, so this beats every Tailwind colour utility on an <a> (text-*, hover:text-*) —
+   links render in the inherited colour unless a utility is marked important (e.g. the pill
+   CTAs' `hover:text-bg!`). Put colour on a child element if a link needs a different one. */
 a {
   color: inherit;
   text-decoration: none;
