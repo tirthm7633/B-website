@@ -40,9 +40,9 @@ node scripts/audit-brand-logos.cjs   # prints luminance/contrast/plate data
 | `qutone.png` | ✅ Yes — full logo, teal block with white wordmark | Logo (dark plate) |
 | `nexion.png` | ✅ Yes — white wordmark on black (supplied as a JPG, converted to PNG losslessly) | Logo (light plate) |
 | `dimore.png` | ✅ Yes | Logo (light plate) |
-| `mcm-ittim.png` | ❌ No — the original mixed the real "ittimi by MCM" mark with unrelated decorative pattern-swatch artwork | Text fallback |
+| `mcm-ittim.png` | ✅ Yes — "ittimi by MCM" mark cut out of the supplied image (pattern swatches and grey background removed; 2x resized). Supplied original: `originals/mcm-ittim-as-supplied.png`. Low-resolution source — replace with a vector/hi-res export if available | Logo (dark plate) |
 | `verantes-living.png` | ✅ Yes | Logo (dark plate) |
 
-**9 of 10 brands show a real logo.** Only MCM Ittim shows the text
-fallback, because no usable file exists for it at all — drop a clean,
-uncropped export at that exact filename to bring it in as a real logo too.
+**All 10 brands show a real logo.** MCM Ittim's source image is small (about 180 px of
+logo), so it is the softest of the set; a clean vector or hi-res export dropped in at the same
+filename would sharpen it.

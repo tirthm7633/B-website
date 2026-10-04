@@ -54,6 +54,9 @@ export default function BrandLogo({ src, alt, fallbackLabel, plate = 'light', cl
   // The URL that finally worked (a cache-busted copy of `src`), tagged with the `src` it
   // belongs to so a changed `src` prop never shows a stale one.
   const [recovered, setRecovered] = useState<{ src: string; url: string } | null>(null)
+  // A tall lockup (e.g. MCM Ittim's stacked "ittimi by MCM") would be left tiny in a wide tile
+  // at the usual 72% height, so portrait logos get more of the tile's height.
+  const [portrait, setPortrait] = useState(false)
   const tries = useRef(0)
   const missing = useRef(false)
 
@@ -134,8 +137,9 @@ export default function BrandLogo({ src, alt, fallbackLabel, plate = 'light', cl
           alt={alt}
           loading="lazy"
           onError={() => setFailed(true)}
+          onLoad={(e) => setPortrait(e.currentTarget.naturalHeight > e.currentTarget.naturalWidth * 1.15)}
           className="object-contain"
-          style={{ width: '88%', height: '72%', imageRendering: 'auto' }}
+          style={{ width: '88%', height: portrait ? '88%' : '72%', imageRendering: 'auto' }}
         />
       )}
     </div>

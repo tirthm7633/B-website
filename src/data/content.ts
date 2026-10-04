@@ -107,12 +107,15 @@ export const contact = {
     '&output=embed',
   instagramHandle: '@buildcon__house',
   instagramHref: 'https://www.instagram.com/buildcon__house',
-  // TODO: add the studio's email once provided — the contact section hides
-  // the email row automatically while this stays empty.
-  email: '',
-  // TODO: confirm real opening hours with the showroom team.
+  // The showroom's public email, shown (as a mailto link) under "Connect" in the Contact
+  // section — that row hides automatically if this is empty. NOTE: this is only the address
+  // shown to visitors; where consultation requests are delivered is a separate setting
+  // (CONSULTATION_EMAIL in consultation-config.ts).
+  email: 'buildconhouse10@gmail.com',
+  // Opening times given by the owner: 9:30 AM – 7:30 PM. TODO: confirm which days these apply
+  // to — Monday – Saturday with Sunday closed is an assumption carried over from the earlier draft.
   hours: [
-    { days: 'Monday – Saturday', time: '10:00 AM – 8:00 PM' },
+    { days: 'Monday – Saturday', time: '9:30 AM – 7:30 PM' },
     { days: 'Sunday', time: 'Closed' },
   ],
   // TODO: add real latitude/longitude for more precise JSON-LD geo data.
@@ -422,9 +425,8 @@ export type Brand = {
 // image — there is no minimum-resolution rule. A small cropped file is
 // scaled up by plain CSS in the tile (object-fit: contain at a fixed
 // 88%/72% box — see components/BrandLogo.tsx) rather than left tiny. The
-// bold text fallback is reserved strictly for brands with no file at all:
-// currently only mcm-ittim.png (the supplied file mixed the real mark with
-// unrelated pattern-swatch artwork) — see the README for details.
+// bold text fallback is reserved strictly for brands with no file at all
+// (currently none: all ten brands have a real logo file — see the README).
 //
 // Each `plate` below is the higher-contrast choice between the two plate
 // colours for that specific file's measured average luminance (recomputed
@@ -521,13 +523,16 @@ export const brands: Brand[] = [
   {
     name: 'MCM Ittim',
     logo: '/images/brands/mcm-ittim.png',
-    // TODO: file removed — it mixed the real "ittimi by MCM" mark with a
-    // large block of unrelated decorative pattern swatches, and its tall
-    // (399x501) aspect made it render tiny inside the wide tile.
-    // Text fallback shows until a clean, logo-only export is supplied.
+    // Cut out of the supplied 399x501 image ("ittimi by MCM — Ecoriclay Cladding" on a flat
+    // grey, with a band of pattern swatches underneath): only the logo rows were kept, the
+    // grey background was made transparent, and it was resized 2x (Lanczos) for smoother
+    // scaling. The supplied image is kept untouched in originals/mcm-ittim-as-supplied.png.
+    // The mark is white, so it needs the dark plate. A higher-resolution or vector (SVG)
+    // export, if the brand has one, would look sharper — just replace the file.
+    plate: 'dark',
     category: 'Tiles & Surfaces',
     verified: false,
-    note: 'TODO: verify exact brand name, spelling and category fit. Needs a clean logo-only file (see README).',
+    note: 'TODO: verify exact brand name, spelling and category fit.',
   },
   {
     name: 'Verantes Living',
