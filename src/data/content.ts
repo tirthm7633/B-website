@@ -167,9 +167,17 @@ export const hero = {
   } as ImageSlot,
 }
 
-// Years in business (confirmed). This one number drives both the About stats
-// ("Years of Trust") and the Why Us stats ("Years of Experience").
+// Years in business (confirmed by the owner as "18+"). This one number drives the About stats
+// ("Years of Trust"), the Why Us stats ("Years of Experience") and the "18+" wording in the
+// Our Journey copy below, so they can't drift apart.
 const YEARS_IN_BUSINESS = 18
+
+// Year Buildcon Gallery opened (the first Our Journey milestone).
+// NOTE: 2026 - 2009 = 17, but the owner's copy says "18+ years", so YEARS_IN_BUSINESS is a
+// stated figure and is deliberately NOT computed from this. Worth confirming with the owner
+// which is right (e.g. if the business predates the Gallery launch, or whether to say "17+"
+// until 2027) and then changing the one that's off.
+const FOUNDING_YEAR = 2009
 
 export const about = {
   eyebrow: 'About Buildcon House',
@@ -201,26 +209,105 @@ export const about = {
   } as ImageSlot,
 }
 
-// PLACEHOLDER STORY — replace with real founding details, year, and family history
-// before going fully public. The wording below is invented to set the tone (warm,
-// confident, premium) and deliberately avoids any specific year, name or claim.
-export const ourStory = {
-  eyebrow: 'Our Story',
-  // Large pull-quote style line.
-  heading: 'Built by a family that believes Rajkot deserves the world’s finest.',
-  // Opening line, set in the serif.
-  lead:
-    'Buildcon House began as a family business with one conviction: the homes of Rajkot deserve the same quality you’d find in the world’s great design cities.',
-  // Supporting text, set in the body face.
-  body:
-    'So we set out to bring the finest global brands to our hometown, and to stand behind every one of them ourselves. Each product on our floor is chosen with care, and every project is handled with the pride of people who put their name on the work. That care, and the family behind it, is still what you’ll find when you walk in.',
-  image: {
-    // Reuses the Visit Us storefront photo (no new photo — per the homepage photo
-    // rules). Swap this path whenever there is a story-specific image.
-    src: '/images/homepage/visit-storefront-night.webp',
-    alt: 'Night view of the Buildcon House storefront with its brand signage',
-    objectPosition: 'center',
-  } as ImageSlot,
+export type JourneyMilestone = {
+  /** Shown large on the timeline (a year, or "Today"). Omit for the standalone callout. */
+  year?: string
+  title: string
+  body: string[]
+  /** A short list after `body`: pills for a `feature` callout, a plain list otherwise. */
+  items?: string[]
+  /** Paragraphs after the list. */
+  afterItems?: string[]
+  /** Render as the boxed, year-less callout (no year) instead of a regular milestone. */
+  feature?: boolean
+}
+
+// The "Our Journey" timeline on its own page (pages/OurJourneyPage.tsx) — real copy from the owner.
+// The "18+" and founding-year figures come from YEARS_IN_BUSINESS / FOUNDING_YEAR above.
+export const ourJourney: JourneyMilestone[] = [
+  {
+    year: String(FOUNDING_YEAR),
+    title: 'The Beginning',
+    body: [
+      `Our journey began in ${FOUNDING_YEAR} with Buildcon Gallery, located at 25/37, New Jagnath Plot, near Astron Chowk, Rajkot, Gujarat. We started with imported tiles, with a vision to bring premium products to our customers. In the same year, we became dealers for two reputed brands, Qutone Tiles and GROHE, marking the beginning of long-term relationships with leading brands in the industry.`,
+    ],
+  },
+  {
+    year: '2016',
+    title: 'Expanding Our Portfolio',
+    body: [
+      'As Buildcon Gallery continued to grow, we expanded our portfolio by becoming a dealer for Nexion in 2016. This was another important step in our journey, strengthening our presence in the premium tile segment.',
+    ],
+  },
+  {
+    year: '2020',
+    title: 'The Beginning of Buildcon House',
+    body: [
+      'In 2020, we entered a new chapter with the launch of Buildcon House. The vision was simple: to provide a one-stop premium solution under one roof. With a new space, a new address, new brands and a 15,000+ sq. ft. showroom, Buildcon House was created to offer customers a more complete experience.',
+    ],
+  },
+  {
+    feature: true,
+    title: 'One Roof. Complete Solutions.',
+    body: ['Buildcon House brought together a wider range of products and solutions, including:'],
+    items: [
+      'Interior & exterior tiles',
+      'Pipe fittings',
+      'Faucets & sanitaryware',
+      'Wellness solutions',
+      'Windows',
+      'Modular kitchens',
+      'Wardrobes',
+      'Modular & imported furniture',
+    ],
+    afterItems: [
+      'Our goal was to make the process of creating premium spaces more convenient by bringing multiple solutions together under one roof.',
+    ],
+  },
+  {
+    year: 'Today',
+    title: `${YEARS_IN_BUSINESS}+ Years of Experience`,
+    body: [
+      `Today, Buildcon carries ${YEARS_IN_BUSINESS}+ years of experience in the industry. Our journey has been built on more than products and showrooms. It has been shaped by:`,
+    ],
+    items: [
+      'Long-term customer relationships',
+      'Trusted brand partnerships',
+      'Premium quality and products',
+      'A complete one-stop solution',
+      "Understanding our customers' needs",
+    ],
+    afterItems: [
+      'Many of our brand partnerships have grown into relationships spanning 10-18 years, reflecting the trust and continuity we value in our business.',
+      "Over the years, we have also had the opportunity to contribute to some of Saurashtra's top premium projects, further strengthening our experience in the premium segment.",
+    ],
+  },
+]
+
+// Header and closing pull-quote of the /our-journey page.
+export const journeyPage = {
+  eyebrow: `Since ${FOUNDING_YEAR}`,
+  heading: 'Our Journey',
+  intro: `From Buildcon Gallery in ${FOUNDING_YEAR} to Buildcon House today, our journey spans ${YEARS_IN_BUSINESS}+ years of experience, trusted brand partnerships, and lasting customer relationships.`,
+  closing: {
+    heading: 'Built on Trust. Growing Through Relationships.',
+    body: `From Buildcon Gallery in ${FOUNDING_YEAR} to Buildcon House today, our journey has always been driven by the same foundation: quality, trust, relationships and a commitment to understanding what our customers need.`,
+    tagline: `${YEARS_IN_BUSINESS}+ years of experience, built on trust and lasting relationships.`,
+  },
+}
+
+// The short "Our Journey" teaser on the homepage (components/sections/OurJourneyTeaser.tsx),
+// which links to the full timeline page. Four paragraphs; the last is set as a closing pull-quote.
+export const journeyTeaser = {
+  eyebrow: `Since ${FOUNDING_YEAR}`,
+  heading: 'Our Journey',
+  paragraphs: [
+    `From Buildcon Gallery in ${FOUNDING_YEAR} to Buildcon House today, our journey spans ${YEARS_IN_BUSINESS}+ years of experience, trusted brand partnerships, and lasting customer relationships.`,
+    'What began with imported tiles has evolved into a 15,000+ sq. ft. premium destination, bringing tiles, sanitaryware, wellness, windows, modular kitchens, furniture and more together in one place.',
+    'Today, Buildcon continues to grow with one simple vision: to provide a complete premium solution for every space.',
+    `${YEARS_IN_BUSINESS}+ years of experience. Built on trust. Driven by quality. Creating spaces that last.`,
+  ],
+  cta: { label: 'Read Our Full Story', to: '/our-journey' },
 }
 
 export type CategoryName =
@@ -463,6 +550,9 @@ export type WhyUsStat = {
   label: string
   /** True while the number is a stand-in that hasn't been confirmed with the client. */
   placeholder?: boolean
+  /** Makes the whole stat a link to this page, with `linkLabel` as its arrow label. */
+  to?: string
+  linkLabel?: string
 }
 
 export type TrustPointIcon = 'shield' | 'home' | 'calendar' | 'building'
@@ -490,7 +580,8 @@ export const whyUs = {
   stats: [
     // Derived, so it stays accurate: add an 11th brand and this reads "11+".
     { value: brands.length, suffix: '+', label: 'Brands' },
-    { value: YEARS_IN_BUSINESS, suffix: '+', label: 'Years of Experience' },
+    // Links to the full story: the Our Journey timeline page.
+    { value: YEARS_IN_BUSINESS, suffix: '+', label: 'Years of Experience', to: '/our-journey', linkLabel: 'Our story' },
     // PLACEHOLDER — TODO: confirm real project count (see PROJECTS_COMPLETED).
     { value: PROJECTS_COMPLETED, suffix: '+', label: 'Projects Completed', placeholder: true },
     // Derived from the Categories section: Sanitaryware, Tiles, Kitchen, Wellness, Furniture.

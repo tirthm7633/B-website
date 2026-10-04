@@ -64,19 +64,46 @@ export default function WhyUs() {
 
       <Reveal className="grid gap-px overflow-hidden border border-line bg-line">
         <div className="grid grid-cols-2 gap-px md:grid-cols-4">
-          {whyUs.stats.map((stat) => (
-            <div key={stat.label} className="flex flex-col gap-3 bg-bg p-6 md:p-8 lg:p-10">
-              <div className="numerals font-display text-5xl leading-none font-light text-text md:text-6xl lg:text-7xl">
-                <span className="stat-value" data-value={stat.value}>
-                  0
-                </span>
-                {stat.suffix}
+          {whyUs.stats.map((stat) => {
+            const body = (
+              <>
+                <div
+                  className={`numerals font-display text-5xl leading-none font-light text-text md:text-6xl lg:text-7xl ${
+                    stat.to ? 'transition-colors duration-500 group-hover:text-accent-bright' : ''
+                  }`}
+                >
+                  <span className="stat-value" data-value={stat.value}>
+                    0
+                  </span>
+                  {stat.suffix}
+                </div>
+                <p className="eyebrow" style={{ letterSpacing: '0.2em' }}>
+                  {stat.label}
+                </p>
+                {stat.to && (
+                  <span className="mt-auto flex items-center gap-2 pt-2 text-[0.65rem] tracking-[0.15em] text-accent-bright uppercase">
+                    {stat.linkLabel}
+                    <ArrowRightIcon className="h-3.5 w-3.5 transition-transform duration-500 group-hover:translate-x-1" />
+                  </span>
+                )}
+              </>
+            )
+            // A stat with a destination is a link (hover state and arrow like the trust-point
+            // cards, e.g. the years stat -> the Our Journey page); the rest are plain cells.
+            return stat.to ? (
+              <Link
+                key={stat.label}
+                to={stat.to}
+                className={`group flex flex-col gap-3 bg-bg p-6 md:p-8 lg:p-10 ${interactiveClass}`}
+              >
+                {body}
+              </Link>
+            ) : (
+              <div key={stat.label} className="flex flex-col gap-3 bg-bg p-6 md:p-8 lg:p-10">
+                {body}
               </div>
-              <p className="eyebrow" style={{ letterSpacing: '0.2em' }}>
-                {stat.label}
-              </p>
-            </div>
-          ))}
+            )
+          })}
         </div>
 
         <div className="grid grid-cols-1 gap-px md:grid-cols-2 lg:grid-cols-4">

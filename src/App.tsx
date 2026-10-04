@@ -10,7 +10,7 @@ import Categories from './components/sections/Categories'
 import Contact from './components/sections/Contact'
 import Gallery from './components/sections/Gallery'
 import Hero from './components/sections/Hero'
-import OurStory from './components/sections/OurStory'
+import OurJourneyTeaser from './components/sections/OurJourneyTeaser'
 import Testimonials from './components/sections/Testimonials'
 import TrustedByFinest from './components/sections/TrustedByFinest'
 import WhyUs from './components/sections/WhyUs'
@@ -19,6 +19,7 @@ import { lenisRef, useSmoothScroll } from './lib/useSmoothScroll'
 import CatalogBrandPage from './pages/CatalogBrandPage'
 import CatalogPage from './pages/CatalogPage'
 import GalleryPage from './pages/GalleryPage'
+import OurJourneyPage from './pages/OurJourneyPage'
 import ProjectDetailPage from './pages/ProjectDetailPage'
 import ProjectsPage from './pages/ProjectsPage'
 
@@ -27,7 +28,7 @@ function HomePage() {
     <main>
       <Hero />
       <About />
-      <OurStory />
+      <OurJourneyTeaser />
       <Categories />
       <TrustedByFinest />
       <WhyUs />
@@ -140,6 +141,7 @@ function App() {
                 <Route path="/catalog" element={<CatalogPage />} />
                 <Route path="/catalog/:brandSlug" element={<CatalogBrandPage />} />
                 <Route path="/gallery" element={<GalleryPage />} />
+                <Route path="/our-journey" element={<OurJourneyPage />} />
                 <Route path="*" element={<NotFoundPage />} />
               </Routes>
               <Footer />
