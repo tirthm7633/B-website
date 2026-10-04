@@ -45,11 +45,15 @@ export default function Hero() {
           eager
           className="hero-kenburns h-full w-full"
         />
-        <div className="pointer-events-none absolute inset-0 bg-[#050607]/62" />
+        {/* Light global treatment so the photo reads bright; legibility comes from the two
+            local gradients below (top: nav + eyebrow, bottom: headline, subtext, buttons). */}
+        <div className="pointer-events-none absolute inset-0 bg-[#050607]/6" />
         <div
           className="pointer-events-none absolute inset-0"
-          style={{ background: 'radial-gradient(ellipse at center, transparent 35%, rgba(5,6,7,0.72) 100%)' }}
+          style={{ background: 'radial-gradient(ellipse at center, transparent 50%, rgba(5,6,7,0.25) 100%)' }}
         />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-[34%] bg-gradient-to-b from-[#050607]/80 via-[#050607]/72 via-50% to-transparent" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#050607]/80 via-[#050607]/32 via-45% to-transparent" />
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.06] mix-blend-overlay"
           style={{ backgroundImage: `url("${GRAIN}")` }}
@@ -66,7 +70,7 @@ export default function Hero() {
       </h1>
 
       <div className="hero-fade mt-10 flex flex-col items-start justify-between gap-8 md:flex-row md:items-end">
-        <p className="max-w-md text-base font-light text-muted">{hero.subtext}</p>
+        <p className="max-w-md text-base font-light text-text/85">{hero.subtext}</p>
         <div className="flex flex-wrap items-center gap-8">
           <a
             href={hero.primaryCta.href}

@@ -14,8 +14,14 @@ interface SmartImageProps {
  * Renders a real photo when it exists, otherwise a dark textured
  * placeholder — lets us wire up final `/public/images/...` paths ahead of
  * time. Every real photo gets the same cool, slightly desaturated grade
- * plus a blue-black overlay so warm showroom lighting sits inside the
+ * plus a light blue-black overlay so warm showroom lighting sits inside the
  * Obsidian Steel palette instead of fighting it.
+ *
+ * The grade is deliberately light: the photo should read bright and clear (together the
+ * layers leave roughly half of a plain photo's untreated luminance, about 3x what they used
+ * to). Anything that has to be legible over a photo (hero copy, category captions) gets its
+ * own *local* gradient behind the text, in the component that owns the text, instead of
+ * darkening the whole image here.
  */
 export default function SmartImage({
   src,
@@ -52,13 +58,13 @@ export default function SmartImage({
         loading={eager ? 'eager' : 'lazy'}
         decoding="async"
         onError={() => setErrored(true)}
-        className="h-full w-full object-cover [filter:saturate(0.62)_contrast(1.05)_brightness(0.95)]"
+        className="h-full w-full object-cover [filter:saturate(0.62)_contrast(1.05)_brightness(1.1)]"
         style={{ objectPosition }}
       />
       {overlay && (
         <>
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#050607]/25 via-[#050607]/35 to-[#050607]/55" />
-          <div className="pointer-events-none absolute inset-0 bg-[#0d1723]/35 mix-blend-multiply" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#050607]/8 via-[#050607]/12 to-[#050607]/28" />
+          <div className="pointer-events-none absolute inset-0 bg-[#2b3f57]/25 mix-blend-multiply" />
         </>
       )}
     </div>

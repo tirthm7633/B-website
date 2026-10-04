@@ -53,15 +53,19 @@ export default function Categories() {
               objectPosition={category.image.objectPosition}
               className="h-full w-full scale-105 transition-transform duration-[1400ms] ease-out group-hover:scale-100"
             />
-            <div className="pointer-events-none absolute inset-0 bg-[#050607]/45 transition-opacity duration-[1200ms] ease-out group-hover:opacity-40" />
+            {/* Light global tint (the photo itself reads bright), plus a local gradient behind each
+                piece of text: top for the number, bottom for the name and description. */}
+            <div className="pointer-events-none absolute inset-0 bg-[#050607]/6 transition-opacity duration-[1200ms] ease-out group-hover:opacity-40" />
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-[26%] bg-gradient-to-b from-[#050607]/65 to-transparent" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#050607]/80 via-[#050607]/30 to-transparent" />
 
             <div className="absolute inset-0 flex flex-col justify-between p-6">
-              <span className="numerals font-display text-3xl font-extralight text-text/70">
+              <span className="numerals font-display text-3xl font-extralight text-text/90">
                 {String(i + 1).padStart(2, '0')}
               </span>
               <div>
                 <h3 className="font-display text-xl leading-tight font-light text-text md:text-2xl">{category.name}</h3>
-                <p className="mt-2 text-xs leading-relaxed text-muted">{category.description}</p>
+                <p className="mt-2 text-xs leading-relaxed text-text/80">{category.description}</p>
               </div>
             </div>
           </div>
