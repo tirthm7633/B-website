@@ -41,8 +41,11 @@ export default function Contact() {
         Visit Us
       </div>
 
-      <div className="grid grid-cols-1 gap-16 md:grid-cols-[1.1fr_1fr] md:gap-24">
-        <div>
+      {/* minmax(0, …) rather than plain fr: a bare `1fr` track can't shrink below its content's
+          minimum width, and Safari (iPad) counts the storefront photo's full pixel width there, so
+          the photo column swallowed most of the row and squeezed the text and buttons. */}
+      <div className="grid grid-cols-1 gap-16 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] md:gap-12 lg:gap-24">
+        <div className="min-w-0">
           <h2 ref={headingRef} className="font-display text-[9vw] leading-[1.05] font-light md:text-[3.6vw]">
             Come see it in person.
           </h2>
@@ -53,7 +56,10 @@ export default function Contact() {
             {contact.address.line2}
           </p>
 
-          <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-3">
+          {/* Three across only where they fit: on wide phones/small tablets (one-column layout)
+              and on large desktops. Beside the photo on tablets and small laptops the column is
+              too narrow for three labels, so they stack. */}
+          <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-3 md:grid-cols-1 xl:grid-cols-3">
             <a href={contact.phoneHref} className={buttonClass}>
               <PhoneIcon className="h-4 w-4" />
               Call Now
@@ -109,7 +115,7 @@ export default function Contact() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-6">
+        <div className="flex min-w-0 flex-col gap-6">
           <div className="relative aspect-[4/3]">
             <div className="pointer-events-none absolute -top-4 -right-4 h-full w-full border border-accent/50" />
             <SmartImage
