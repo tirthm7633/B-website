@@ -1,4 +1,4 @@
-import type { ProjectCategory } from './projects'
+import type { ProjectCategory } from './projects.ts'
 
 export interface Catalog {
   id: string

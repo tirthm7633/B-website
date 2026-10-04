@@ -50,7 +50,7 @@
  * ===========================================================================
  */
 
-import { SHOW_PROJECTS } from './visibility'
+import { SHOW_PROJECTS } from './visibility.ts'
 
 export type ImageSlot = {
   src: string
