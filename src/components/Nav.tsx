@@ -2,6 +2,7 @@ import gsap from 'gsap'
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { nav as navLinks } from '../data/content'
+import { SHOW_PROJECTS } from '../data/visibility'
 import { lenisRef } from '../lib/useSmoothScroll'
 import BrandsPanel from './BrandsPanel'
 import ConsultationModal from './ConsultationModal'
@@ -143,9 +144,11 @@ export default function Nav() {
               </a>
             ),
           )}
-          <Link to="/projects" onClick={closeMenu} className={menuLinkClass}>
-            Projects
-          </Link>
+          {SHOW_PROJECTS && (
+            <Link to="/projects" onClick={closeMenu} className={menuLinkClass}>
+              Projects
+            </Link>
+          )}
           <Link to="/catalog" onClick={closeMenu} className={menuLinkClass}>
             Catalog
           </Link>

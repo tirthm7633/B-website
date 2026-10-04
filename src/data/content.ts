@@ -50,6 +50,8 @@
  * ===========================================================================
  */
 
+import { SHOW_PROJECTS } from './visibility'
+
 export type ImageSlot = {
   src: string
   alt: string
@@ -604,12 +606,17 @@ export const whyUs = {
       desc: "Share your space with us, and we'll suggest the products that truly fit.",
       action: { kind: 'consultation', label: 'Book a consultation' },
     },
-    {
-      icon: 'building',
-      title: 'Real Projects, Proven Results',
-      desc: 'See our completed work across villas, apartments and offices.',
-      action: { kind: 'link', to: '/projects', label: 'View our projects' },
-    },
+    // This card links to the Projects page, so it goes away with the page (data/visibility.ts).
+    ...(SHOW_PROJECTS
+      ? [
+          {
+            icon: 'building',
+            title: 'Real Projects, Proven Results',
+            desc: 'See our completed work across villas, apartments and offices.',
+            action: { kind: 'link', to: '/projects', label: 'View our projects' },
+          },
+        ]
+      : []),
   ] as TrustPoint[],
 }
 

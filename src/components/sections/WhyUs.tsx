@@ -29,12 +29,19 @@ const STAT_CELLS = [
   `${divider} pl-6 md:px-8 xl:px-10`,
 ]
 
-// Trust points: 1 column on phones (stacked, a hairline between), 2 from md, 4 from lg.
-const POINT_CELLS = [
+// Trust points: 1 column on phones (stacked, a hairline between); with four cards 2 columns from
+// md and 4 from lg, with three cards (the Projects card is hidden, see data/visibility.ts) 3 columns
+// from md.
+const POINT_CELLS_4 = [
   'md:pr-8 xl:pr-10',
   `${divider} before:hidden md:pl-8 md:before:block lg:px-8 xl:px-10`,
   `${divider} before:hidden md:pr-8 lg:px-8 lg:before:block xl:px-10`,
   `${divider} before:hidden md:pl-8 md:before:block lg:px-8 xl:px-10`,
+]
+const POINT_CELLS_3 = [
+  'md:pr-6 xl:pr-10',
+  `${divider} before:hidden md:px-6 md:before:block xl:px-10`,
+  `${divider} before:hidden md:px-6 md:before:block xl:px-10`,
 ]
 
 const interactiveClass =
@@ -109,6 +116,8 @@ const pointCellBase =
 
 export default function WhyUs() {
   const [consultationOpen, setConsultationOpen] = useState(false)
+  const threePoints = whyUs.trustPoints.length === 3
+  const pointCells = threePoints ? POINT_CELLS_3 : POINT_CELLS_4
 
   return (
     <section id="why-us" className="border-t border-line px-6 py-32 md:px-12">
@@ -140,10 +149,10 @@ export default function WhyUs() {
           })}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+        <div className={`grid grid-cols-1 ${threePoints ? 'md:grid-cols-3' : 'md:grid-cols-2 lg:grid-cols-4'}`}>
           {whyUs.trustPoints.map((point, i) => {
             const action = point.action
-            const className = `${pointCellBase} ${POINT_CELLS[i]}`
+            const className = `${pointCellBase} ${pointCells[i]}`
             if (action?.kind === 'link') {
               return (
                 <Link key={point.title} to={action.to} className={`${className} ${interactiveClass}`}>

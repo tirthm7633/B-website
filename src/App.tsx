@@ -14,6 +14,7 @@ import OurJourneyTeaser from './components/sections/OurJourneyTeaser'
 import Testimonials from './components/sections/Testimonials'
 import TrustedByFinest from './components/sections/TrustedByFinest'
 import WhyUs from './components/sections/WhyUs'
+import { SHOW_PROJECTS, SHOW_TESTIMONIALS } from './data/visibility'
 import { prefersReducedMotion } from './lib/usePrefersReducedMotion'
 import { lenisRef, useSmoothScroll } from './lib/useSmoothScroll'
 import CatalogBrandPage from './pages/CatalogBrandPage'
@@ -32,7 +33,7 @@ function HomePage() {
       <Categories />
       <TrustedByFinest />
       <WhyUs />
-      <Testimonials />
+      {SHOW_TESTIMONIALS && <Testimonials />}
       <Gallery />
       <Contact />
     </main>
@@ -143,8 +144,14 @@ function App() {
               <ScrollToTop location={location} />
               <Routes location={location}>
                 <Route path="/" element={<HomePage />} />
-                <Route path="/projects" element={<ProjectsPage />} />
-                <Route path="/projects/:id" element={<ProjectDetailPage />} />
+                {/* Off while the projects are placeholders (data/visibility.ts); the URLs then fall
+                    through to the "doesn't exist yet" page. */}
+                {SHOW_PROJECTS && (
+                  <>
+                    <Route path="/projects" element={<ProjectsPage />} />
+                    <Route path="/projects/:id" element={<ProjectDetailPage />} />
+                  </>
+                )}
                 <Route path="/catalog" element={<CatalogPage />} />
                 <Route path="/catalog/:brandSlug" element={<CatalogBrandPage />} />
                 <Route path="/gallery" element={<GalleryPage />} />
