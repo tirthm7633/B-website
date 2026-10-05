@@ -3,8 +3,6 @@ import { useEffect, useRef, useState } from 'react'
 import { contact } from '../data/content'
 import { type ProjectCategory } from '../data/projects'
 import { prefersReducedMotion } from '../lib/usePrefersReducedMotion'
-import { useWhatsAppLaunch } from '../lib/useWhatsAppLaunch'
-import WhatsAppFallback from './WhatsAppFallback'
 
 export type ConsultationContext =
   | { source: 'catalog'; catalogId: string; catalogTitle: string; brand: string; filePath: string; primaryCategory?: ProjectCategory }
@@ -64,7 +62,6 @@ export default function ConsultationModal({ open, onClose, context }: Consultati
   const [phoneError, setPhoneError] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
-  const whatsapp = useWhatsAppLaunch()
 
   // Reset the form fresh every time it's opened (including re-defaulting
   // the interest dropdown to whichever catalog/category triggered it).
@@ -77,7 +74,6 @@ export default function ConsultationModal({ open, onClose, context }: Consultati
     setPhoneError('')
     setSubmitting(false)
     setSubmitted(false)
-    whatsapp.dismiss()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open])
 
@@ -286,12 +282,10 @@ export default function ConsultationModal({ open, onClose, context }: Consultati
               href={whatsappHref()}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={whatsapp.onClick}
               className="mt-2 flex w-full items-center justify-center gap-2 rounded-full border border-accent px-6 py-3 text-[0.7rem] tracking-[0.2em] text-text uppercase transition-colors duration-300 hover:border-accent-bright hover:text-accent-bright"
             >
               Send Confirmation on WhatsApp
             </a>
-            <WhatsAppFallback notOpened={whatsapp.notOpened} align="center" />
             <button
               type="button"
               onClick={handleClose}
