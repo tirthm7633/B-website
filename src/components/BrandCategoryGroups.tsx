@@ -4,6 +4,10 @@ import { brandCategoryGroups } from '../lib/brandGroups'
 
 interface BrandCategoryGroupsProps {
   renderBrand: (brand: Brand) => ReactNode
+  /** Gives each group an id of `${anchorPrefix}${category.slug}` (the Catalog page uses
+   * "catalog-", which the homepage category cards link to). Off by default, because the
+   * Brands panel renders these same groups on every page and ids must stay unique. */
+  anchorPrefix?: string
 }
 
 // Both the Brands panel and the Catalog page render through this component
@@ -15,14 +19,15 @@ interface BrandCategoryGroupsProps {
 // the first cell, left-aligned at that same size, instead of stretching.
 // Rhythm: 40-48px above and below each hairline divider, 24px between a
 // label and its tiles.
-export default function BrandCategoryGroups({ renderBrand }: BrandCategoryGroupsProps) {
+export default function BrandCategoryGroups({ renderBrand, anchorPrefix }: BrandCategoryGroupsProps) {
   return (
     <div>
       {brandCategoryGroups.map(({ category, brands }, index) => (
         <section
           key={category.slug}
+          id={anchorPrefix ? `${anchorPrefix}${category.slug}` : undefined}
           aria-label={category.name}
-          className={index === 0 ? '' : 'mt-10 border-t border-line pt-10 md:mt-12 md:pt-12'}
+          className={`scroll-mt-28 md:scroll-mt-32 ${index === 0 ? '' : 'mt-10 border-t border-line pt-10 md:mt-12 md:pt-12'}`}
         >
           {/* Not an <h2>: index.css has an unlayered h1-h4 rule (margin 0, display font,
               weight 400) that would beat the spacing utilities and make this heavier

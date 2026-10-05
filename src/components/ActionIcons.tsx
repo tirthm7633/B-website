@@ -81,3 +81,18 @@ export function ArrowRightIcon({ className = 'h-4 w-4' }: { className?: string }
     </svg>
   )
 }
+
+export function ChevronIcon({
+  direction = 'right',
+  className = 'h-4 w-4',
+}: {
+  direction?: 'left' | 'right'
+  className?: string
+}) {
+  const d = direction === 'left' ? 'M14.5 6l-6 6 6 6' : 'M9.5 6l6 6-6 6'
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className={className} aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d={d} />
+    </svg>
+  )
+}

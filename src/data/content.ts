@@ -185,6 +185,8 @@ export const hero = {
     "Rajkot's destination for premium sanitaryware, tiles, kitchens, wellness and imported furniture.",
   primaryCta: { label: 'Visit Showroom', href: '#contact' },
   secondaryCta: { label: 'WhatsApp Us', href: contact.whatsappHref },
+  // The hero's photo carousel (one slide per category) is `heroSlides`, declared after
+  // `categories` below. This living-room photo is its Imported Furniture slide.
   image: {
     src: '/images/homepage/hero-living-room.webp',
     alt: 'Bright living room with a curved sofa, armchairs and a round coffee table beside a large window',
@@ -207,6 +209,8 @@ export const about = {
   eyebrow: 'About Buildcon House',
   heading:
     'A premium showroom bringing world-class international brands together, under one roof, in Rajkot.',
+  /** Words of `heading` set in the serif italic accent (must appear in `heading` as written). */
+  headingAccent: 'under one roof,',
   body:
     'Buildcon House was built for people who care about how their home feels, not just how it looks. We curate the finest global names in sanitaryware, tiles, kitchens, wellness and furniture, and bring them to Rajkot with the guidance and service a considered home deserves.',
   // TODO: update these figures with real numbers whenever convenient.
@@ -568,7 +572,30 @@ export const brands: Brand[] = [
 export const trustedByFinest = {
   label: 'Our Partners',
   headline: 'Brands we bring together',
+  /** The word of `headline` set in the serif italic accent. */
+  headlineAccent: 'together',
 }
+
+// Hero background carousel: one slide per category, in `categories` order (numbered 01–05 like
+// the Categories cards). Every slide reuses an existing homepage photo. Imported Furniture uses
+// the hero living room (`hero.image`): its own card photo is a 1260x560 strip, too small to fill
+// a screen. objectPosition keeps each photo's subject in frame for both a wide desktop crop and
+// a tall phone crop.
+const HERO_SLIDE_POSITIONS: Record<string, string> = {
+  sanitaryware: '38% center',
+  'tiles-surfaces': '30% 55%',
+  'modular-kitchen': 'center 58%',
+  wellness: 'center 62%',
+}
+
+export const heroSlides: { category: Category; image: ImageSlot }[] = categories.map((category) => ({
+  category,
+  image:
+    category.slug === 'imported-furniture'
+      ? hero.image
+      : { ...category.image, objectPosition: HERO_SLIDE_POSITIONS[category.slug] ?? category.image.objectPosition },
+}))
+
 
 export type WhyUsStat = {
   value: number

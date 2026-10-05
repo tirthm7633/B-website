@@ -8,6 +8,14 @@ import SmartImage from '../SmartImage'
 
 gsap.registerPlugin(ScrollTrigger)
 
+const headingWords = about.heading.split(' ')
+const accentWords = about.headingAccent.split(' ')
+// Where the accent phrase starts in the heading (-1 if the two ever stop matching).
+const accentStart = headingWords.findIndex((_, i) =>
+  accentWords.every((word, j) => headingWords[i + j] === word),
+)
+const isAccent = (i: number) => accentStart >= 0 && i >= accentStart && i < accentStart + accentWords.length
+
 export default function About() {
   const sectionRef = useRef<HTMLDivElement>(null)
   const textRef = useRef<HTMLParagraphElement>(null)
@@ -70,8 +78,9 @@ export default function About() {
           </div>
 
           <p ref={textRef} className="font-display text-3xl leading-[1.2] font-light md:text-5xl">
-            {about.heading.split(' ').map((word, i) => (
-              <span key={i} className="word mr-2 inline-block">
+            {/* One phrase is set in the serif italic, in steel blue, for emphasis. */}
+            {headingWords.map((word, i) => (
+              <span key={i} className={`word mr-2 inline-block ${isAccent(i) ? 'text-accent-bright italic' : ''}`}>
                 {word}
               </span>
             ))}

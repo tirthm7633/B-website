@@ -21,6 +21,8 @@ function useIsDesktopComposition() {
 
 export default function TrustedByFinest() {
   const isDesktop = useIsDesktopComposition()
+  const { headline, headlineAccent } = trustedByFinest
+  const accentAt = headline.lastIndexOf(headlineAccent)
 
   return (
     <section className="relative overflow-hidden border-t border-line bg-bg py-28 md:py-32" id="brands">
@@ -35,7 +37,16 @@ export default function TrustedByFinest() {
           {trustedByFinest.label}
         </span>
         <h2 className="max-w-2xl font-display text-3xl font-light text-text md:text-4xl lg:text-5xl">
-          {trustedByFinest.headline}
+          {/* The accent word in the serif italic, in steel blue. */}
+          {accentAt >= 0 ? (
+            <>
+              {headline.slice(0, accentAt)}
+              <span className="text-accent-bright italic">{headlineAccent}</span>
+              {headline.slice(accentAt + headlineAccent.length)}
+            </>
+          ) : (
+            headline
+          )}
         </h2>
       </div>
 

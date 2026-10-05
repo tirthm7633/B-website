@@ -51,7 +51,7 @@ export default function CatalogPage() {
       </div>
 
       <div className="mx-auto max-w-5xl px-6 pb-24 md:px-12">
-        <BrandCategoryGroups renderBrand={(brand) => <BrandTile key={brand.name} brand={brand} />} />
+        <BrandCategoryGroups anchorPrefix="catalog-" renderBrand={(brand) => <BrandTile key={brand.name} brand={brand} />} />
       </div>
     </div>
   )

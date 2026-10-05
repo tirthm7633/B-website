@@ -182,18 +182,48 @@ function BrandRow({ row, direction, speed }: { row: Brand[]; direction: 'left' |
   )
 }
 
+/**
+ * The slow light beam that crosses the panel (styles: .brand-sweep in index.css). Decorative
+ * only: it sits above the rows but ignores the pointer, and it pauses while the panel is off
+ * screen or the tab is in the background. Hidden entirely with reduced motion.
+ */
+function LightSweep() {
+  const sweepRef = useRef<HTMLDivElement>(null)
+  const documentVisible = useDocumentVisible()
+  const [offscreen, setOffscreen] = useState(false)
+
+  useEffect(() => {
+    const el = sweepRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(([entry]) => setOffscreen(!entry.isIntersecting), { threshold: 0 })
+    observer.observe(el.parentElement ?? el)
+    return () => observer.disconnect()
+  }, [])
+
+  return (
+    <div
+      ref={sweepRef}
+      aria-hidden="true"
+      className={`brand-sweep pointer-events-none absolute inset-0 z-10 ${offscreen || !documentVisible ? 'is-paused' : ''}`}
+    >
+      <span className="brand-sweep-beam" />
+    </div>
+  )
+}
+
 const BrandPanel = forwardRef<HTMLDivElement>(function BrandPanel(_props, ref) {
   const rows = ROW_CONFIG.map((_, rowIndex) => brands.filter((_, i) => i % ROW_CONFIG.length === rowIndex))
 
   return (
     <div
       ref={ref}
-      className="mx-auto flex w-full max-w-[1080px] min-h-[460px] flex-col justify-center gap-6 rounded-2xl border border-line p-10 shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_24px_60px_rgba(0,0,0,0.45)] backdrop-blur-xl"
+      className="relative mx-auto flex w-full max-w-[1080px] min-h-[460px] flex-col justify-center gap-6 overflow-hidden rounded-2xl border border-line p-10 shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_24px_60px_rgba(0,0,0,0.45)] backdrop-blur-xl"
       style={{ backgroundColor: 'rgba(12,15,19,0.72)' }}
     >
       {ROW_CONFIG.map((cfg, i) => (
         <BrandRow key={i} row={rows[i]} direction={cfg.direction} speed={cfg.speed} />
       ))}
+      <LightSweep />
     </div>
   )
 })

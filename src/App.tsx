@@ -79,7 +79,9 @@ function ScrollToTop({ location }: { location: Location }) {
         // Lenis to scroll to the element works from its stale internal position and sends the
         // page straight back to where it was (the Categories link did nothing, the others only
         // worked by rounding luck).
-        const top = el.getBoundingClientRect().top + window.scrollY
+        // scroll-margin-top keeps the target clear of the fixed nav (used by the Catalog groups).
+        const margin = parseFloat(getComputedStyle(el).scrollMarginTop) || 0
+        const top = el.getBoundingClientRect().top + window.scrollY - margin
         if (lenisRef.current) lenisRef.current.scrollTo(top, { immediate: true })
         else window.scrollTo(0, top)
         return
