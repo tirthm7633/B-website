@@ -2,7 +2,9 @@ import gsap from 'gsap'
 import { useEffect, useRef } from 'react'
 import { contact } from '../data/content'
 import { prefersReducedMotion } from '../lib/usePrefersReducedMotion'
+import { useWhatsAppLaunch } from '../lib/useWhatsAppLaunch'
 import { CalendarIcon, DirectionsIcon, PhoneIcon, WhatsAppIcon } from './ActionIcons'
+import WhatsAppFallback from './WhatsAppFallback'
 
 interface EnquirePopoverProps {
   open: boolean
@@ -23,6 +25,8 @@ export default function EnquirePopover({ open, onClose, onRequestConsultation }:
   const contentRef = useRef<HTMLDivElement>(null)
   const closeBtnRef = useRef<HTMLButtonElement>(null)
   const previouslyFocused = useRef<HTMLElement | null>(null)
+  const whatsapp = useWhatsAppLaunch()
+  const dismissWhatsAppHint = whatsapp.dismiss
 
   useEffect(() => {
     const panel = panelRef.current
@@ -31,6 +35,7 @@ export default function EnquirePopover({ open, onClose, onRequestConsultation }:
 
     if (open) {
       previouslyFocused.current = document.activeElement as HTMLElement
+      dismissWhatsAppHint()
       document.body.style.overflow = 'hidden'
       gsap.set(panel, { display: 'flex' })
       if (prefersReducedMotion()) {
@@ -48,7 +53,7 @@ export default function EnquirePopover({ open, onClose, onRequestConsultation }:
     return () => {
       document.body.style.overflow = ''
     }
-  }, [open])
+  }, [open, dismissWhatsAppHint])
 
   const handleClose = () => {
     const panel = panelRef.current
@@ -141,10 +146,17 @@ export default function EnquirePopover({ open, onClose, onRequestConsultation }:
             Call
           </a>
           <span className="block h-px bg-line" aria-hidden="true" />
-          <a href={contact.whatsappHref} target="_blank" rel="noopener noreferrer" className={rowClass}>
+          <a
+            href={contact.whatsappHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={whatsapp.onClick}
+            className={rowClass}
+          >
             <WhatsAppIcon className="h-4 w-4" />
             WhatsApp
           </a>
+          <WhatsAppFallback notOpened={whatsapp.notOpened} className="-mt-1 px-5 pb-4" />
           <span className="block h-px bg-line" aria-hidden="true" />
           <a href={contact.directionsHref} target="_blank" rel="noopener noreferrer" className={rowClass}>
             <DirectionsIcon className="h-4 w-4" />

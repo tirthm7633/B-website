@@ -4,8 +4,10 @@ import { SplitText } from 'gsap/SplitText'
 import { useEffect, useRef } from 'react'
 import { contact } from '../../data/content'
 import { prefersReducedMotion } from '../../lib/usePrefersReducedMotion'
+import { useWhatsAppLaunch } from '../../lib/useWhatsAppLaunch'
 import { DirectionsIcon, PhoneIcon, WhatsAppIcon } from '../ActionIcons'
 import SmartImage from '../SmartImage'
+import WhatsAppFallback from '../WhatsAppFallback'
 
 gsap.registerPlugin(ScrollTrigger, SplitText)
 
@@ -14,6 +16,7 @@ const buttonClass =
 
 export default function Contact() {
   const headingRef = useRef<HTMLHeadingElement>(null)
+  const whatsapp = useWhatsAppLaunch()
 
   useEffect(() => {
     if (prefersReducedMotion()) return
@@ -64,7 +67,13 @@ export default function Contact() {
               <PhoneIcon className="h-4 w-4" />
               Call Now
             </a>
-            <a href={contact.whatsappHref} target="_blank" rel="noopener noreferrer" className={buttonClass}>
+            <a
+              href={contact.whatsappHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={whatsapp.onClick}
+              className={buttonClass}
+            >
               <WhatsAppIcon className="h-4 w-4" />
               WhatsApp
             </a>
@@ -73,6 +82,7 @@ export default function Contact() {
               Directions
             </a>
           </div>
+          <WhatsAppFallback notOpened={whatsapp.notOpened} className="mt-5" />
 
           <div className="mt-16">
             <h3 className="eyebrow mb-4 text-[0.6rem]">Opening Hours</h3>

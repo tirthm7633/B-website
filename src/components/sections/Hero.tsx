@@ -3,7 +3,9 @@ import { SplitText } from 'gsap/SplitText'
 import { useEffect, useRef } from 'react'
 import { hero } from '../../data/content'
 import { prefersReducedMotion } from '../../lib/usePrefersReducedMotion'
+import { useWhatsAppLaunch } from '../../lib/useWhatsAppLaunch'
 import SmartImage from '../SmartImage'
+import WhatsAppFallback from '../WhatsAppFallback'
 
 gsap.registerPlugin(SplitText)
 
@@ -12,6 +14,7 @@ const GRAIN =
 
 export default function Hero() {
   const headlineRef = useRef<HTMLHeadingElement>(null)
+  const whatsapp = useWhatsAppLaunch()
 
   useEffect(() => {
     if (prefersReducedMotion()) return
@@ -71,21 +74,25 @@ export default function Hero() {
 
       <div className="hero-fade mt-10 flex flex-col items-start justify-between gap-8 md:flex-row md:items-end">
         <p className="max-w-md text-base font-light text-text/85">{hero.subtext}</p>
-        <div className="flex flex-wrap items-center gap-8">
-          <a
-            href={hero.primaryCta.href}
-            className="rounded-full border border-accent px-8 py-4 text-xs tracking-[0.2em] text-accent-bright uppercase transition-colors duration-500 hover:bg-accent hover:text-bg!"
-          >
-            {hero.primaryCta.label}
-          </a>
-          <a
-            href={hero.secondaryCta.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="link-underline text-xs tracking-[0.2em] text-text uppercase transition-colors duration-500 hover:text-accent-bright"
-          >
-            {hero.secondaryCta.label}
-          </a>
+        <div className="flex flex-col items-start gap-5 md:items-end">
+          <div className="flex flex-wrap items-center gap-8">
+            <a
+              href={hero.primaryCta.href}
+              className="rounded-full border border-accent px-8 py-4 text-xs tracking-[0.2em] text-accent-bright uppercase transition-colors duration-500 hover:bg-accent hover:text-bg!"
+            >
+              {hero.primaryCta.label}
+            </a>
+            <a
+              href={hero.secondaryCta.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={whatsapp.onClick}
+              className="link-underline text-xs tracking-[0.2em] text-text uppercase transition-colors duration-500 hover:text-accent-bright"
+            >
+              {hero.secondaryCta.label}
+            </a>
+          </div>
+          <WhatsAppFallback notOpened={whatsapp.notOpened} className="md:items-end md:text-right" />
         </div>
       </div>
 

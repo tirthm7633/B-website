@@ -98,8 +98,17 @@ export const contact = {
   phoneHref: 'tel:+919909906652',
   whatsappNumber: '919909906652',
   whatsappMessage: 'Hi Buildcon House, I would like to know more about your products.',
+  /**
+   * A WhatsApp chat link with a pre-filled message. Uses api.whatsapp.com/send rather than wa.me:
+   * it hands off more reliably on phones with both WhatsApp and WhatsApp Business installed
+   * (the phone's own app picker offers either) and opens WhatsApp Web on a computer. Every
+   * WhatsApp link on the site goes through here.
+   */
+  whatsappLink(message: string) {
+    return `https://api.whatsapp.com/send?phone=${this.whatsappNumber}&text=${encodeURIComponent(message)}`
+  },
   get whatsappHref() {
-    return `https://wa.me/${this.whatsappNumber}?text=${encodeURIComponent(this.whatsappMessage)}`
+    return this.whatsappLink(this.whatsappMessage)
   },
   address: {
     line1: 'Before Gujarat Housing Board, Nr. Katariya Motors,',
