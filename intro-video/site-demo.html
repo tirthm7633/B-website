@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#050607" />
+<title>Intro on Site</title>
+<!--
+  How the intro would look on the real website — WITHOUT changing any website file.
+  Open through the website dev server: http://localhost:5173/intro-video/site-demo.html
+  The real homepage loads in a frame underneath; the intro overlay on top follows the Phase 2
+  rules (variant by screen shape, Skip from frame 0 + Esc, fade into the page at the end).
+-->
+<style>
+  :root { --bg: #050607; --text: #e8ecf1; --muted: #8a929c; --line: #2a313b; --accent: #7fa3c7; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: #111418; color: var(--text); font: 500 13px/1.4 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; overflow: hidden; }
+
+  /* The "screen": the whole window, or a phone-sized frame. */
+  .screen { position: fixed; inset: 0; overflow: hidden; background: var(--bg); }
+  body.phone .screen { inset: auto; left: 50%; top: 50%; width: 390px; height: min(844px, calc(100dvh - 120px)); transform: translate(-50%, -50%); border-radius: 36px; box-shadow: 0 0 0 10px #1c2026, 0 0 0 11px #2a313b, 0 30px 80px rgba(0, 0, 0, 0.6); }
+  .site { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: var(--bg); }
+
+  /* Intro overlay — same colour as the site, video contained, edges invisible. */
+  .intro { position: absolute; inset: 0; background: var(--bg); display: grid; place-items: center; transition: opacity 0.6s ease; z-index: 2; }
+  .intro.out { opacity: 0; pointer-events: none; }
+  .intro video { width: 100%; height: 100%; object-fit: contain; background: var(--bg); display: block; }
+  .skip { position: absolute; right: max(16px, env(safe-area-inset-right)); bottom: max(16px, env(safe-area-inset-bottom)); min-width: 64px; min-height: 44px; padding: 10px 18px; border-radius: 999px; border: 1px solid rgba(232, 236, 241, 0.22); background: rgba(5, 6, 7, 0.45); color: rgba(232, 236, 241, 0.86); font: 600 12px/1 system-ui, sans-serif; letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer; backdrop-filter: blur(6px); }
+  .skip:hover { border-color: var(--accent); color: #fff; }
+
+  /* Demo controls (not part of the real site). */
+  .demo { position: fixed; left: 50%; top: 12px; transform: translateX(-50%); z-index: 10; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: center; max-width: calc(100vw - 24px); padding: 8px 10px; border-radius: 12px; background: rgba(12, 15, 19, 0.9); border: 1px solid var(--line); backdrop-filter: blur(8px); transition: opacity 0.3s; }
+  .demo.hidden { opacity: 0; pointer-events: none; }
+  .demo button { font: inherit; color: var(--text); background: transparent; border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; min-height: 32px; cursor: pointer; }
+  .demo button:hover { border-color: var(--accent); }
+  .demo button[aria-pressed='true'] { background: var(--accent); border-color: var(--accent); color: #050607; }
+  .demo .note { color: var(--muted); font-size: 12px; padding: 0 4px; }
+</style>
+</head>
+<body>
+<div class="demo" id="demo">
+  <button id="playFull">▶ First visit (8.5s)</button>
+  <button id="playShort">▶ Returning visitor (2.5s)</button>
+  <button id="view" aria-pressed="false">Phone view</button>
+  <span class="note" id="note"></span>
+</div>
+
+<div class="screen" id="screen">
+  <iframe class="site" id="site" title="Buildcon House website"></iframe>
+</div>
+
+<script>
+  // The site skips its own intro when this session flag is set — so only OUR intro plays here.
+  try { sessionStorage.setItem('bh-intro-seen', '1') } catch {}
+
+  const screen = document.getElementById('screen')
+  const site = document.getElementById('site')
+  const note = document.getElementById('note')
+  const demo = document.getElementById('demo')
+  const base = new URL('.', location.href).pathname // …/intro-video/
+
+  function aspectFor(w, h) {
+    const r = w / h
+    if (r >= 1.55) return '16x9'
+    if (r >= 1.1) return '4x3'
+    if (r >= 0.68) return '3x4'
+    return '9x16'
+  }
+  function tierFor(w, h) {
+    const c = navigator.connection || {}
+    if (c.saveData || /(^|-)2g$|^3g$/.test(c.effectiveType || '') || Math.min(w, h) <= 480) return 'lite'
+    return 'hd'
+  }
+
+  let overlay = null
+  function playIntro(cut) {
+    overlay?.remove()
+    // Homepage loads underneath straight away (fresh each run so it starts at the top).
+    site.src = '/?demo=' + Date.now()
+    const { width: w, height: h } = screen.getBoundingClientRect()
+    const aspect = aspectFor(w, h)
+    const tier = tierFor(w, h)
+    const id = `intro-${cut === 'short' ? 'short-' : ''}${aspect}`
+    note.textContent = `${Math.round(w)}×${Math.round(h)} → ${aspect} · ${tier.toUpperCase()} · ${cut === 'short' ? 'short cut' : 'full intro'}`
+
+    overlay = document.createElement('div')
+    overlay.className = 'intro'
+    const v = document.createElement('video')
+    Object.assign(v, { muted: true, autoplay: true, playsInline: true, preload: 'auto', disablePictureInPicture: true })
+    v.setAttribute('webkit-playsinline', '')
+    v.poster = `${base}out/web/poster-${aspect}.jpg`
+    for (const [ext, type] of [['webm', 'video/webm; codecs="vp9"'], ['mp4', 'video/mp4; codecs="avc1.640028"']]) {
+      const s = document.createElement('source')
+      s.src = `${base}out/web/${id}-${tier}.${ext}`
+      s.type = type
+      v.appendChild(s)
+    }
+    const skip = document.createElement('button')
+    skip.className = 'skip'
+    skip.textContent = 'Skip'
+    overlay.append(v, skip)
+    screen.appendChild(overlay)
+    demo.classList.add('hidden')
+
+    let gone = false
+    const dismiss = () => {
+      if (gone) return
+      gone = true
+      overlay.classList.add('out')
+      setTimeout(() => demo.classList.remove('hidden'), 700)
+    }
+    skip.onclick = dismiss
+    v.addEventListener('ended', dismiss)
+    v.addEventListener('error', dismiss, true)
+    // Not started within 1.5 s → straight to the site; autoplay refused → poster ~0.8 s, then fade.
+    const startTimer = setTimeout(() => { if (v.currentTime === 0) dismiss() }, 1500)
+    v.addEventListener('playing', () => clearTimeout(startTimer), { once: true })
+    v.play().catch(() => { clearTimeout(startTimer); setTimeout(dismiss, 800) })
+    window.onkeydown = (e) => { if (e.key === 'Escape') dismiss() }
+  }
+
+  document.getElementById('playFull').onclick = () => playIntro('full')
+  document.getElementById('playShort').onclick = () => playIntro('short')
+  document.getElementById('view').onclick = (e) => {
+    const on = document.body.classList.toggle('phone')
+    e.currentTarget.setAttribute('aria-pressed', String(on))
+    playIntro('full')
+  }
+  playIntro(new URLSearchParams(location.search).get('cut') === 'short' ? 'short' : 'full')
+</script>
+</body>
+</html>

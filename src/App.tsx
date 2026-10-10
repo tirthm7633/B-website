@@ -4,7 +4,7 @@ import ContactDock from './components/ContactDock'
 import Footer from './components/Footer'
 import InteractiveLayer from './components/InteractiveLayer'
 import Nav from './components/Nav'
-import Preloader from './components/Preloader'
+import IntroVideo from './components/IntroVideo'
 import SEO from './components/SEO'
 import About from './components/sections/About'
 import Categories from './components/sections/Categories'
@@ -16,7 +16,7 @@ import Testimonials from './components/sections/Testimonials'
 import TrustedByFinest from './components/sections/TrustedByFinest'
 import WhyUs from './components/sections/WhyUs'
 import { SHOW_PROJECTS, SHOW_TESTIMONIALS } from './data/visibility'
-import { markIntroDone, shouldPlayIntro } from './lib/intro'
+import { introCut, markIntroDone } from './lib/intro'
 import { useScrollStory } from './lib/useScrollStory'
 import { prefersReducedMotion } from './lib/usePrefersReducedMotion'
 import { lenisRef, useSmoothScroll } from './lib/useSmoothScroll'
@@ -136,9 +136,11 @@ function PageTransition({ children }: { children: (location: Location) => ReactN
 }
 
 function App() {
-  // The logo intro plays once per visit (lib/intro.ts); on later page loads in the same tab, or
-  // with reduced motion, the page is shown straight away.
-  const [loading, setLoading] = useState(shouldPlayIntro)
+  // The intro film plays once per tab session — the full cut on a first visit, the short cut for
+  // anyone back within 7 days (lib/intro.ts); on later page loads in the same tab, or with reduced
+  // motion, the page is shown straight away.
+  const [cut] = useState(introCut)
+  const [loading, setLoading] = useState(cut !== null)
   useSmoothScroll()
   useEffect(() => {
     if (!loading) markIntroDone()
@@ -148,7 +150,7 @@ function App() {
   return (
     <>
       <SEO />
-      {loading && <Preloader onComplete={() => setLoading(false)} />}
+      {loading && cut && <IntroVideo cut={cut} onComplete={() => setLoading(false)} />}
       <Nav />
       <div className="pb-24 md:pb-0">
         <PageTransition>

@@ -74,7 +74,7 @@ export default function Hero() {
     else if (e.key === 'ArrowRight') goTo(index + 1)
   }
 
-  // Entrance: held until the logo intro parts to reveal the page (or straight away when the
+  // Entrance: held until the intro film fades to reveal the page (or straight away when the
   // intro doesn't play), so the headline rises while it's actually visible.
   useEffect(() => {
     if (reducedMotion) return

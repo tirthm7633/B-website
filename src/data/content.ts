@@ -41,7 +41,7 @@
  *                                           Visit Us section, beside the
  *                                            address. Currently: the brochure's
  *                                            night view of the storefront.
- *   /public/images/logo.png                 Navbar / preloader / footer
+ *   /public/images/logo.png                 Navbar / footer
  *                                            logo — see `site.logo` below.
  *   /public/favicon.svg, favicon-16.png, favicon-32.png, apple-touch-icon.png
  *                                            Tab / home-screen icons: the logo's
