@@ -2,9 +2,11 @@ import gsap from 'gsap'
 import { SplitText } from 'gsap/SplitText'
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from 'react'
 import { hero, heroSlides } from '../../data/content'
+import { onIntroDone } from '../../lib/intro'
 import { useDocumentVisible } from '../../lib/useAnimationEnvironment'
 import { prefersReducedMotion } from '../../lib/usePrefersReducedMotion'
 import { ChevronIcon } from '../ActionIcons'
+import HeroAmbient from '../HeroAmbient'
 import SmartImage from '../SmartImage'
 
 gsap.registerPlugin(SplitText)
@@ -18,11 +20,14 @@ const AUTO_ADVANCE_MS = 6000
 // The first two photos load with the page; the rest once it has settled.
 const PRELOAD_REST_AFTER_MS = 3000
 const SLIDE_COUNT = heroSlides.length
+// Mouse parallax on desktop: how far (px) the photo layer drifts against the pointer.
+const PARALLAX_PX = 14
 const pad = (n: number) => String(n).padStart(2, '0')
 
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null)
   const headlineRef = useRef<HTMLHeadingElement>(null)
+  const parallaxRef = useRef<HTMLDivElement>(null)
   const [reducedMotion] = useState(prefersReducedMotion)
 
   const [index, setIndex] = useState(0)
@@ -69,26 +74,46 @@ export default function Hero() {
     else if (e.key === 'ArrowRight') goTo(index + 1)
   }
 
+  // Entrance: held until the logo intro parts to reveal the page (or straight away when the
+  // intro doesn't play), so the headline rises while it's actually visible.
   useEffect(() => {
     if (reducedMotion) return
+    let unsubscribe = () => {}
     const ctx = gsap.context(() => {
       const split = new SplitText(headlineRef.current, { type: 'lines', linesClass: 'split-line' })
-      gsap.set(split.lines, { yPercent: 110 })
-      gsap.to(split.lines, {
-        yPercent: 0,
-        duration: 1.3,
-        stagger: 0.12,
-        ease: 'power4.out',
-        delay: 0.5,
-      })
-
-      gsap.fromTo(
-        '.hero-fade',
-        { opacity: 0, y: 16 },
-        { opacity: 1, y: 0, duration: 1.2, delay: 1.3, stagger: 0.12, ease: 'power2.out' },
-      )
+      const tl = gsap.timeline({ paused: true })
+      tl.fromTo(split.lines, { yPercent: 110 }, { yPercent: 0, duration: 1.3, stagger: 0.12, ease: 'power4.out' }, 0.15)
+      tl.fromTo('.hero-fade', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 1.2, stagger: 0.12, ease: 'power2.out' }, 0.7)
+      unsubscribe = onIntroDone(() => tl.play())
     }, sectionRef)
-    return () => ctx.revert()
+    return () => {
+      unsubscribe()
+      ctx.revert()
+    }
+  }, [reducedMotion])
+
+  // The photo layer drifts gently against the mouse (desktop pointers only).
+  useEffect(() => {
+    const layer = parallaxRef.current
+    const section = sectionRef.current
+    if (reducedMotion || !layer || !section || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return
+    const toX = gsap.quickTo(layer, 'x', { duration: 1.2, ease: 'power3.out' })
+    const toY = gsap.quickTo(layer, 'y', { duration: 1.2, ease: 'power3.out' })
+    const onMove = (e: PointerEvent) => {
+      const r = section.getBoundingClientRect()
+      toX(-((e.clientX - r.left) / r.width - 0.5) * 2 * PARALLAX_PX)
+      toY(-((e.clientY - r.top) / r.height - 0.5) * 2 * PARALLAX_PX)
+    }
+    const onLeave = () => {
+      toX(0)
+      toY(0)
+    }
+    section.addEventListener('pointermove', onMove)
+    section.addEventListener('pointerleave', onLeave)
+    return () => {
+      section.removeEventListener('pointermove', onMove)
+      section.removeEventListener('pointerleave', onLeave)
+    }
   }, [reducedMotion])
 
   const current = heroSlides[index].category
@@ -101,27 +126,30 @@ export default function Hero() {
       className="relative flex min-h-svh flex-col overflow-hidden px-6 pt-28 pb-20 md:px-12"
     >
       <div className="absolute inset-0">
-        {heroSlides.map((slide, i) =>
-          preloadAll || i === index || i === nextIndex ? (
-            <div
-              key={slide.category.slug}
-              aria-hidden={i !== index}
-              className={`hero-slide absolute inset-0 ${i === index ? 'is-active' : ''} ${
-                i === index && zoomReady ? 'is-zooming' : ''
-              }`}
-            >
-              <div className="hero-slide-zoom h-full w-full">
-                <SmartImage
-                  src={slide.image.src}
-                  alt={slide.image.alt}
-                  objectPosition={slide.image.objectPosition}
-                  eager
-                  className="h-full w-full"
-                />
+        {/* Slightly oversized so the mouse parallax never shows an edge. */}
+        <div ref={parallaxRef} className="absolute -inset-5">
+          {heroSlides.map((slide, i) =>
+            preloadAll || i === index || i === nextIndex ? (
+              <div
+                key={slide.category.slug}
+                aria-hidden={i !== index}
+                className={`hero-slide absolute inset-0 ${i === index ? 'is-active' : ''} ${
+                  i === index && zoomReady ? 'is-zooming' : ''
+                }`}
+              >
+                <div className="hero-slide-zoom h-full w-full">
+                  <SmartImage
+                    src={slide.image.src}
+                    alt={slide.image.alt}
+                    objectPosition={slide.image.objectPosition}
+                    eager
+                    className="h-full w-full"
+                  />
+                </div>
               </div>
-            </div>
-          ) : null,
-        )}
+            ) : null,
+          )}
+        </div>
         {/* Light global treatment so the photo reads bright; legibility comes from the local
             gradients below (top: nav + eyebrow + phone caption, right: desktop caption,
             bottom: headline, subtext and buttons). */}
@@ -133,6 +161,7 @@ export default function Hero() {
         <div className="pointer-events-none absolute inset-x-0 top-0 h-[34%] bg-gradient-to-b from-[#050607]/80 via-[#050607]/72 via-50% to-transparent lg:h-[42%] xl:h-[30%]" />
         <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[42%] bg-gradient-to-l from-[#050607]/60 via-[#050607]/25 to-transparent xl:block" />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#050607]/85 via-[#050607]/35 via-45% to-transparent" />
+        <HeroAmbient />
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.06] mix-blend-overlay"
           style={{ backgroundImage: `url("${GRAIN}")` }}
@@ -197,6 +226,7 @@ export default function Hero() {
                 type="button"
                 onClick={() => goTo(index - 1)}
                 aria-label="Previous collection"
+                data-magnetic
                 className="flex h-8 w-8 items-center justify-center rounded-full border border-line sm:h-9 sm:w-9 text-text backdrop-blur-sm transition-colors duration-300 hover:border-accent-bright hover:text-accent-bright"
               >
                 <ChevronIcon direction="left" />
@@ -205,6 +235,7 @@ export default function Hero() {
                 type="button"
                 onClick={() => goTo(index + 1)}
                 aria-label="Next collection"
+                data-magnetic
                 className="flex h-8 w-8 items-center justify-center rounded-full border border-line sm:h-9 sm:w-9 text-text backdrop-blur-sm transition-colors duration-300 hover:border-accent-bright hover:text-accent-bright"
               >
                 <ChevronIcon direction="right" />
@@ -231,6 +262,7 @@ export default function Hero() {
           <div className="flex flex-wrap items-center gap-8 short-phone:gap-y-5">
             <a
               href={hero.primaryCta.href}
+              data-magnetic
               className="rounded-full border border-accent px-8 py-4 text-xs tracking-[0.2em] text-accent-bright uppercase transition-colors duration-500 hover:bg-accent hover:text-bg!"
             >
               {hero.primaryCta.label}

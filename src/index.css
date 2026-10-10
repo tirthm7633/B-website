@@ -310,6 +310,115 @@ a {
   box-shadow: 0 0 14px 2px rgba(127, 163, 199, 0.35);
 }
 
+/* Hero ambient light (components/HeroAmbient.tsx): two wide, soft steel-blue beams that sway
+   slowly across the photos, screen-blended so they only ever lighten. The softness comes from
+   the many-stop gradient, not a blur filter: a blurred layer this size re-filters on every frame
+   and halved the frame rate on slower machines. */
+.hero-ray {
+  position: absolute;
+  top: -25%;
+  height: 150%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(127, 163, 199, 0.015) 15%,
+    rgba(127, 163, 199, 0.045) 30%,
+    rgba(150, 182, 214, 0.09) 42%,
+    rgba(196, 216, 236, 0.13) 50%,
+    rgba(150, 182, 214, 0.09) 58%,
+    rgba(127, 163, 199, 0.045) 70%,
+    rgba(127, 163, 199, 0.015) 85%,
+    transparent
+  );
+  mix-blend-mode: screen;
+  transform-origin: 50% 0;
+  will-change: transform, opacity;
+}
+.hero-ray-a {
+  left: 6%;
+  width: 34%;
+  animation: hero-ray-a 16s ease-in-out infinite alternate;
+}
+.hero-ray-b {
+  left: 44%;
+  width: 22%;
+  animation: hero-ray-b 21s ease-in-out infinite alternate;
+}
+@keyframes hero-ray-a {
+  from { transform: rotate(14deg) translateX(-6%); opacity: 0.5; }
+  to { transform: rotate(22deg) translateX(8%); opacity: 1; }
+}
+@keyframes hero-ray-b {
+  from { transform: rotate(26deg) translateX(10%); opacity: 0.85; }
+  to { transform: rotate(17deg) translateX(-8%); opacity: 0.35; }
+}
+
+/* Trailing cursor ring (components/InteractiveLayer.tsx), mouse/trackpad only. GSAP moves it;
+   size and fill change here. */
+.trail-cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2000;
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(127, 163, 199, 0.75);
+  border-radius: 9999px;
+  pointer-events: none;
+  transition:
+    width 0.3s ease,
+    height 0.3s ease,
+    opacity 0.25s ease,
+    background-color 0.3s ease,
+    border-color 0.3s ease;
+}
+.trail-cursor-ring.is-active {
+  width: 54px;
+  height: 54px;
+  border-color: rgba(127, 163, 199, 0.95);
+  background-color: rgba(127, 163, 199, 0.1);
+}
+.trail-cursor-ring.is-pressed {
+  width: 22px;
+  height: 22px;
+}
+.trail-cursor-ring.is-hidden {
+  opacity: 0;
+}
+
+/* Scroll storytelling (lib/useScrollStory.ts). Sections marked .story-line get their top hairline
+   from this pseudo-element, which draws across when the section arrives. Hidden states only
+   apply under html.story-ready (set by the hook), so without it everything shows complete. */
+.story-line {
+  position: relative;
+}
+.story-line::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--color-line);
+  transform-origin: left center;
+  transition: transform 1.6s cubic-bezier(0.65, 0, 0.35, 1);
+}
+.story-ready .story-line:not(.is-drawn)::before {
+  transform: scaleX(0);
+}
+/* Our Journey timeline: the dot lights up once the steel-blue line reaches its milestone. */
+[data-draw-dot] {
+  transition:
+    box-shadow 0.6s ease,
+    transform 0.6s ease;
+}
+[data-draw-dot].is-lit {
+  transform: scale(1.3);
+  box-shadow:
+    0 0 0 5px var(--color-bg),
+    0 0 16px 4px rgba(127, 163, 199, 0.55);
+}
+
 /* "What We Offer" cards (components/sections/Categories.tsx): on devices with a real hover
    (mouse/trackpad) the description and arrow are tucked away and slide in on hover or keyboard
    focus. Touch screens never match this media query, so they always show the open state. */
@@ -362,7 +471,9 @@ a {
     transform: none;
   }
 
-  .brand-sweep {
+  .brand-sweep,
+  .hero-ray,
+  .trail-cursor-ring {
     display: none;
   }
 

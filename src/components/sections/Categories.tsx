@@ -1,49 +1,24 @@
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { categories } from '../../data/content'
-import { prefersReducedMotion } from '../../lib/usePrefersReducedMotion'
 import { ArrowRightIcon } from '../ActionIcons'
 import SmartImage from '../SmartImage'
 
-gsap.registerPlugin(ScrollTrigger)
-
+// The cards unfold one after another as they scroll in (data-unfold="stagger", run by the page's
+// useScrollStory — see lib/useScrollStory.ts).
 export default function Categories() {
-  const sectionRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (prefersReducedMotion()) return
-    const ctx = gsap.context(() => {
-      gsap.utils.toArray<HTMLElement>('.category-card').forEach((el, i) => {
-        gsap.fromTo(
-          el,
-          { y: 50, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 1,
-            delay: (i % 5) * 0.08,
-            ease: 'power3.out',
-            scrollTrigger: { trigger: el, start: 'top 90%' },
-          },
-        )
-      })
-    }, sectionRef)
-    return () => ctx.revert()
-  }, [])
-
   return (
-    <section id="categories" ref={sectionRef} className="border-t border-line px-6 py-32 md:px-12">
+    <section id="categories" className="story-line px-6 py-32 md:px-12">
       <div className="mb-16 flex items-center justify-between">
         <div className="eyebrow flex items-center gap-2">
           <span className="h-1 w-1 rounded-full bg-accent" />
           What We Offer
         </div>
-        <h2 className="hidden font-display text-2xl font-light md:block">Categories</h2>
+        <h2 data-rise className="hidden font-display text-2xl font-light md:block">
+          Categories
+        </h2>
       </div>
 
-      <div className="grid grid-cols-1 gap-px overflow-hidden bg-line sm:grid-cols-2 lg:grid-cols-5">
+      <div data-unfold="stagger" className="grid grid-cols-1 gap-px overflow-hidden bg-line sm:grid-cols-2 lg:grid-cols-5">
         {/* Each card opens its category on the Catalog page. With a mouse, the description and
             arrow slide in on hover (or keyboard focus) while the photo darkens a little; touch
             screens show them all the time (.category-reveal in index.css). */}

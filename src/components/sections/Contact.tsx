@@ -35,7 +35,7 @@ export default function Contact() {
   }, [])
 
   return (
-    <section id="contact" className="relative overflow-hidden border-t border-line px-6 py-32 md:px-12">
+    <section id="contact" className="story-line overflow-hidden px-6 py-32 md:px-12">
       <div className="eyebrow mb-10 flex items-center gap-2">
         <span className="h-1 w-1 rounded-full bg-accent" />
         Visit Us
@@ -118,12 +118,15 @@ export default function Contact() {
         <div className="flex min-w-0 flex-col gap-6">
           <div className="relative aspect-[4/3]">
             <div className="pointer-events-none absolute -top-4 -right-4 h-full w-full border border-accent/50" />
-            <SmartImage
-              src={contact.exteriorImage.src}
-              alt={contact.exteriorImage.alt}
-              objectPosition={contact.exteriorImage.objectPosition}
-              className="relative h-full w-full"
-            />
+            {/* The unfold (lib/useScrollStory) clips this inner box, so the offset frame stays put. */}
+            <div data-unfold className="relative h-full w-full">
+              <SmartImage
+                src={contact.exteriorImage.src}
+                alt={contact.exteriorImage.alt}
+                objectPosition={contact.exteriorImage.objectPosition}
+                className="h-full w-full"
+              />
+            </div>
           </div>
 
           <a

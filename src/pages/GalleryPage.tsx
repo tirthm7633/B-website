@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import SmartImage from '../components/SmartImage'
 import Lightbox from '../components/projects/Lightbox'
 import { gallery, type GalleryPhoto } from '../data/content'
+import { useScrollStory } from '../lib/useScrollStory'
 
 // 1 column on phones, 2 from tablet width, 3 from desktop — same breakpoints as
 // the rest of the site (md = 768px, lg = 1024px).
@@ -54,9 +55,11 @@ export default function GalleryPage() {
   const photos = gallery.images
   const columnCount = useColumnCount()
   const columns = useMemo(() => balanceColumns(photos, columnCount), [photos, columnCount])
+  const pageRef = useRef<HTMLDivElement>(null)
+  useScrollStory(pageRef)
 
   return (
-    <div className="min-h-screen bg-bg">
+    <div ref={pageRef} className="min-h-screen bg-bg">
       <div className="px-6 pt-32 pb-10 text-center md:px-12 md:pt-40 md:pb-14">
         <span className="eyebrow">{gallery.page.eyebrow}</span>
         <h1 className="mx-auto mt-4 max-w-3xl font-display text-4xl font-light text-text md:text-5xl lg:text-6xl">
@@ -75,6 +78,8 @@ export default function GalleryPage() {
                   type="button"
                   onClick={() => setLightboxIndex(index)}
                   aria-label={`Enlarge photo ${index + 1} of ${photos.length}: ${photo.alt}`}
+                  data-unfold
+                  data-tilt
                   className="group relative block w-full overflow-hidden"
                   style={{ aspectRatio: `${photo.width} / ${photo.height}` }}
                 >

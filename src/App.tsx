@@ -1,7 +1,8 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Link, Route, Routes, useLocation, type Location } from 'react-router-dom'
 import ContactDock from './components/ContactDock'
 import Footer from './components/Footer'
+import InteractiveLayer from './components/InteractiveLayer'
 import Nav from './components/Nav'
 import Preloader from './components/Preloader'
 import SEO from './components/SEO'
@@ -15,6 +16,8 @@ import Testimonials from './components/sections/Testimonials'
 import TrustedByFinest from './components/sections/TrustedByFinest'
 import WhyUs from './components/sections/WhyUs'
 import { SHOW_PROJECTS, SHOW_TESTIMONIALS } from './data/visibility'
+import { markIntroDone, shouldPlayIntro } from './lib/intro'
+import { useScrollStory } from './lib/useScrollStory'
 import { prefersReducedMotion } from './lib/usePrefersReducedMotion'
 import { lenisRef, useSmoothScroll } from './lib/useSmoothScroll'
 import CatalogBrandPage from './pages/CatalogBrandPage'
@@ -25,8 +28,10 @@ import ProjectDetailPage from './pages/ProjectDetailPage'
 import ProjectsPage from './pages/ProjectsPage'
 
 function HomePage() {
+  const mainRef = useRef<HTMLElement>(null)
+  useScrollStory(mainRef)
   return (
-    <main>
+    <main ref={mainRef}>
       <Hero />
       <About />
       <OurJourneyTeaser />
@@ -131,8 +136,14 @@ function PageTransition({ children }: { children: (location: Location) => ReactN
 }
 
 function App() {
-  const [loading, setLoading] = useState(true)
+  // The logo intro plays once per visit (lib/intro.ts); on later page loads in the same tab, or
+  // with reduced motion, the page is shown straight away.
+  const [loading, setLoading] = useState(shouldPlayIntro)
   useSmoothScroll()
+  useEffect(() => {
+    if (!loading) markIntroDone()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <>
@@ -166,6 +177,7 @@ function App() {
         </PageTransition>
       </div>
       <ContactDock />
+      <InteractiveLayer />
     </>
   )
 }

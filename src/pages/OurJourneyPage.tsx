@@ -1,4 +1,6 @@
+import { useRef } from 'react'
 import Reveal from '../components/Reveal'
+import { useScrollStory } from '../lib/useScrollStory'
 import { journeyPage, ourJourney, type JourneyMilestone } from '../data/content'
 
 // Same pill as the catalog cards' category tags.
@@ -82,7 +84,13 @@ function Milestone({ milestone, last }: { milestone: JourneyMilestone; last: boo
               last ? 'h-24 bg-gradient-to-b from-line to-transparent' : 'bottom-0 bg-line'
             }`}
           />
+          {/* Steel-blue fill that draws down the hairline as you scroll (lib/useScrollStory).
+              Positioned with left/margin rather than translate: GSAP owns its transform. */}
+          {!last && (
+            <span data-draw-y className={`absolute bottom-0 left-1/2 -ml-px w-0.5 origin-top bg-accent-bright/80 ${offset.line}`} />
+          )}
           <span
+            data-draw-dot
             className={`relative z-10 h-2.5 w-2.5 rounded-full ring-[5px] ring-bg ${offset.dot} ${
               feature ? 'border border-accent-bright bg-bg' : 'bg-accent-bright'
             }`}
@@ -124,8 +132,10 @@ function Milestone({ milestone, last }: { milestone: JourneyMilestone; last: boo
  */
 export default function OurJourneyPage() {
   const { closing } = journeyPage
+  const pageRef = useRef<HTMLDivElement>(null)
+  useScrollStory(pageRef)
   return (
-    <div className="min-h-screen bg-bg">
+    <div ref={pageRef} className="min-h-screen bg-bg">
       <div className="px-6 pt-32 pb-10 text-center md:px-12 md:pt-40 md:pb-14">
         <span className="eyebrow">{journeyPage.eyebrow}</span>
         <h1 className="mx-auto mt-4 max-w-3xl font-display text-4xl font-light text-text md:text-5xl lg:text-6xl">
@@ -143,7 +153,7 @@ export default function OurJourneyPage() {
 
         <Reveal className="mx-auto mt-16 flex max-w-3xl flex-col items-center gap-8 text-center md:mt-24">
           <span aria-hidden="true" className="h-px w-16 bg-accent" />
-          <div role="heading" aria-level={2} className="font-display text-3xl leading-[1.15] font-light text-text md:text-5xl">
+          <div role="heading" aria-level={2} data-rise className="font-display text-3xl leading-[1.15] font-light text-text md:text-5xl">
             {closing.heading}
           </div>
           <p className="max-w-2xl text-base leading-relaxed font-light text-muted md:text-lg">{closing.body}</p>

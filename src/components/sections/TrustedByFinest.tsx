@@ -25,7 +25,7 @@ export default function TrustedByFinest() {
   const accentAt = headline.lastIndexOf(headlineAccent)
 
   return (
-    <section className="relative overflow-hidden border-t border-line bg-bg py-28 md:py-32" id="brands">
+    <section className="story-line overflow-hidden bg-bg py-28 md:py-32" id="brands">
       <div
         className="pointer-events-none absolute inset-0"
         style={{ background: 'radial-gradient(ellipse at center, rgba(95,125,156,0.10), transparent 60%)' }}
@@ -36,7 +36,7 @@ export default function TrustedByFinest() {
           <span className="h-1 w-1 rounded-full bg-accent" />
           {trustedByFinest.label}
         </span>
-        <h2 className="max-w-2xl font-display text-3xl font-light text-text md:text-4xl lg:text-5xl">
+        <h2 data-rise className="max-w-2xl font-display text-3xl font-light text-text md:text-4xl lg:text-5xl">
           {/* The accent word in the serif italic, in steel blue. */}
           {accentAt >= 0 ? (
             <>

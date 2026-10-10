@@ -120,13 +120,13 @@ export default function WhyUs() {
   const pointCells = threePoints ? POINT_CELLS_3 : POINT_CELLS_4
 
   return (
-    <section id="why-us" className="border-t border-line px-6 py-32 md:px-12">
+    <section id="why-us" className="story-line px-6 py-32 md:px-12">
       <Reveal className="mb-14 flex flex-col gap-6 md:mb-16">
         <div className="eyebrow flex items-center gap-2">
           <span className="h-1 w-1 rounded-full bg-accent" />
           {whyUs.eyebrow}
         </div>
-        <div role="heading" aria-level={2} className="max-w-3xl font-display text-3xl leading-[1.2] font-light md:text-5xl">
+        <div role="heading" aria-level={2} data-rise className="max-w-3xl font-display text-3xl leading-[1.2] font-light md:text-5xl">
           {whyUs.heading}
         </div>
       </Reveal>
