@@ -142,7 +142,7 @@ export const contact = {
   geo: { lat: 22.2841, lng: 70.7476 },
   exteriorImage: {
     src: '/images/homepage/visit-storefront-night.webp',
-    // Native 1427x1102 (~4:3) — the Contact section frames it at 4:3, so it
+    // Native 1448x1086 (4:3) — the Contact section frames it at 4:3, so it
     // is barely cropped; centering is just a safe default.
     alt: 'Night view of the Buildcon House storefront with its brand signage',
     objectPosition: 'center',
@@ -538,7 +538,8 @@ export const brands: Brand[] = [
   {
     name: 'Dimore',
     logo: '/images/brands/dimore.png',
-    // Avg luminance 0.11 (maroon box) — contrast is 5.6:1 on the light plate.
+    // HD logo from the brand's CorelDRAW PDF: transparent, burgundy #5e1729 wordmark (~11:1 on
+    // the light plate) + gold #b39067 tagline. Light plate keeps the burgundy readable.
     category: 'Tiles & Surfaces',
     verified: false,
     note: 'TODO: verify brand details and category fit.',

@@ -39,7 +39,7 @@ node scripts/audit-brand-logos.cjs   # prints luminance/contrast/plate data
 | `oyster.png` | ✅ Yes | Logo (light plate) |
 | `qutone.png` | ✅ Yes — full logo, teal block with white wordmark | Logo (dark plate) |
 | `nexion.png` | ✅ Yes — white wordmark on black (supplied as a JPG, converted to PNG losslessly) | Logo (light plate) |
-| `dimore.png` | ✅ Yes | Logo (light plate) |
+| `dimore.png` | ✅ Yes — HD logo from the brand's vector PDF (DIMORE · Surfaces and Beyond), transparent, 1600 px; untrimmed 3652 px master in `originals/` | Logo (light plate) |
 | `mcm-ittim.png` | ✅ Yes — "ittimi by MCM" mark cut out of the supplied image (pattern swatches and grey background removed; 2x resized). Supplied original: `originals/mcm-ittim-as-supplied.png`. Low-resolution source — replace with a vector/hi-res export if available | Logo (dark plate) |
 | `verantes-living.png` | ✅ Yes | Logo (dark plate) |
 
