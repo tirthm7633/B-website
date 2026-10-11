@@ -56,6 +56,8 @@ export type ImageSlot = {
   alt: string
   /** CSS object-position, e.g. "center 60%" — tune per photo's focal point. */
   objectPosition?: string
+  /** false = show the photo's own colours (skip SmartImage's cool grade). */
+  grade?: boolean
 }
 
 export const site = {
@@ -239,11 +241,13 @@ export const about = {
   image: {
     // Supplied by the owner (2026-10-11): a warm-lit bathroom — backlit oval mirror, vessel
     // basin on a wood vanity, lit niches and a walk-in shower — native 1200x1799 (2:3), so the
-    // 3:4 frame trims a little top and bottom. SmartImage adds the usual grade + overlay.
-    // (An empty src renders SmartImage's dark placeholder.)
+    // 3:4 frame trims a little top and bottom. Shown in its own warm colours (grade: false, the
+    // owner's choice) rather than the site's cool grade. (An empty src renders SmartImage's dark
+    // placeholder.)
     src: '/images/homepage/about-bathroom.webp',
     alt: 'Warm-lit bathroom with a backlit oval mirror, a basin on a wooden vanity, lit wall niches and a glass walk-in shower',
     objectPosition: 'center 45%',
+    grade: false,
   } as ImageSlot,
 }
 

@@ -8,6 +8,9 @@ interface SmartImageProps {
   eager?: boolean
   /** Set false for logos/UI marks that shouldn't get the photo treatment. */
   overlay?: boolean
+  /** Set false to keep the photo's own colours: no cool grade or blue tint, only the light
+   * dark fade at the bottom (e.g. a warm photo the owner wants shown warm). */
+  grade?: boolean
 }
 
 /**
@@ -30,6 +33,7 @@ export default function SmartImage({
   objectPosition = 'center',
   eager = false,
   overlay = true,
+  grade = true,
 }: SmartImageProps) {
   const [errored, setErrored] = useState(false)
 
@@ -58,13 +62,13 @@ export default function SmartImage({
         loading={eager ? 'eager' : 'lazy'}
         decoding="async"
         onError={() => setErrored(true)}
-        className="h-full w-full object-cover [filter:saturate(0.62)_contrast(1.05)_brightness(1.1)]"
+        className={`h-full w-full object-cover ${grade ? '[filter:saturate(0.62)_contrast(1.05)_brightness(1.1)]' : ''}`}
         style={{ objectPosition }}
       />
       {overlay && (
         <>
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#050607]/8 via-[#050607]/12 to-[#050607]/28" />
-          <div className="pointer-events-none absolute inset-0 bg-[#2b3f57]/25 mix-blend-multiply" />
+          {grade && <div className="pointer-events-none absolute inset-0 bg-[#2b3f57]/25 mix-blend-multiply" />}
         </>
       )}
     </div>

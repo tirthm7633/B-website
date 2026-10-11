@@ -65,6 +65,7 @@ export default function About() {
                 src={about.image.src}
                 alt={about.image.alt}
                 objectPosition={about.image.objectPosition}
+                grade={about.image.grade}
                 className="h-full w-full"
               />
             </div>
