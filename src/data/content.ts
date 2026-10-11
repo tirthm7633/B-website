@@ -13,11 +13,10 @@
  *                                            Currently: bright living room with
  *                                            a curved sofa (from the 2026
  *                                            product brochure).
- *   /public/images/homepage/about-rain-shower.webp
+ *   /public/images/homepage/about-bathroom.webp
  *                                           About section, portrait 3:4 frame.
- *                                            Currently: the brochure's Grohe
- *                                            ceiling rain shower (a copy of the
- *                                            Grohe gallery photo; native 561x701).
+ *                                            Currently: a warm-lit bathroom with
+ *                                            a backlit mirror (native 1200x1799).
  *   /public/images/homepage/category-sanitaryware.webp
  *   /public/images/homepage/category-tiles.webp
  *   /public/images/homepage/category-kitchen.webp
@@ -238,16 +237,13 @@ export const about = {
     { value: FOUNDING_YEAR, prefix: 'Since ', label: 'Serving Rajkot', count: false, wide: true },
   ] as AboutStat[],
   image: {
-    // The brochure's non-brand photos are all used elsewhere (Hero, Imported Furniture
-    // card, Visit Us), so this is the strongest unused *brand* photo: a Grohe ceiling rain
-    // shower in dark stone — cool and neutral, so it sits inside the Obsidian Steel palette
-    // (SmartImage adds the usual desaturated grade + overlay). It is a brochure picture, not
-    // a showroom photo, and only 561x701 natively, so it is a little soft on large screens;
-    // swap in a real Buildcon House photo when one is available. (An empty src renders
-    // SmartImage's dark placeholder.)
-    src: '/images/homepage/about-rain-shower.webp',
-    alt: 'Ceiling-mounted rain shower falling over a dark stone shower room',
-    objectPosition: 'center',
+    // Supplied by the owner (2026-10-11): a warm-lit bathroom — backlit oval mirror, vessel
+    // basin on a wood vanity, lit niches and a walk-in shower — native 1200x1799 (2:3), so the
+    // 3:4 frame trims a little top and bottom. SmartImage adds the usual grade + overlay.
+    // (An empty src renders SmartImage's dark placeholder.)
+    src: '/images/homepage/about-bathroom.webp',
+    alt: 'Warm-lit bathroom with a backlit oval mirror, a basin on a wooden vanity, lit wall niches and a glass walk-in shower',
+    objectPosition: 'center 45%',
   } as ImageSlot,
 }
 
