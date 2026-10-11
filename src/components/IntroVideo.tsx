@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { markIntroDone, markIntroPlayed, pickIntroVariant, type IntroCut } from '../lib/intro'
+import { markIntroDone, markIntroPlayed, pickIntroFormats, pickIntroVariant, type IntroCut, type IntroFormat, type IntroTier } from '../lib/intro'
 
 // Start-up fallback, timed from when this overlay mounts (i.e. once the site's script has run):
 // at 1.5 s, if no video data has arrived at all (no response, blocked) → the site; if data is
@@ -17,17 +17,33 @@ const FADE_MS = 600
  * The intro film (made in /intro-video, files in /public/intro), laid over the page — which is
  * already rendered underneath, so it is there the moment the film fades. The shape (16:9, 4:3,
  * 3:4, 9:16 — each re-composed, not cropped) and HD/LITE size are picked once at start and never
- * swapped on rotate. WebM first, MP4 fallback. Skip and Esc work from the first frame. Every
- * frame's edges are exactly the page background, so `object-fit: contain` letterboxing is
- * invisible on any screen.
+ * swapped on rotate. Whichever format the device decodes best (WebM/VP9 or MP4/H.264, see
+ * pickIntroFormats) goes first, the other as fallback. Skip and Esc work from the first frame.
+ * Every frame's edges are exactly the page background, so `object-fit: contain` letterboxing is
+ * invisible on any screen. While it plays, <html> carries .intro-playing, which holds the page's
+ * own decorative loops (they'd only compete with the film for frames).
  */
+const TYPES: Record<IntroFormat, string> = { webm: 'video/webm; codecs="vp9"', mp4: 'video/mp4; codecs="avc1.640028"' }
+
 export default function IntroVideo({ cut, onComplete }: { cut: IntroCut; onComplete: () => void }) {
   const rootRef = useRef<HTMLDivElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
   const leaveRef = useRef<() => void>(() => {})
-  const [{ aspect, tier }] = useState(() => pickIntroVariant())
+  const posterHoldRef = useRef<() => void>(() => {})
+  const [{ aspect, tier: initialTier }] = useState(() => pickIntroVariant())
+  // Sources are added once the browser has said which format it plays best (a few ms).
+  const [formats, setFormats] = useState<{ tier: IntroTier; order: IntroFormat[] } | null>(null)
   const [leaving, setLeaving] = useState(false)
+  const tier = formats?.tier ?? initialTier
   const file = `/intro/intro-${cut === 'short' ? 'short-' : ''}${aspect}-${tier}`
+
+  useEffect(() => {
+    let cancelled = false
+    pickIntroFormats(aspect, initialTier).then((f) => !cancelled && setFormats(f))
+    return () => {
+      cancelled = true
+    }
+  }, [aspect, initialTier])
 
   useEffect(() => {
     const root = rootRef.current
@@ -44,6 +60,7 @@ export default function IntroVideo({ cut, onComplete }: { cut: IntroCut; onCompl
     const html = document.documentElement
     const previousOverflow = html.style.overflow
     html.style.overflow = 'hidden'
+    html.classList.add('intro-playing')
     const swallow = (e: Event) => {
       e.preventDefault()
       e.stopPropagation()
@@ -56,6 +73,7 @@ export default function IntroVideo({ cut, onComplete }: { cut: IntroCut; onCompl
       if (!active || gone) return
       gone = true
       video.pause()
+      html.classList.remove('intro-playing')
       markIntroDone() // the page's own entrance (the hero headline) starts as the film fades
       setLeaving(true)
       timers.push(
@@ -91,11 +109,10 @@ export default function IntroVideo({ cut, onComplete }: { cut: IntroCut; onCompl
     video.addEventListener('error', onError, true)
     window.addEventListener('keydown', onKey)
 
-    // `muted` must be set as a property too: autoplay policies check the property.
-    video.muted = true
-    video.play().catch(() => {
+    // Autoplay refused → the poster holds briefly, then the site (playback starts in the effect below).
+    posterHoldRef.current = () => {
       if (active && !gone) timers.push(window.setTimeout(leave, POSTER_HOLD_MS))
-    })
+    }
     timers.push(
       window.setTimeout(() => {
         if (playing) return
@@ -124,9 +141,19 @@ export default function IntroVideo({ cut, onComplete }: { cut: IntroCut; onCompl
       root.removeEventListener('wheel', swallow)
       root.removeEventListener('touchmove', swallow)
       html.style.overflow = previousOverflow
+      html.classList.remove('intro-playing')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // Play once the sources are in.
+  useEffect(() => {
+    const video = videoRef.current
+    if (!formats || !video) return
+    // `muted` must be set as a property too: autoplay policies check the property.
+    video.muted = true
+    video.play().catch(() => posterHoldRef.current())
+  }, [formats])
 
   return (
     <div
@@ -147,8 +174,7 @@ export default function IntroVideo({ cut, onComplete }: { cut: IntroCut; onCompl
         aria-hidden="true"
         {...{ 'webkit-playsinline': '' }}
       >
-        <source src={`${file}.webm`} type='video/webm; codecs="vp9"' />
-        <source src={`${file}.mp4`} type='video/mp4; codecs="avc1.640028"' />
+        {formats?.order.map((format) => <source key={format} src={`${file}.${format}`} type={TYPES[format]} />)}
       </video>
       <button
         type="button"

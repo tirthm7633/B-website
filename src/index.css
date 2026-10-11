@@ -451,6 +451,15 @@ a {
   }
 }
 
+/* While the intro film plays over the page (html.intro-playing, set by IntroVideo.tsx), the page's
+   decorative loops wait: hidden behind the film, they'd only compete with it for frames. */
+.intro-playing .marquee-track,
+.intro-playing .scroll-hint-line,
+.intro-playing .brand-sweep,
+.intro-playing .hero-ray-a,
+.intro-playing .hero-ray-b {
+  animation-play-state: paused;
+}
 /* Respect reduced-motion: freeze decorative infinite/slow animations.
    GSAP-driven effects are individually gated in their components. */
 @media (prefers-reduced-motion: reduce) {

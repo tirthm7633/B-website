@@ -2,7 +2,7 @@ import gsap from 'gsap'
 import { SplitText } from 'gsap/SplitText'
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from 'react'
 import { hero, heroSlides } from '../../data/content'
-import { onIntroDone } from '../../lib/intro'
+import { onIntroDone, useIntroDone } from '../../lib/intro'
 import { useDocumentVisible } from '../../lib/useAnimationEnvironment'
 import { prefersReducedMotion } from '../../lib/usePrefersReducedMotion'
 import { ChevronIcon } from '../ActionIcons'
@@ -34,11 +34,13 @@ export default function Hero() {
   const [controlsActive, setControlsActive] = useState(false)
   const [inView, setInView] = useState(true)
   const documentVisible = useDocumentVisible()
+  // The slideshow waits for the intro film to hand over (it would only turn behind it).
+  const introDone = useIntroDone()
   // Starts the slow zoom only after the first paint, so the opening photo zooms too.
   const [zoomReady, setZoomReady] = useState(false)
   const [preloadAll, setPreloadAll] = useState(false)
 
-  const autoplay = !reducedMotion && inView && documentVisible && !controlsActive
+  const autoplay = !reducedMotion && introDone && inView && documentVisible && !controlsActive
 
   useEffect(() => {
     if (!autoplay) return

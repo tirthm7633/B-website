@@ -159,24 +159,26 @@ test('autoplay blocked: poster (final frame) shows ~0.8 s, then fades to the pag
     // Its own Edge, with autoplay refused even when muted (like iOS Low Power Mode).
     const browser = await chromium.launch({ channel: 'msedge', args: ['--autoplay-policy=user-gesture-required'] })
     const page = await browser.newPage({ baseURL, viewport: { width: 1440, height: 900 } })
-    // Timed in the page, from the moment the intro appears to the moment it is removed.
+    // Observed from inside the page only: Playwright's page.evaluate() runs with a user gesture,
+    // which would itself unlock playback — so nothing here touches the page until the intro is gone.
     await page.addInitScript(() => {
-      const log = ((window as any).__intro = { mount: 0, gone: 0 })
+      const log = ((window as any).__intro = { mount: 0, gone: 0, poster: '', played: false })
       new MutationObserver(() => {
         const el = document.querySelector('[data-intro]')
-        if (el && !log.mount) log.mount = performance.now()
+        if (el && !log.mount) {
+          log.mount = performance.now()
+          const v = el.querySelector('video')!
+          log.poster = v.getAttribute('poster') ?? ''
+          v.addEventListener('playing', () => (log.played = true))
+        }
         if (!el && log.mount && !log.gone) log.gone = performance.now()
       }).observe(document, { childList: true, subtree: true })
     })
     await page.goto('/')
-    const o = await overlay(page)
-    expect(o.present).toBe(true)
-    expect(o.poster).toBe('/intro/poster-16x9.jpg')
-    await page.waitForTimeout(500)
-    const mid = await overlay(page)
-    expect(mid.present).toBe(true)
-    expect(mid.paused).toBe(true)
-    await gone(page, 4000)
+    await page.waitForTimeout(3500) // a plain wait: polling the page would count as a gesture too
+    const log = await page.evaluate(() => (window as any).__intro)
+    expect(log.poster).toBe('/intro/poster-16x9.jpg')
+    expect(log.played).toBe(false) // the film never started; the poster (its final frame) held
     const took = await page.evaluate(() => (window as any).__intro.gone - (window as any).__intro.mount)
     expect(took).toBeGreaterThan(800 + 600 - 100) // poster hold + fade
     expect(took).toBeLessThan(2500)

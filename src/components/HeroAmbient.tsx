@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { onIntroDone } from '../lib/intro'
 import { prefersReducedMotion } from '../lib/usePrefersReducedMotion'
 
 type Speck = { x: number; y: number; r: number; vx: number; vy: number; a: number; phase: number }
@@ -6,8 +7,9 @@ type Speck = { x: number; y: number; r: number; vx: number; vy: number; a: numbe
 /**
  * A very quiet layer of movement over the hero photos: two soft steel-blue light beams that
  * sway slowly (CSS, .hero-ray in index.css) and a few dozen tiny specks of light drifting
- * upward like dust in a sunbeam (canvas). The canvas only animates while the hero is on screen
- * and the tab is visible, caps its pixel density, and is skipped entirely with reduced motion.
+ * upward like dust in a sunbeam (canvas). The canvas only animates once the intro film has handed
+ * over, while the hero is on screen and the tab is visible; it caps its pixel density and is
+ * skipped entirely with reduced motion.
  */
 export default function HeroAmbient() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -87,7 +89,12 @@ export default function HeroAmbient() {
     }
 
     let inView = true
-    const update = () => setRunning(inView && document.visibilityState === 'visible')
+    let introDone = false
+    const update = () => setRunning(introDone && inView && document.visibilityState === 'visible')
+    const stopWaiting = onIntroDone(() => {
+      introDone = true
+      update()
+    })
     const io = new IntersectionObserver(([entry]) => {
       inView = entry.isIntersecting
       update()
@@ -97,6 +104,7 @@ export default function HeroAmbient() {
     update()
 
     return () => {
+      stopWaiting()
       setRunning(false)
       ro.disconnect()
       io.disconnect()

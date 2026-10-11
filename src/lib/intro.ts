@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { prefersReducedMotion } from './usePrefersReducedMotion'
 
 /**
@@ -47,6 +48,48 @@ export function pickIntroVariant(width = window.innerWidth, height = window.inne
   return { aspect, tier }
 }
 
+export type IntroFormat = 'webm' | 'mp4'
+
+const CODECS: Record<IntroFormat, string> = {
+  webm: 'video/webm; codecs="vp09.00.40.08"',
+  mp4: 'video/mp4; codecs="avc1.640028"',
+}
+const HD_SIZE: Record<IntroAspect, [number, number]> = { '16x9': [1920, 1080], '4x3': [1440, 1080], '3x4': [1080, 1440], '9x16': [1080, 1920] }
+
+/**
+ * Asks the browser which of the film's two formats it plays best. The one it decodes smoothly and
+ * power-efficiently (in hardware) goes first — WebM on a tie, as it is smaller. That matters on
+ * laptops that decode H.264 in hardware but VP9 only in software, where a 1080p60 WebM stutters
+ * and drains the battery. If neither HD file would play smoothly, the LITE size is used. Falls
+ * back to WebM-then-MP4 if the browser can't say within 300 ms.
+ */
+export function pickIntroFormats(aspect: IntroAspect, tier: IntroTier): Promise<{ tier: IntroTier; order: IntroFormat[] }> {
+  const fallback = { tier, order: ['webm', 'mp4'] as IntroFormat[] }
+  const mc = navigator.mediaCapabilities
+  if (!mc?.decodingInfo) return Promise.resolve(fallback)
+  const ask = (format: IntroFormat, t: IntroTier) => {
+    const [w, h] = HD_SIZE[aspect]
+    const scale = t === 'hd' ? 1 : 720 / Math.min(w, h)
+    return mc
+      .decodingInfo({
+        type: 'file',
+        video: { contentType: CODECS[format], width: Math.round(w * scale), height: Math.round(h * scale), bitrate: t === 'hd' ? 3_200_000 : 1_400_000, framerate: 60 },
+      })
+      .catch(() => null)
+  }
+  const score = (r: MediaCapabilitiesDecodingInfo | null) => (r?.supported ? 1 : 0) + (r?.smooth ? 2 : 0) + (r?.powerEfficient ? 4 : 0)
+  const answer = (async () => {
+    let t = tier
+    let [webm, mp4] = await Promise.all([ask('webm', t), ask('mp4', t)])
+    if (t === 'hd' && webm && mp4 && !webm.smooth && !mp4.smooth) {
+      t = 'lite'
+      ;[webm, mp4] = await Promise.all([ask('webm', t), ask('mp4', t)])
+    }
+    return { tier: t, order: (score(mp4) > score(webm) ? ['mp4', 'webm'] : ['webm', 'mp4']) as IntroFormat[] }
+  })()
+  return Promise.race([answer, new Promise<typeof fallback>((resolve) => setTimeout(() => resolve(fallback), 300))])
+}
+
 export function markIntroDone() {
   if (done) return
   done = true
@@ -66,6 +109,14 @@ export function markIntroPlayed() {
   } catch {
     // Storage blocked: the next visit counts as a first visit.
   }
+}
+
+/** True once the intro has revealed the page (or straight away when none plays). Components hold
+ * their looping animations until then: behind the film they'd only compete with it for frames. */
+export function useIntroDone() {
+  const [isDone, setIsDone] = useState(done)
+  useEffect(() => onIntroDone(() => setIsDone(true)), [])
+  return isDone
 }
 
 /** Runs `callback` once the intro has revealed the page (straight away if it already has). */
