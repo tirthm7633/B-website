@@ -1,6 +1,6 @@
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { useEffect, useRef } from 'react'
+import { Fragment, useEffect, useRef } from 'react'
 import { about } from '../../data/content'
 import { prefersReducedMotion } from '../../lib/usePrefersReducedMotion'
 import CountUp from '../CountUp'
@@ -78,11 +78,14 @@ export default function About() {
           </div>
 
           <p ref={textRef} className="font-display text-3xl leading-[1.2] font-light md:text-5xl">
-            {/* One phrase is set in the serif italic, in steel blue, for emphasis. */}
+            {/* One phrase is set in the serif italic, in steel blue, for emphasis. The words are
+                spaced by their margin; the zero-size real spaces between them keep the text
+                itself a proper sentence (for screen readers, search and copy-paste) — once. */}
             {headingWords.map((word, i) => (
-              <span key={i} className={`word mr-2 inline-block ${isAccent(i) ? 'text-accent-bright italic' : ''}`}>
-                {word}
-              </span>
+              <Fragment key={i}>
+                {i > 0 && <span className="text-[0px]"> </span>}
+                <span className={`word mr-2 inline-block ${isAccent(i) ? 'text-accent-bright italic' : ''}`}>{word}</span>
+              </Fragment>
             ))}
           </p>
 
@@ -91,9 +94,8 @@ export default function About() {
           <div className="mt-16 grid grid-cols-2 gap-8">
             {about.stats.map((stat) => (
               <div key={stat.label} className="border-l border-line pl-4">
-                <div className="numerals font-display text-4xl font-light text-text md:text-5xl">
-                  <CountUp value={stat.value} />
-                  {stat.suffix}
+                <div className="numerals font-display text-4xl font-light text-text lg:text-5xl">
+                  <CountUp value={stat.value} prefix={stat.prefix} suffix={stat.suffix} count={stat.count} />
                 </div>
                 <p className="eyebrow mt-2 text-[0.6rem]">{stat.label}</p>
               </div>

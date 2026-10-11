@@ -1,8 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
 import { markIntroDone, markIntroPlayed, pickIntroVariant, type IntroCut } from '../lib/intro'
 
-// Not playing by then (slow network, decode trouble) → straight to the site.
+// Start-up fallback, timed from when this overlay mounts (i.e. once the site's script has run):
+// at 1.5 s, if no video data has arrived at all (no response, blocked) → the site; if data is
+// arriving but not enough to play yet (a slow phone connection) → keep waiting, up to 3 s.
 const START_TIMEOUT_MS = 1500
+const LOADING_GRACE_MS = 3000
+// Once playing, if the film falls this far behind the clock (it froze, or keeps stuttering because
+// the connection can't keep up) → the site, rather than holding visitors behind it.
+const MAX_BEHIND_MS = 3000
 // Autoplay refused (e.g. iOS Low Power Mode) → the poster (the film's final frame) shows briefly.
 const POSTER_HOLD_MS = 800
 const FADE_MS = 600
@@ -30,6 +36,8 @@ export default function IntroVideo({ cut, onComplete }: { cut: IntroCut; onCompl
     let active = true
     let gone = false
     let playing = false
+    let receiving = false // any video bytes have arrived
+    let playStart = 0
     const timers: number[] = []
     // Page scroll is locked on <html>, not <body>: the site's panels reset body overflow as they
     // mount. Wheel/touch on the film are swallowed before Lenis (listening on window) sees them.
@@ -60,8 +68,16 @@ export default function IntroVideo({ cut, onComplete }: { cut: IntroCut; onCompl
     leaveRef.current = leave
 
     const onPlaying = () => {
+      if (playing) return
       playing = true
+      playStart = performance.now()
     }
+    const onProgress = () => {
+      receiving = true
+    }
+    const watchdog = window.setInterval(() => {
+      if (playing && performance.now() - playStart - video.currentTime * 1000 > MAX_BEHIND_MS) leave()
+    }, 250)
     // Both sources failed (the error comes from each <source>, which doesn't bubble — hence capture).
     const onError = () => {
       if (video.networkState === HTMLMediaElement.NETWORK_NO_SOURCE) leave()
@@ -70,6 +86,7 @@ export default function IntroVideo({ cut, onComplete }: { cut: IntroCut; onCompl
       if (e.key === 'Escape') leave()
     }
     video.addEventListener('playing', onPlaying)
+    video.addEventListener('progress', onProgress)
     video.addEventListener('ended', leave)
     video.addEventListener('error', onError, true)
     window.addEventListener('keydown', onKey)
@@ -81,14 +98,26 @@ export default function IntroVideo({ cut, onComplete }: { cut: IntroCut; onCompl
     })
     timers.push(
       window.setTimeout(() => {
-        if (!playing) leave()
+        if (playing) return
+        const loading = receiving || video.readyState >= HTMLMediaElement.HAVE_METADATA || video.buffered.length > 0
+        if (!loading) {
+          leave()
+          return
+        }
+        timers.push(
+          window.setTimeout(() => {
+            if (!playing) leave()
+          }, LOADING_GRACE_MS - START_TIMEOUT_MS),
+        )
       }, START_TIMEOUT_MS),
     )
 
     return () => {
       active = false
       timers.forEach((t) => window.clearTimeout(t))
+      window.clearInterval(watchdog)
       video.removeEventListener('playing', onPlaying)
+      video.removeEventListener('progress', onProgress)
       video.removeEventListener('ended', leave)
       video.removeEventListener('error', onError, true)
       window.removeEventListener('keydown', onKey)

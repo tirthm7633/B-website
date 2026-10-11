@@ -71,8 +71,7 @@ function StatBody({ stat }: { stat: WhyUsStat }) {
         className="h-px w-8 bg-accent transition-all duration-500 group-hover:w-16 group-hover:bg-accent-bright group-focus-visible:w-16 group-focus-visible:bg-accent-bright"
       />
       <div className="numerals font-display text-5xl leading-none font-light text-text transition-colors duration-500 group-hover:text-accent-bright group-focus-visible:text-accent-bright md:text-6xl lg:text-7xl xl:text-8xl">
-        <CountUp value={stat.value} />
-        {stat.suffix}
+        <CountUp value={stat.value} suffix={stat.suffix} />
       </div>
       {/* Not the .eyebrow class: its (unlayered) colour would beat text-muted. Grey, so the
           steel-blue link below it is the only blue text in the cell. */}

@@ -159,7 +159,15 @@ test('autoplay blocked: poster (final frame) shows ~0.8 s, then fades to the pag
     // Its own Edge, with autoplay refused even when muted (like iOS Low Power Mode).
     const browser = await chromium.launch({ channel: 'msedge', args: ['--autoplay-policy=user-gesture-required'] })
     const page = await browser.newPage({ baseURL, viewport: { width: 1440, height: 900 } })
-    const t0 = Date.now()
+    // Timed in the page, from the moment the intro appears to the moment it is removed.
+    await page.addInitScript(() => {
+      const log = ((window as any).__intro = { mount: 0, gone: 0 })
+      new MutationObserver(() => {
+        const el = document.querySelector('[data-intro]')
+        if (el && !log.mount) log.mount = performance.now()
+        if (!el && log.mount && !log.gone) log.gone = performance.now()
+      }).observe(document, { childList: true, subtree: true })
+    })
     await page.goto('/')
     const o = await overlay(page)
     expect(o.present).toBe(true)
@@ -169,9 +177,9 @@ test('autoplay blocked: poster (final frame) shows ~0.8 s, then fades to the pag
     expect(mid.present).toBe(true)
     expect(mid.paused).toBe(true)
     await gone(page, 4000)
-    const took = Date.now() - t0
-    expect(took).toBeGreaterThan(800)
-    expect(took).toBeLessThan(3200)
+    const took = await page.evaluate(() => (window as any).__intro.gone - (window as any).__intro.mount)
+    expect(took).toBeGreaterThan(800 + 600 - 100) // poster hold + fade
+    expect(took).toBeLessThan(2500)
     await browser.close()
 })
 
@@ -214,4 +222,61 @@ test('MP4 fallback when WebM is unavailable', async ({ page }) => {
   await page.goto('/')
   await playing(page)
   expect((await overlay(page)).src).toBe('intro-16x9-hd.mp4')
+})
+
+// ---- Slow connections. The page loads at full speed; the film's own request is throttled. ----
+async function throttledFilm(page: Page, kbps: number) {
+  await page.addInitScript(() => {
+    const log = ((window as any).__intro = { mount: 0, playing: 0, gone: 0, maxT: 0 })
+    new MutationObserver(() => {
+      const el = document.querySelector('[data-intro]')
+      if (el && !log.mount) {
+        log.mount = performance.now()
+        const v = el.querySelector('video')!
+        v.addEventListener('playing', () => (log.playing ||= performance.now()))
+        v.addEventListener('timeupdate', () => (log.maxT = Math.max(log.maxT, v.currentTime)))
+      }
+      if (!el && log.mount && !log.gone) log.gone = performance.now()
+    }).observe(document, { childList: true, subtree: true })
+  })
+  const cdp = await page.context().newCDPSession(page)
+  let throttled = false
+  await page.route(/\/intro\/.*\.(webm|mp4)$/, async (route) => {
+    if (!throttled) {
+      throttled = true
+      await cdp.send('Network.emulateNetworkConditions', { offline: false, latency: 150, downloadThroughput: (kbps * 1000) / 8, uploadThroughput: 50_000 })
+    }
+    await route.continue()
+  })
+  return async () => {
+    await page.waitForFunction(() => (window as any).__intro.gone, null, { timeout: 20_000 })
+    const r = await page.evaluate(() => (window as any).__intro)
+    return { playingAt: r.playing ? (r.playing - r.mount) / 1000 : null, goneAt: (r.gone - r.mount) / 1000, played: r.maxT }
+  }
+}
+
+test('slow phone: film data arriving → waits past 1.5 s (up to 3 s) instead of skipping', async ({ browser }) => {
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true })
+  const page = await context.newPage()
+  const result = await throttledFilm(page, 120)
+  await page.goto('/')
+  await page.waitForFunction(() => (window as any).__intro.mount)
+  await page.waitForTimeout(1900)
+  expect((await overlay(page)).present).toBe(true) // the old rule would have skipped at 1.5 s
+  const r = await result()
+  expect(r.playingAt === null || r.playingAt <= 3.1).toBe(true) // plays only if it can start by 3 s
+  expect(r.goneAt).toBeLessThan(8) // and never holds the site for long
+  await context.close()
+})
+
+test('connection too slow to keep up: film that falls 3 s behind hands over to the site', async ({ browser }) => {
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true })
+  const page = await context.newPage()
+  const result = await throttledFilm(page, 500)
+  await page.goto('/')
+  const r = await result()
+  expect(r.playingAt).not.toBeNull()
+  expect(r.played).toBeLessThan(8.5) // it did not limp on to the end (34 s before this rule)
+  expect(r.goneAt).toBeLessThan(8)
+  await context.close()
 })

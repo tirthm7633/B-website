@@ -205,6 +205,19 @@ const YEARS_IN_BUSINESS = 18
 // as the owner gave them; if the founding year turns out to be 2008, change only this constant.
 const FOUNDING_YEAR = 2009
 
+// Showroom floor area in sq ft (the owner's "15,000+"). Drives the About stat and the Our Journey
+// teaser wording.
+const SHOWROOM_SQFT = 15000
+
+export type AboutStat = {
+  value: number
+  prefix?: string
+  suffix?: string
+  label: string
+  /** false = shown as written, no count-up (e.g. a year). */
+  count?: boolean
+}
+
 export const about = {
   eyebrow: 'About Buildcon House',
   heading:
@@ -213,16 +226,15 @@ export const about = {
   headingAccent: 'under one roof,',
   body:
     'Buildcon House was built for people who care about how their home feels, not just how it looks. We curate the finest global names in sanitaryware, tiles, kitchens, wellness and furniture, and bring them to Rajkot with the guidance and service a considered home deserves.',
-  // TODO: update these figures with real numbers whenever convenient.
+  // Deliberately different from the Why Us stats (brands, years, projects, categories).
   // NOTE: "Global Brands" is a plain number (not derived from brands.length)
   // because this object is declared before the `brands` array below —
   // update it manually whenever a brand is added or removed.
   stats: [
+    { value: SHOWROOM_SQFT, suffix: '+', label: 'Sq Ft Showroom' },
     { value: 10, suffix: '+', label: 'Global Brands' },
-    { value: 5, suffix: '', label: 'Categories' },
-    { value: 1, suffix: '', label: 'Showroom in Rajkot' },
-    { value: YEARS_IN_BUSINESS, suffix: '+', label: 'Years of Trust' },
-  ],
+    { value: FOUNDING_YEAR, label: 'Established', count: false },
+  ] as AboutStat[],
   image: {
     // The brochure's non-brand photos are all used elsewhere (Hero, Imported Furniture
     // card, Visit Us), so this is the strongest unused *brand* photo: a Grohe ceiling rain
@@ -331,7 +343,7 @@ export const journeyTeaser = {
   heading: 'Our Journey',
   paragraphs: [
     `From Buildcon Gallery in ${FOUNDING_YEAR} to Buildcon House today, our journey spans ${YEARS_IN_BUSINESS}+ years of experience, trusted brand partnerships, and lasting customer relationships.`,
-    'What began with imported tiles has evolved into a 15,000+ sq. ft. premium destination, bringing tiles, sanitaryware, wellness, windows, modular kitchens, furniture and more together in one place.',
+    `What began with imported tiles has evolved into a ${SHOWROOM_SQFT.toLocaleString('en-IN')}+ sq. ft. premium destination, bringing tiles, sanitaryware, wellness, windows, modular kitchens, furniture and more together in one place.`,
     'Today, Buildcon continues to grow with one simple vision: to provide a complete premium solution for every space.',
     `${YEARS_IN_BUSINESS}+ years of experience. Built on trust. Driven by quality. Creating spaces that last.`,
   ],
