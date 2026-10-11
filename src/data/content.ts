@@ -591,6 +591,24 @@ export const trustedByFinest = {
   headlineAccent: 'together',
 }
 
+// The small "Brand Catalogs" band on the homepage (components/sections/CatalogTeaser.tsx), right
+// after the brands. The catalog and brand counts are derived from data/catalogs.ts in the component.
+export const catalogTeaser = {
+  eyebrow: 'Brand Catalogs',
+  heading: 'Browse the collections',
+  /** The word of `heading` set in the serif italic accent. */
+  headingAccent: 'collections',
+  /** Covers shown, by catalog id (data/catalogs.ts): one per brand, chosen for their covers. */
+  featured: [
+    'vitra-designer-collection-2021',
+    'dimore-roccia',
+    'geberit-ceramics-concept-2026',
+    'verantes-living-ferro-nova-kitchens',
+    'nexion-marble-gallery-2026',
+  ],
+  cta: { label: 'View All Catalogs', to: '/catalog' },
+}
+
 // Hero background carousel: one slide per category, in `categories` order (numbered 01–05 like
 // the Categories cards). Every slide reuses an existing homepage photo. Imported Furniture uses
 // the hero living room (`hero.image`): its own card photo is a 1260x560 strip, too small to fill

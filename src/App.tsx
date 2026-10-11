@@ -7,6 +7,7 @@ import Nav from './components/Nav'
 import IntroVideo from './components/IntroVideo'
 import SEO from './components/SEO'
 import About from './components/sections/About'
+import CatalogTeaser from './components/sections/CatalogTeaser'
 import Categories from './components/sections/Categories'
 import Contact from './components/sections/Contact'
 import Gallery from './components/sections/Gallery'
@@ -37,6 +38,7 @@ function HomePage() {
       <OurJourneyTeaser />
       <Categories />
       <TrustedByFinest />
+      <CatalogTeaser />
       <WhyUs />
       {SHOW_TESTIMONIALS && <Testimonials />}
       <Gallery />
