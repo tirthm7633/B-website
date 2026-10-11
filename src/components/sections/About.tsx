@@ -93,7 +93,7 @@ export default function About() {
 
           <div className="mt-16 grid grid-cols-2 gap-8">
             {about.stats.map((stat) => (
-              <div key={stat.label} className="border-l border-line pl-4">
+              <div key={stat.label} className={`border-l border-line pl-4 ${stat.wide ? 'col-span-2' : ''}`}>
                 <div className="numerals font-display text-4xl font-light text-text lg:text-5xl">
                   <CountUp value={stat.value} prefix={stat.prefix} suffix={stat.suffix} count={stat.count} />
                 </div>

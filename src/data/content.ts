@@ -216,6 +216,8 @@ export type AboutStat = {
   label: string
   /** false = shown as written, no count-up (e.g. a year). */
   count?: boolean
+  /** Spans both columns (for longer text such as "Since 2009"). */
+  wide?: boolean
 }
 
 export const about = {
@@ -233,7 +235,7 @@ export const about = {
   stats: [
     { value: SHOWROOM_SQFT, suffix: '+', label: 'Sq Ft Showroom' },
     { value: 10, suffix: '+', label: 'Global Brands' },
-    { value: FOUNDING_YEAR, label: 'Established', count: false },
+    { value: FOUNDING_YEAR, prefix: 'Since ', label: 'Serving Rajkot', count: false, wide: true },
   ] as AboutStat[],
   image: {
     // The brochure's non-brand photos are all used elsewhere (Hero, Imported Furniture
